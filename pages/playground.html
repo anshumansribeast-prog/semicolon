@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Practice — Semicolon</title>
+  <meta name="description" content="Write real JavaScript in your browser and run it instantly. Ten challenges from printing your name to building a times table, each with a hint and a worked solution.">
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%231d4ed8'/><text x='16' y='23' font-size='22' font-family='monospace' fill='white' text-anchor='middle'>;</text></svg>">
+</head>
+<body>
+
+<a class="skip-link" href="#main">Skip to main content</a>
+
+<header class="site-header">
+  <nav class="container nav" aria-label="Main navigation">
+    <a class="brand" href="../index.html"><span class="brand-mark" aria-hidden="true">;</span> Semicolon</a>
+    <ul class="nav-menu" id="navMenu">
+      <li><a class="nav-link" href="../index.html">Home</a></li>
+      <li class="has-dropdown">
+        <a class="nav-link" href="learn.html">Learn
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+        </a>
+        <ul class="dropdown">
+          <li><a href="learn.html?cat=Python">Python <small>Automate things, work with data</small></a></li>
+          <li><a href="learn.html?cat=Web">Web <small>HTML, CSS and JavaScript</small></a></li>
+          <li><a href="learn.html?cat=Tools">Tools <small>Git, the terminal, editors</small></a></li>
+          <li><a href="learn.html?cat=Core Skills">Core Skills <small>Debugging and problem solving</small></a></li>
+          <li><a href="learn.html?cat=Projects">Projects <small>Build and ship something real</small></a></li>
+        </ul>
+      </li>
+      <li><a class="nav-link" href="playground.html" aria-current="page">Practice</a></li>
+      <li><a class="nav-link" href="blog.html">Blog</a></li>
+      <li><a class="nav-link" href="about.html">About</a></li>
+      <li><a class="nav-link" href="contact.html">Contact</a></li>
+    </ul>
+    <div class="nav-actions">
+      <a class="btn btn--primary btn--sm nav-cta" href="learn.html">Start learning</a>
+      <button class="icon-btn" type="button" data-theme-toggle aria-pressed="false"></button>
+      <button class="icon-btn nav-toggle" type="button" aria-expanded="false" aria-controls="navMenu" aria-label="Open menu"></button>
+    </div>
+  </nav>
+</header>
+
+<main id="main">
+  <section class="page-header">
+    <div class="container">
+      <nav class="breadcrumb" aria-label="Breadcrumb"><a href="../index.html">Home</a> / Practice</nav>
+      <span class="eyebrow">Write it, run it, see it</span>
+      <h1>The Practice Area</h1>
+      <p class="lede">
+        Reading about code and writing code are different skills, and only one of
+        them makes you a programmer. Write real JavaScript below and press Run —
+        it executes in your browser, immediately. Nothing to install.
+      </p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+
+      <!-- ============ CHALLENGE PICKER ============ -->
+      <div class="challenge-bar" id="challengeBar"></div>
+
+      <div class="play-grid">
+
+        <!-- editor -->
+        <div class="play-pane">
+          <div class="pane-head">
+            <span class="pane-title" id="challengeTitle">Free play</span>
+            <span class="pane-lang">JavaScript</span>
+          </div>
+          <p class="challenge-task" id="challengeTask"></p>
+          <label class="sr-only" for="codeInput">Your code</label>
+          <textarea id="codeInput" spellcheck="false" autocomplete="off"
+                    aria-describedby="challengeTask"></textarea>
+          <div class="play-actions">
+            <button class="btn btn--primary" id="runBtn" type="button">▶ Run</button>
+            <button class="btn btn--ghost btn--sm" id="resetBtn" type="button">Reset</button>
+            <button class="btn btn--ghost btn--sm" id="hintBtn" type="button">Hint</button>
+            <button class="btn btn--ghost btn--sm" id="solveBtn" type="button">Show solution</button>
+          </div>
+          <div class="hint-box" id="hintBox"></div>
+        </div>
+
+        <!-- output -->
+        <div class="play-pane">
+          <div class="pane-head">
+            <span class="pane-title">Output</span>
+            <button class="linklike" id="clearBtn" type="button">clear</button>
+          </div>
+          <pre class="play-output" id="output" aria-live="polite"
+               role="status">Press Run and your output appears here.</pre>
+          <div class="check-result" id="checkResult"></div>
+        </div>
+
+      </div>
+
+      <div class="play-note">
+        <h2>How this works, and what it can't do</h2>
+        <p>
+          Your code runs <strong>inside your own browser</strong>, on your own machine.
+          Nothing is uploaded and nothing is saved to a server. That is why it is
+          instant and free — and also why it is JavaScript rather than Python.
+        </p>
+        <p>
+          A browser can run JavaScript because every browser already contains a
+          JavaScript engine. It cannot run Python, because there is no Python inside
+          your browser. Running Python properly needs Python installed on your
+          computer — which is exactly what
+          <a href="lesson.html?track=first-program&amp;n=1">Lesson 1 of Your First Program</a>
+          walks you through.
+        </p>
+        <p>
+          The good news from
+          <a href="lesson.html?track=choosing-a-language&amp;n=1">Choosing Your First Language</a>:
+          loops, variables and conditions work the same way in both. What you practise
+          here transfers.
+        </p>
+      </div>
+
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-bottom">
+      © <span class="js-year"></span> Semicolon · Made by Anshuman Srivastava, founder.
+    </div>
+  </div>
+</footer>
+
+<script src="../js/config.js"></script>
+<script src="../components/ui.js"></script>
+<script src="../js/main.js"></script>
+<script src="../js/playground.js"></script>
+<script src="../js/helper.js"></script>
+</body>
+</html>

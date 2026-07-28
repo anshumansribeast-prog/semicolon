@@ -120,7 +120,9 @@
         '</ul>' +
 
         '<div class="btn-row" style="margin-top:1.6rem">' +
-          '<a class="btn btn--primary" href="contact.html">Ask about this track</a>' +
+          '<a class="btn btn--primary" href="lesson.html?track=' +
+            encodeURIComponent(t.slug) + '&n=1">Start lesson 1 →</a>' +
+          '<a class="btn btn--ghost" href="contact.html">Ask about this track</a>' +
           '<button class="btn btn--ghost" data-close-modal>Close</button>' +
         '</div>' +
       '</div>';
