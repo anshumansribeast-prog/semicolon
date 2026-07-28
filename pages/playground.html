@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Practice — Semicolon</title>
-  <meta name="description" content="Write real JavaScript in your browser and run it instantly. Ten challenges from printing your name to building a times table, each with a hint and a worked solution.">
+  <meta name="description" content="Write real code in your browser and run it instantly. Ten graded JavaScript challenges, a live web builder with HTML, CSS and JavaScript, and a free-build area for people who already know what they're doing.">
   <link rel="stylesheet" href="../css/style.css">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%231d4ed8'/><text x='16' y='23' font-size='22' font-family='monospace' fill='white' text-anchor='middle'>;</text></svg>">
 </head>
@@ -49,9 +49,9 @@
       <span class="eyebrow">Write it, run it, see it</span>
       <h1>The Practice Area</h1>
       <p class="lede">
-        Reading about code and writing code are different skills, and only one of
-        them makes you a programmer. Write real JavaScript below and press Run —
-        it executes in your browser, immediately. Nothing to install.
+        Reading about code and writing code are different skills, and only one of them
+        makes you a programmer. Everything here runs in your browser, instantly,
+        with nothing to install.
       </p>
     </div>
   </section>
@@ -59,63 +59,172 @@
   <section class="section">
     <div class="container">
 
-      <!-- ============ CHALLENGE PICKER ============ -->
-      <div class="challenge-bar" id="challengeBar"></div>
-
-      <div class="play-grid">
-
-        <!-- editor -->
-        <div class="play-pane">
-          <div class="pane-head">
-            <span class="pane-title" id="challengeTitle">Free play</span>
-            <span class="pane-lang">JavaScript</span>
-          </div>
-          <p class="challenge-task" id="challengeTask"></p>
-          <label class="sr-only" for="codeInput">Your code</label>
-          <textarea id="codeInput" spellcheck="false" autocomplete="off"
-                    aria-describedby="challengeTask"></textarea>
-          <div class="play-actions">
-            <button class="btn btn--primary" id="runBtn" type="button">▶ Run</button>
-            <button class="btn btn--ghost btn--sm" id="resetBtn" type="button">Reset</button>
-            <button class="btn btn--ghost btn--sm" id="hintBtn" type="button">Hint</button>
-            <button class="btn btn--ghost btn--sm" id="solveBtn" type="button">Show solution</button>
-          </div>
-          <div class="hint-box" id="hintBox"></div>
-        </div>
-
-        <!-- output -->
-        <div class="play-pane">
-          <div class="pane-head">
-            <span class="pane-title">Output</span>
-            <button class="linklike" id="clearBtn" type="button">clear</button>
-          </div>
-          <pre class="play-output" id="output" aria-live="polite"
-               role="status">Press Run and your output appears here.</pre>
-          <div class="check-result" id="checkResult"></div>
-        </div>
-
+      <!-- ============ MODE SWITCH ============ -->
+      <div class="mode-switch" role="tablist" aria-label="Practice mode">
+        <button class="mode-tab" id="tabJs" role="tab" aria-selected="true"
+                aria-controls="modeJs" type="button">
+          <strong>Challenges</strong><span>10 graded JavaScript tasks</span>
+        </button>
+        <button class="mode-tab" id="tabWeb" role="tab" aria-selected="false"
+                aria-controls="modeWeb" type="button">
+          <strong>Web Builder</strong><span>HTML + CSS + JS, live preview</span>
+        </button>
+        <button class="mode-tab" id="tabPro" role="tab" aria-selected="false"
+                aria-controls="modePro" type="button">
+          <strong>Free Build</strong><span>Blank canvas, save your work</span>
+        </button>
       </div>
 
+      <!-- ============ MODE 1 · JS CHALLENGES ============ -->
+      <div id="modeJs" role="tabpanel" aria-labelledby="tabJs">
+        <div class="challenge-bar" id="challengeBar"></div>
+
+        <div class="play-grid">
+          <div class="play-pane">
+            <div class="pane-head">
+              <span class="pane-title" id="challengeTitle">Free play</span>
+              <span class="pane-lang">JavaScript</span>
+            </div>
+            <p class="challenge-task" id="challengeTask"></p>
+            <label class="sr-only" for="codeInput">Your code</label>
+            <textarea id="codeInput" spellcheck="false" autocomplete="off"
+                      aria-describedby="challengeTask"></textarea>
+            <div class="play-actions">
+              <button class="btn btn--primary" id="runBtn" type="button">▶ Run</button>
+              <button class="btn btn--ghost btn--sm" id="resetBtn" type="button">Reset</button>
+              <button class="btn btn--ghost btn--sm" id="hintBtn" type="button">Hint</button>
+              <button class="btn btn--ghost btn--sm" id="solveBtn" type="button">Show solution</button>
+            </div>
+            <div class="hint-box" id="hintBox"></div>
+          </div>
+
+          <div class="play-pane">
+            <div class="pane-head">
+              <span class="pane-title">Output</span>
+              <button class="linklike" id="clearBtn" type="button">clear</button>
+            </div>
+            <pre class="play-output" id="output" aria-live="polite"
+                 role="status">Press Run and your output appears here.</pre>
+            <div class="check-result" id="checkResult"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============ MODE 2 · WEB BUILDER ============ -->
+      <div id="modeWeb" role="tabpanel" aria-labelledby="tabWeb" hidden>
+        <div class="template-bar" id="templateBar">
+          <span class="tb-label">Start from:</span>
+        </div>
+
+        <div class="play-grid">
+          <div class="play-pane">
+            <div class="pane-head">
+              <div class="file-tabs" role="tablist" aria-label="Files">
+                <button class="file-tab is-on" data-file="html" type="button" role="tab" aria-selected="true">index.html</button>
+                <button class="file-tab" data-file="css" type="button" role="tab" aria-selected="false">style.css</button>
+                <button class="file-tab" data-file="js" type="button" role="tab" aria-selected="false">script.js</button>
+              </div>
+            </div>
+            <label class="sr-only" for="webInput">Your web code</label>
+            <textarea id="webInput" spellcheck="false" autocomplete="off"></textarea>
+            <div class="play-actions">
+              <button class="btn btn--primary" id="webRun" type="button">▶ Run page</button>
+              <label class="auto-run">
+                <input type="checkbox" id="webAuto" checked> run as I type
+              </label>
+              <button class="btn btn--ghost btn--sm" id="webDownload" type="button">⤓ Download .html</button>
+            </div>
+          </div>
+
+          <div class="play-pane">
+            <div class="pane-head">
+              <span class="pane-title">Live preview</span>
+              <span class="pane-lang">your page</span>
+            </div>
+            <iframe id="preview" title="Live preview of your page"
+                    sandbox="allow-scripts"></iframe>
+            <pre class="play-output play-output--short" id="webConsole"
+                 aria-live="polite">console output from your page appears here</pre>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============ MODE 3 · FREE BUILD ============ -->
+      <div id="modePro" role="tabpanel" aria-labelledby="tabPro" hidden>
+        <div class="pro-bar">
+          <span class="tb-label">Slot:</span>
+          <button class="chip" data-slot="1" type="button" aria-pressed="true">1</button>
+          <button class="chip" data-slot="2" type="button" aria-pressed="false">2</button>
+          <button class="chip" data-slot="3" type="button" aria-pressed="false">3</button>
+          <span class="save-state" id="saveState">not saved yet</span>
+        </div>
+
+        <div class="play-grid">
+          <div class="play-pane">
+            <div class="pane-head">
+              <div class="file-tabs" role="tablist" aria-label="Files">
+                <button class="file-tab is-on" data-pfile="html" type="button" role="tab" aria-selected="true">index.html</button>
+                <button class="file-tab" data-pfile="css" type="button" role="tab" aria-selected="false">style.css</button>
+                <button class="file-tab" data-pfile="js" type="button" role="tab" aria-selected="false">script.js</button>
+              </div>
+              <button class="linklike" id="proClear" type="button">empty this slot</button>
+            </div>
+            <label class="sr-only" for="proInput">Your project code</label>
+            <textarea id="proInput" spellcheck="false" autocomplete="off"></textarea>
+            <div class="play-actions">
+              <button class="btn btn--primary" id="proRun" type="button">▶ Run</button>
+              <button class="btn btn--ghost btn--sm" id="proSave" type="button">💾 Save</button>
+              <button class="btn btn--ghost btn--sm" id="proDownload" type="button">⤓ Download .html</button>
+            </div>
+          </div>
+
+          <div class="play-pane">
+            <div class="pane-head">
+              <span class="pane-title">Live preview</span>
+              <span class="pane-lang">your project</span>
+            </div>
+            <iframe id="proPreview" title="Live preview of your project"
+                    sandbox="allow-scripts"></iframe>
+            <pre class="play-output play-output--short" id="proConsole"
+                 aria-live="polite">console output appears here</pre>
+          </div>
+        </div>
+
+        <p class="pro-note">
+          Three save slots, kept in this browser only. Nothing is uploaded, so nothing
+          can be lost by us — but clearing your browser data clears these too. Press
+          <strong>Download .html</strong> to take a real file away with you: one file,
+          everything inside it, opens anywhere.
+        </p>
+      </div>
+
+      <!-- ============ THE HONEST BIT ============ -->
       <div class="play-note">
         <h2>How this works, and what it can't do</h2>
         <p>
-          Your code runs <strong>inside your own browser</strong>, on your own machine.
-          Nothing is uploaded and nothing is saved to a server. That is why it is
-          instant and free — and also why it is JavaScript rather than Python.
+          Everything here runs <strong>inside your own browser</strong>, on your own
+          machine. Nothing is uploaded and no server is involved. That is why it is
+          instant and free.
         </p>
         <p>
-          A browser can run JavaScript because every browser already contains a
-          JavaScript engine. It cannot run Python, because there is no Python inside
-          your browser. Running Python properly needs Python installed on your
-          computer — which is exactly what
-          <a href="lesson.html?track=first-program&amp;n=1">Lesson 1 of Your First Program</a>
-          walks you through.
+          The live preview is a real web page rendered in an
+          <code>&lt;iframe&gt;</code> — the same technology every code-preview site
+          uses. It is sandboxed, so code you write there cannot reach out and change
+          this page around it.
         </p>
         <p>
-          The good news from
-          <a href="lesson.html?track=choosing-a-language&amp;n=1">Choosing Your First Language</a>:
-          loops, variables and conditions work the same way in both. What you practise
-          here transfers.
+          <strong>Why JavaScript and not Python?</strong> Every browser already
+          contains a JavaScript engine. None contains Python. Running Python needs
+          Python installed on your computer, which is exactly what
+          <a href="lesson.html?track=first-program&amp;n=1">Lesson 1</a> walks you
+          through. The good news: loops, variables and conditions work the same way in
+          both, so what you practise here transfers.
+        </p>
+        <p>
+          <strong>And a real hosted site?</strong> That is a different step, and a free
+          one — <a href="lesson.html?track=ship-a-project&amp;n=3">Getting it online</a>
+          covers it. Download your page here, drag the file onto a free host, and it has
+          a real address anyone can open.
         </p>
       </div>
 
@@ -135,6 +244,7 @@
 <script src="../components/ui.js"></script>
 <script src="../js/main.js"></script>
 <script src="../js/playground.js"></script>
+<script src="../js/webbuilder.js"></script>
 <script src="../js/helper.js"></script>
 </body>
 </html>

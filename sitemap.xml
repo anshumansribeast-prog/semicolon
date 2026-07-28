@@ -50,4 +50,18 @@
   <url><loc>https://semicolon-anshuman.netlify.app/pages/post.html?slug=first-ten-git-commands</loc><priority>0.7</priority></url>
   <url><loc>https://semicolon-anshuman.netlify.app/pages/post.html?slug=why-your-code-breaks</loc><priority>0.7</priority></url>
 
+  <!-- Practice area -->
+  <url><loc>https://semicolon-anshuman.netlify.app/pages/playground.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+
+  <!-- Lesson 1 of each track -->
+  <url><loc>https://semicolon-anshuman.netlify.app/pages/lesson.html?track=first-program&amp;n=1</loc><priority>0.7</priority></url>
+  <url><loc>https://semicolon-anshuman.netlify.app/pages/lesson.html?track=thinking-in-loops&amp;n=1</loc><priority>0.7</priority></url>
+  <url><loc>https://semicolon-anshuman.netlify.app/pages/lesson.html?track=first-web-page&amp;n=1</loc><priority>0.7</priority></url>
+  <url><loc>https://semicolon-anshuman.netlify.app/pages/lesson.html?track=interactive-pages&amp;n=1</loc><priority>0.7</priority></url>
+  <url><loc>https://semicolon-anshuman.netlify.app/pages/lesson.html?track=files-and-data&amp;n=1</loc><priority>0.7</priority></url>
+  <url><loc>https://semicolon-anshuman.netlify.app/pages/lesson.html?track=git-basics&amp;n=1</loc><priority>0.7</priority></url>
+  <url><loc>https://semicolon-anshuman.netlify.app/pages/lesson.html?track=debugging&amp;n=1</loc><priority>0.7</priority></url>
+  <url><loc>https://semicolon-anshuman.netlify.app/pages/lesson.html?track=ship-a-project&amp;n=1</loc><priority>0.7</priority></url>
+  <url><loc>https://semicolon-anshuman.netlify.app/pages/lesson.html?track=choosing-a-language&amp;n=1</loc><priority>0.7</priority></url>
+
 </urlset>
