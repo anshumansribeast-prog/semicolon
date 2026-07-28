@@ -23,18 +23,17 @@ const CONFIG = {
     founded: 2026
   },
 
+  /* Only put things here that are TRUE. No phone number and no office hours:
+     Semicolon is one person answering email, so that is all it claims. */
   contact: {
     email:    "semlihelp@gmail.com",
-    phone:    "+44 20 7946 0000",
-    address:  "Remote — replies within two days",
-    hours:    "Monday–Friday, 9am–5pm"
+    address:  "Remote — replies within two days"
   },
 
+  /* Same rule. A link is a promise that something is on the other end. */
   social: [
-    { name: "GitHub",  url: "https://github.com",  icon: "github"  },
-    { name: "YouTube", url: "https://youtube.com", icon: "youtube" },
-    { name: "Discord", url: "https://discord.com", icon: "discord" },
-    { name: "Email",   url: "mailto:semlihelp@gmail.com", icon: "mail" }
+    { name: "GitHub", url: "https://github.com/anshumansribeast-prog/semicolon", icon: "github" },
+    { name: "Email",  url: "mailto:semlihelp@gmail.com", icon: "mail" }
   ],
 
   blog: {
