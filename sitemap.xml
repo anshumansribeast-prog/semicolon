@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  sitemap.xml — a list of pages for search engines.
+
+  Set by tools/set-site-url.py. If you move to a different domain,
+  run that script again — do not edit these by hand, there are 11 of them.
+
+  Blog posts share one file (post.html) with a ?slug= parameter, so
+  each one is listed separately here — otherwise only the first would
+  ever be indexed.
+-->
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+
+  <url>
+    <loc>https://semicolon-anshuman.netlify.app/</loc>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+
+  <url>
+    <loc>https://semicolon-anshuman.netlify.app/pages/learn.html</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <url>
+    <loc>https://semicolon-anshuman.netlify.app/pages/blog.html</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://semicolon-anshuman.netlify.app/pages/about.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://semicolon-anshuman.netlify.app/pages/contact.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <!-- Blog posts -->
+  <url><loc>https://semicolon-anshuman.netlify.app/pages/post.html?slug=which-language-first</loc><priority>0.7</priority></url>
+  <url><loc>https://semicolon-anshuman.netlify.app/pages/post.html?slug=read-the-error-message</loc><priority>0.7</priority></url>
+  <url><loc>https://semicolon-anshuman.netlify.app/pages/post.html?slug=variables-are-boxes</loc><priority>0.7</priority></url>
+  <url><loc>https://semicolon-anshuman.netlify.app/pages/post.html?slug=three-loops</loc><priority>0.7</priority></url>
+  <url><loc>https://semicolon-anshuman.netlify.app/pages/post.html?slug=eight-planets-no-images</loc><priority>0.7</priority></url>
+  <url><loc>https://semicolon-anshuman.netlify.app/pages/post.html?slug=first-ten-git-commands</loc><priority>0.7</priority></url>
+  <url><loc>https://semicolon-anshuman.netlify.app/pages/post.html?slug=why-your-code-breaks</loc><priority>0.7</priority></url>
+
+</urlset>

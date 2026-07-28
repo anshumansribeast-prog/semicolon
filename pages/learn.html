@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Learning Tracks — Semicolon</title>
+  <meta name="description" content="Eight free learning tracks covering Python, web development, Git, debugging and shipping a real project. Filter by topic, level or length.">
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%231d4ed8'/><text x='16' y='23' font-size='22' font-family='monospace' fill='white' text-anchor='middle'>;</text></svg>">
+</head>
+<body>
+
+<a class="skip-link" href="#main">Skip to main content</a>
+
+<header class="site-header">
+  <nav class="container nav" aria-label="Main navigation">
+    <a class="brand" href="../index.html"><span class="brand-mark" aria-hidden="true">;</span> Semicolon</a>
+    <ul class="nav-menu" id="navMenu">
+      <li><a class="nav-link" href="../index.html">Home</a></li>
+      <li class="has-dropdown">
+        <a class="nav-link" href="learn.html">Learn
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+        </a>
+        <ul class="dropdown">
+          <li><a href="learn.html?cat=Python">Python <small>Automate things, work with data</small></a></li>
+          <li><a href="learn.html?cat=Web">Web <small>HTML, CSS and JavaScript</small></a></li>
+          <li><a href="learn.html?cat=Tools">Tools <small>Git, the terminal, editors</small></a></li>
+          <li><a href="learn.html?cat=Core Skills">Core Skills <small>Debugging and problem solving</small></a></li>
+          <li><a href="learn.html?cat=Projects">Projects <small>Build and ship something real</small></a></li>
+        </ul>
+      </li>
+      <li><a class="nav-link" href="blog.html">Blog</a></li>
+      <li><a class="nav-link" href="about.html">About</a></li>
+      <li><a class="nav-link" href="contact.html">Contact</a></li>
+    </ul>
+    <div class="nav-actions">
+      <a class="btn btn--primary btn--sm nav-cta" href="contact.html">Get in touch</a>
+      <button class="icon-btn" type="button" data-theme-toggle aria-pressed="false"></button>
+      <button class="icon-btn nav-toggle" type="button" aria-expanded="false" aria-controls="navMenu" aria-label="Open menu"></button>
+    </div>
+  </nav>
+</header>
+
+<main id="main">
+
+  <section class="page-header">
+    <div class="container">
+      <nav class="breadcrumb" aria-label="Breadcrumb"><a href="../index.html">Home</a> / Learn</nav>
+      <span class="eyebrow">Learning tracks</span>
+      <h1>Eight ways in</h1>
+      <p class="lede">
+        Every track is free, self-contained, and ends with something that runs.
+        Start anywhere — the beginner ones assume nothing at all.
+      </p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+
+      <div class="toolbar">
+        <div class="search-field">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+          <label class="sr-only" for="trackSearch">Search tracks</label>
+          <input type="search" id="trackSearch" placeholder="Search tracks — try &quot;git&quot; or &quot;loops&quot;" autocomplete="off">
+        </div>
+
+        <label class="sr-only" for="trackLevel">Filter by level</label>
+        <select class="control" id="trackLevel">
+          <option value="All">All levels</option>
+          <option value="Beginner">Beginner</option>
+          <option value="Intermediate">Intermediate</option>
+        </select>
+
+        <label class="sr-only" for="trackSort">Sort tracks</label>
+        <select class="control" id="trackSort">
+          <option value="recommended">Recommended order</option>
+          <option value="shortest">Shortest first</option>
+          <option value="longest">Longest first</option>
+          <option value="az">A–Z</option>
+        </select>
+      </div>
+
+      <div class="chips" id="trackChips" style="margin-bottom:1.4rem"></div>
+      <p class="result-count" id="trackCount" role="status"></p>
+
+      <div class="grid grid-3" id="trackGrid"></div>
+
+      <div class="empty" id="trackEmpty">
+        <svg width="42" height="42" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+        <h3>Nothing matches that</h3>
+        <p>Try a shorter word, a different level, or press "All".</p>
+      </div>
+
+    </div>
+  </section>
+
+  <section class="section section--alt">
+    <div class="container">
+      <div class="section-head">
+        <span class="eyebrow">Not sure where to start?</span>
+        <h2>Pick by what you want to make</h2>
+      </div>
+      <div class="grid grid-3">
+        <article class="card reveal">
+          <h3>"I want to save myself time"</h3>
+          <p>Start with <strong>Your First Program</strong>, then <strong>Files, Folders and Data</strong>.
+             You'll finish with a script that tidies a folder automatically.</p>
+        </article>
+        <article class="card reveal">
+          <h3>"I want to build a website"</h3>
+          <p>Start with <strong>Build Your First Web Page</strong>, then
+             <strong>Making Pages Interactive</strong>. You'll finish with a page that
+             responds to whoever's using it.</p>
+        </article>
+        <article class="card reveal">
+          <h3>"I want to be taken seriously"</h3>
+          <p>Do <strong>Version Control with Git</strong> early. It's the one skill every
+             team assumes you have, and it takes an afternoon.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<div class="modal" id="trackModal" role="dialog" aria-modal="true" aria-labelledby="trackModalTitle">
+  <div class="modal-panel">
+    <button class="modal-close" type="button" aria-label="Close">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+    </button>
+    <div id="trackModalBody"></div>
+  </div>
+</div>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a class="brand" href="../index.html"><span class="brand-mark" aria-hidden="true">;</span> Semicolon</a>
+        <p>A free, plain-English introduction to programming. Built with HTML, CSS and
+           JavaScript — and readable by anyone who wants to see how.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Learn</h4>
+        <ul>
+          <li><a href="learn.html?cat=Python">Python</a></li>
+          <li><a href="learn.html?cat=Web">Web development</a></li>
+          <li><a href="learn.html?cat=Tools">Tools &amp; Git</a></li>
+          <li><a href="learn.html?cat=Projects">Projects</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Site</h4>
+        <ul>
+          <li><a href="about.html">About</a></li>
+          <li><a href="blog.html">Blog</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Elsewhere</h4>
+        <ul>
+          <li><a href="https://developer.mozilla.org/" target="_blank" rel="noopener">MDN Web Docs</a></li>
+          <li><a href="https://docs.python.org/3/tutorial/" target="_blank" rel="noopener">Python Tutorial</a></li>
+          <li><a href="https://stackoverflow.com/" target="_blank" rel="noopener">Stack Overflow</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>&copy; <span class="js-year"></span> Semicolon. All rights reserved.</span>
+      <ul>
+        <li><a href="about.html#privacy">Privacy</a></li>
+        <li><a href="about.html#terms">Terms</a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul>
+    </div>
+    <!-- Creator signature — the last thing on the page -->
+    <div class="creator-signature">
+      <div class="creator-divider" aria-hidden="true">
+        <span class="creator-rule"></span>
+        <span class="creator-diamond"></span>
+        <span class="creator-rule"></span>
+      </div>
+      <p class="creator-line">
+        <span class="creator-label">Made with passion by</span>
+        <span class="creator-name">Anshuman Srivastava</span>
+      </p>
+    </div>
+  </div>
+</footer>
+
+<script src="../js/config.js"></script>
+<script src="../js/data.js"></script>
+<script src="../components/ui.js"></script>
+<script src="../js/main.js"></script>
+<script src="../js/learn.js"></script>
+</body>
+</html>

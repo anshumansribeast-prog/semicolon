@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Blog — Semicolon</title>
+  <meta name="description" content="Short articles on the things that trip up new programmers: reading errors, understanding variables, choosing loops, and finishing projects.">
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%231d4ed8'/><text x='16' y='23' font-size='22' font-family='monospace' fill='white' text-anchor='middle'>;</text></svg>">
+</head>
+<body>
+
+<a class="skip-link" href="#main">Skip to main content</a>
+
+<header class="site-header">
+  <nav class="container nav" aria-label="Main navigation">
+    <a class="brand" href="../index.html"><span class="brand-mark" aria-hidden="true">;</span> Semicolon</a>
+    <ul class="nav-menu" id="navMenu">
+      <li><a class="nav-link" href="../index.html">Home</a></li>
+      <li class="has-dropdown">
+        <a class="nav-link" href="learn.html">Learn
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+        </a>
+        <ul class="dropdown">
+          <li><a href="learn.html?cat=Python">Python <small>Automate things, work with data</small></a></li>
+          <li><a href="learn.html?cat=Web">Web <small>HTML, CSS and JavaScript</small></a></li>
+          <li><a href="learn.html?cat=Tools">Tools <small>Git, the terminal, editors</small></a></li>
+          <li><a href="learn.html?cat=Core Skills">Core Skills <small>Debugging and problem solving</small></a></li>
+          <li><a href="learn.html?cat=Projects">Projects <small>Build and ship something real</small></a></li>
+        </ul>
+      </li>
+      <li><a class="nav-link" href="blog.html">Blog</a></li>
+      <li><a class="nav-link" href="about.html">About</a></li>
+      <li><a class="nav-link" href="contact.html">Contact</a></li>
+    </ul>
+    <div class="nav-actions">
+      <a class="btn btn--primary btn--sm nav-cta" href="learn.html">Start learning</a>
+      <button class="icon-btn" type="button" data-theme-toggle aria-pressed="false"></button>
+      <button class="icon-btn nav-toggle" type="button" aria-expanded="false" aria-controls="navMenu" aria-label="Open menu"></button>
+    </div>
+  </nav>
+</header>
+
+<main id="main">
+
+  <section class="page-header">
+    <div class="container">
+      <nav class="breadcrumb" aria-label="Breadcrumb"><a href="../index.html">Home</a> / Blog</nav>
+      <span class="eyebrow">Writing</span>
+      <h1>Notes on getting started</h1>
+      <p class="lede">
+        Short pieces about the parts of programming that are confusing at first and
+        obvious later — written down while they're still fresh.
+      </p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+
+      <div class="toolbar">
+        <div class="search-field">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+          <label class="sr-only" for="postSearch">Search posts</label>
+          <input type="search" id="postSearch" placeholder="Search posts, tags or authors…" autocomplete="off">
+        </div>
+      </div>
+
+      <div class="chips" id="postChips" style="margin-bottom:1.4rem"></div>
+      <p class="result-count" id="postCount" role="status"></p>
+
+      <div class="post-list" id="postList"></div>
+
+      <div class="empty" id="postEmpty">
+        <svg width="42" height="42" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5a2 2 0 012-2h13v18H6a2 2 0 01-2-2z"/><path d="M8 3v18"/></svg>
+        <h3>No posts found</h3>
+        <p>Try a different word, or press "All" to see everything.</p>
+      </div>
+
+      <nav class="pagination" id="pagination" aria-label="Blog pagination"></nav>
+
+    </div>
+  </section>
+
+  <section class="section section--alt">
+    <div class="container">
+      <div class="newsletter">
+        <h2>Get new posts by email</h2>
+        <p>One message a month with the newest article and track. Nothing else.</p>
+        <form class="newsletter-form" data-newsletter novalidate>
+          <label class="sr-only" for="nlEmail2">Email address</label>
+          <input type="email" id="nlEmail2" name="email" placeholder="you@example.com" required autocomplete="email">
+          <button class="btn" type="submit">Subscribe</button>
+        </form>
+        <div class="form-msg" role="status"></div>
+        <small>One email a month. Unsubscribe any time.</small>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a class="brand" href="../index.html"><span class="brand-mark" aria-hidden="true">;</span> Semicolon</a>
+        <p>A free, plain-English introduction to programming. Built with HTML, CSS and
+           JavaScript — and readable by anyone who wants to see how.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Learn</h4>
+        <ul>
+          <li><a href="learn.html?cat=Python">Python</a></li>
+          <li><a href="learn.html?cat=Web">Web development</a></li>
+          <li><a href="learn.html?cat=Tools">Tools &amp; Git</a></li>
+          <li><a href="learn.html?cat=Projects">Projects</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Site</h4>
+        <ul>
+          <li><a href="about.html">About</a></li>
+          <li><a href="blog.html">Blog</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Elsewhere</h4>
+        <ul>
+          <li><a href="https://developer.mozilla.org/" target="_blank" rel="noopener">MDN Web Docs</a></li>
+          <li><a href="https://docs.python.org/3/tutorial/" target="_blank" rel="noopener">Python Tutorial</a></li>
+          <li><a href="https://stackoverflow.com/" target="_blank" rel="noopener">Stack Overflow</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>&copy; <span class="js-year"></span> Semicolon. All rights reserved.</span>
+      <ul>
+        <li><a href="about.html#privacy">Privacy</a></li>
+        <li><a href="about.html#terms">Terms</a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul>
+    </div>
+    <!-- Creator signature — the last thing on the page -->
+    <div class="creator-signature">
+      <div class="creator-divider" aria-hidden="true">
+        <span class="creator-rule"></span>
+        <span class="creator-diamond"></span>
+        <span class="creator-rule"></span>
+      </div>
+      <p class="creator-line">
+        <span class="creator-label">Made with passion by</span>
+        <span class="creator-name">Anshuman Srivastava</span>
+      </p>
+    </div>
+  </div>
+</footer>
+
+<script src="../js/config.js"></script>
+<script src="../js/data.js"></script>
+<script src="../components/ui.js"></script>
+<script src="../js/main.js"></script>
+<script src="../js/blog.js"></script>
+</body>
+</html>

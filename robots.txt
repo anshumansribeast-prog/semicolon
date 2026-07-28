@@ -1,0 +1,13 @@
+# robots.txt — tells search engine crawlers what they may look at.
+# It is a request, not a lock. Well-behaved crawlers obey it; nothing
+# stops a badly-behaved one. Never use it to hide anything sensitive —
+# this file is public, so listing a secret path advertises it.
+
+User-agent: *
+Allow: /
+
+# Point crawlers at the full page list
+Sitemap: https://semicolon-anshuman.netlify.app/sitemap.xml
+
+# Be polite to smaller servers (ignored by Google, honoured by others)
+Crawl-delay: 1

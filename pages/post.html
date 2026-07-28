@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Post — Semicolon</title>
+  <meta name="description" content="An article from the Semicolon blog.">
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%231d4ed8'/><text x='16' y='23' font-size='22' font-family='monospace' fill='white' text-anchor='middle'>;</text></svg>">
+</head>
+<body>
+
+<a class="skip-link" href="#main">Skip to main content</a>
+
+<header class="site-header">
+  <nav class="container nav" aria-label="Main navigation">
+    <a class="brand" href="../index.html"><span class="brand-mark" aria-hidden="true">;</span> Semicolon</a>
+    <ul class="nav-menu" id="navMenu">
+      <li><a class="nav-link" href="../index.html">Home</a></li>
+      <li class="has-dropdown">
+        <a class="nav-link" href="learn.html">Learn
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+        </a>
+        <ul class="dropdown">
+          <li><a href="learn.html?cat=Python">Python <small>Automate things, work with data</small></a></li>
+          <li><a href="learn.html?cat=Web">Web <small>HTML, CSS and JavaScript</small></a></li>
+          <li><a href="learn.html?cat=Tools">Tools <small>Git, the terminal, editors</small></a></li>
+          <li><a href="learn.html?cat=Core Skills">Core Skills <small>Debugging and problem solving</small></a></li>
+          <li><a href="learn.html?cat=Projects">Projects <small>Build and ship something real</small></a></li>
+        </ul>
+      </li>
+      <li><a class="nav-link" href="blog.html">Blog</a></li>
+      <li><a class="nav-link" href="about.html">About</a></li>
+      <li><a class="nav-link" href="contact.html">Contact</a></li>
+    </ul>
+    <div class="nav-actions">
+      <a class="btn btn--primary btn--sm nav-cta" href="learn.html">Start learning</a>
+      <button class="icon-btn" type="button" data-theme-toggle aria-pressed="false"></button>
+      <button class="icon-btn nav-toggle" type="button" aria-expanded="false" aria-controls="navMenu" aria-label="Open menu"></button>
+    </div>
+  </nav>
+</header>
+
+<main id="main">
+  <section class="section">
+    <div class="container">
+
+      <!-- js/post.js fills this in from the ?slug= in the address bar -->
+      <article class="article" id="article"></article>
+
+      <!-- COMMENTS -->
+      <div class="article comments">
+        <h2>Comments</h2>
+        <p id="commentCount" style="font-size:.9rem;color:var(--text-subtle)"></p>
+
+        <div class="form-msg form-msg--success is-shown" style="margin-top:1rem">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 8v5M12 16.5v.01"/></svg>
+          <span>Comments are stored <strong>in this browser only</strong>. There's no server behind
+            this site, so nobody else can see them and they won't appear on another device.
+            That's a real limitation, not a bug.</span>
+        </div>
+
+        <form id="commentForm" style="margin:1.4rem 0 2rem" novalidate>
+          <div class="form-group">
+            <label for="commentName">Your name</label>
+            <input type="text" id="commentName" maxlength="60" placeholder="What should we call you?" required>
+          </div>
+          <div class="form-group">
+            <label for="commentText">Comment</label>
+            <textarea id="commentText" maxlength="1000" placeholder="Something you learned, or something that didn't make sense…" required></textarea>
+          </div>
+          <button class="btn btn--primary" type="submit">Post comment</button>
+        </form>
+
+        <div id="commentList"></div>
+      </div>
+
+      <!-- RELATED -->
+      <div class="article" style="margin-top:3.5rem">
+        <h2>Read next</h2>
+        <div class="related" id="relatedPosts" style="margin-top:1.2rem"></div>
+      </div>
+
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a class="brand" href="../index.html"><span class="brand-mark" aria-hidden="true">;</span> Semicolon</a>
+        <p>A free, plain-English introduction to programming. Built with HTML, CSS and
+           JavaScript — and readable by anyone who wants to see how.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Learn</h4>
+        <ul>
+          <li><a href="learn.html?cat=Python">Python</a></li>
+          <li><a href="learn.html?cat=Web">Web development</a></li>
+          <li><a href="learn.html?cat=Tools">Tools &amp; Git</a></li>
+          <li><a href="learn.html?cat=Projects">Projects</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Site</h4>
+        <ul>
+          <li><a href="about.html">About</a></li>
+          <li><a href="blog.html">Blog</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Elsewhere</h4>
+        <ul>
+          <li><a href="https://developer.mozilla.org/" target="_blank" rel="noopener">MDN Web Docs</a></li>
+          <li><a href="https://docs.python.org/3/tutorial/" target="_blank" rel="noopener">Python Tutorial</a></li>
+          <li><a href="https://stackoverflow.com/" target="_blank" rel="noopener">Stack Overflow</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>&copy; <span class="js-year"></span> Semicolon. All rights reserved.</span>
+      <ul>
+        <li><a href="about.html#privacy">Privacy</a></li>
+        <li><a href="about.html#terms">Terms</a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul>
+    </div>
+    <!-- Creator signature — the last thing on the page -->
+    <div class="creator-signature">
+      <div class="creator-divider" aria-hidden="true">
+        <span class="creator-rule"></span>
+        <span class="creator-diamond"></span>
+        <span class="creator-rule"></span>
+      </div>
+      <p class="creator-line">
+        <span class="creator-label">Made with passion by</span>
+        <span class="creator-name">Anshuman Srivastava</span>
+      </p>
+    </div>
+  </div>
+</footer>
+
+<script src="../js/config.js"></script>
+<script src="../js/data.js"></script>
+<script src="../components/ui.js"></script>
+<script src="../js/main.js"></script>
+<script src="../js/post.js"></script>
+</body>
+</html>

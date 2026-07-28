@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>About — Semicolon</title>
+  <meta name="description" content="Why Semicolon exists, what it believes about learning to code, and how the site itself was built.">
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%231d4ed8'/><text x='16' y='23' font-size='22' font-family='monospace' fill='white' text-anchor='middle'>;</text></svg>">
+</head>
+<body>
+
+<a class="skip-link" href="#main">Skip to main content</a>
+
+<header class="site-header">
+  <nav class="container nav" aria-label="Main navigation">
+    <a class="brand" href="../index.html"><span class="brand-mark" aria-hidden="true">;</span> Semicolon</a>
+    <ul class="nav-menu" id="navMenu">
+      <li><a class="nav-link" href="../index.html">Home</a></li>
+      <li class="has-dropdown">
+        <a class="nav-link" href="learn.html">Learn
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+        </a>
+        <ul class="dropdown">
+          <li><a href="learn.html?cat=Python">Python <small>Automate things, work with data</small></a></li>
+          <li><a href="learn.html?cat=Web">Web <small>HTML, CSS and JavaScript</small></a></li>
+          <li><a href="learn.html?cat=Tools">Tools <small>Git, the terminal, editors</small></a></li>
+          <li><a href="learn.html?cat=Core Skills">Core Skills <small>Debugging and problem solving</small></a></li>
+          <li><a href="learn.html?cat=Projects">Projects <small>Build and ship something real</small></a></li>
+        </ul>
+      </li>
+      <li><a class="nav-link" href="blog.html">Blog</a></li>
+      <li><a class="nav-link" href="about.html">About</a></li>
+      <li><a class="nav-link" href="contact.html">Contact</a></li>
+    </ul>
+    <div class="nav-actions">
+      <a class="btn btn--primary btn--sm nav-cta" href="contact.html">Get in touch</a>
+      <button class="icon-btn" type="button" data-theme-toggle aria-pressed="false"></button>
+      <button class="icon-btn nav-toggle" type="button" aria-expanded="false" aria-controls="navMenu" aria-label="Open menu"></button>
+    </div>
+  </nav>
+</header>
+
+<main id="main">
+
+  <section class="page-header">
+    <div class="container">
+      <nav class="breadcrumb" aria-label="Breadcrumb"><a href="../index.html">Home</a> / About</nav>
+      <span class="eyebrow">About</span>
+      <h1>Programming is a skill, not a talent</h1>
+      <p class="lede">
+        Semicolon exists because most "learn to code" material either assumes you already
+        know things, or is so simplified that nothing you learn survives contact with a
+        real problem.
+      </p>
+    </div>
+  </section>
+
+  <!-- ============================ STORY =========================== -->
+  <section class="section">
+    <div class="container">
+      <div class="grid grid-2" style="align-items:start">
+        <div>
+          <span class="eyebrow">The story</span>
+          <h2>Why this exists</h2>
+          <p>
+            The first program I wrote didn't work. Neither did the second. Somewhere around
+            the fifth I realised that the tutorials I was following had quietly skipped the
+            part where things go wrong — which turns out to be most of programming.
+          </p>
+          <p>
+            That gap is what this site is for. Not "type these fifteen lines and admire the
+            result", but: here's what this actually does, here's what will break, and here's
+            how to work out why. The awkward middle bit that tutorials leave out is the bit
+            that turns someone who has followed a tutorial into someone who can build things.
+          </p>
+          <p>
+            Everything here is free and always will be. There's no account, no paywall, no
+            tracking, and no "unlock the rest of this lesson".
+          </p>
+        </div>
+
+        <div class="card">
+          <span class="eyebrow">Mission</span>
+          <h3 style="font-size:1.35rem;margin-bottom:.8rem">
+            Get one person from "I could never do that" to a program that runs.
+          </h3>
+          <p>
+            That's the whole goal. Not to produce professional engineers — just to move
+            someone across the line where code stops being magic and starts being a tool
+            they can pick up.
+          </p>
+          <p style="margin-top:1rem">
+            Everything on this site is judged against that: does it help somebody get their
+            first working program, and then their second?
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =========================== VALUES =========================== -->
+  <section class="section section--alt">
+    <div class="container">
+      <div class="section-head">
+        <span class="eyebrow">What we believe</span>
+        <h2>Five things this site is built on</h2>
+      </div>
+
+      <div class="grid grid-2">
+        <article class="card value-card reveal">
+          <span class="n">01</span>
+          <div>
+            <h3>Broken code is the normal state</h3>
+            <p>Professionals write code that doesn't work all day long. The difference isn't
+               fewer bugs — it's a faster route out of them. Anything that implies otherwise
+               is setting people up to quit.</p>
+          </div>
+        </article>
+
+        <article class="card value-card reveal">
+          <span class="n">02</span>
+          <div>
+            <h3>Explain the why, not just the what</h3>
+            <p>"Type this" gets you one working program. "Here's why this works" gets you
+               the next thousand. It's slower up front and much faster after a fortnight.</p>
+          </div>
+        </article>
+
+        <article class="card value-card reveal">
+          <span class="n">03</span>
+          <div>
+            <h3>Say what you don't know</h3>
+            <p>Where something is simplified, approximate or genuinely uncertain, it says so.
+               A confident wrong answer costs a beginner far more than an honest "it depends".</p>
+          </div>
+        </article>
+
+        <article class="card value-card reveal">
+          <span class="n">04</span>
+          <div>
+            <h3>Small and finished beats big and abandoned</h3>
+            <p>A tiny script that tidies your downloads and actually runs teaches more than
+               an ambitious app you gave up on in week three.</p>
+          </div>
+        </article>
+
+        <article class="card value-card reveal">
+          <span class="n">05</span>
+          <div>
+            <h3>Nobody should need to pay to start</h3>
+            <p>The tools professionals use are free. The documentation is free. The barrier
+               to entry is knowing where to look — and that shouldn't cost anything either.</p>
+          </div>
+        </article>
+
+        <article class="card value-card reveal">
+          <span class="n">06</span>
+          <div>
+            <h3>The site should be readable too</h3>
+            <p>Every file behind this page is commented and meant to be opened. If you want
+               to know how the dark mode toggle works, the answer is forty lines away.</p>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================== TIMELINE ========================== -->
+  <section class="section">
+    <div class="container">
+      <div class="section-head">
+        <span class="eyebrow">Timeline</span>
+        <h2>How it got here</h2>
+      </div>
+
+      <div style="max-width:720px;margin-inline:auto">
+        <ul class="timeline">
+          <li class="reveal">
+            <span class="when">STEP 01</span>
+            <h3>A script that moved some files</h3>
+            <p>It started with twenty lines of Python that sorted a Downloads folder. Small,
+               boring, and the first time code had saved time rather than cost it.</p>
+          </li>
+          <li class="reveal">
+            <span class="when">STEP 02</span>
+            <h3>An astronomy site with no images</h3>
+            <p>An offline guide to the planets where every world is drawn in CSS and the moon
+               phases are calculated, not looked up. Proof that constraints make projects
+               better, not worse.</p>
+          </li>
+          <li class="reveal">
+            <span class="when">STEP 03</span>
+            <h3>A roadmap for the version after</h3>
+            <p>Planning a full-stack rebuild — and learning that 214 estimated hours means
+               something very different to a team than to one person after school.</p>
+          </li>
+          <li class="reveal">
+            <span class="when">STEP 04</span>
+            <h3>This site</h3>
+            <p>Writing down the explanations that would have helped at step one. Six pages,
+               nine tracks, no frameworks, and every file commented.</p>
+          </li>
+          <li class="reveal">
+            <span class="when">NEXT</span>
+            <h3>Whatever's still confusing</h3>
+            <p>New tracks get written when something turns out to be harder to explain than
+               it should be. That's a decent signal for what's worth writing about.</p>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================== HOW IT'S BUILT ====================== -->
+  <section class="section section--alt">
+    <div class="container">
+      <div class="section-head">
+        <span class="eyebrow">Under the hood</span>
+        <h2>How this site is built</h2>
+        <p>No frameworks, no build step, no dependencies. Open the folder and it runs.</p>
+      </div>
+
+      <div class="grid grid-3">
+        <article class="card reveal">
+          <h3>No images at all</h3>
+          <p>Every icon is inline SVG and every "photo" is a CSS gradient. The whole site
+             loads in one go with nothing to download, which is why it works on bad wifi.</p>
+        </article>
+        <article class="card reveal">
+          <h3>Content lives in one file</h3>
+          <p><code>js/data.js</code> holds every track, post and question. The pages are
+             generated from it — so adding an article is one object, not a new HTML file.</p>
+        </article>
+        <article class="card reveal">
+          <h3>One stylesheet, all tokens</h3>
+          <p>Colours and sizes are CSS variables defined once at the top of
+             <code>style.css</code>. Dark mode works by swapping those values, nothing else.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====================== HONEST LIMITATIONS ==================== -->
+  <section class="section" id="privacy">
+    <div class="container">
+      <div class="section-head">
+        <span class="eyebrow">Being straight with you</span>
+        <h2>What this site doesn't do</h2>
+        <p>Every site should have this section. Most don't.</p>
+      </div>
+
+      <div class="grid grid-2" style="max-width:900px;margin-inline:auto">
+        <article class="card reveal">
+          <h3>The forms work — via a third party</h3>
+          <p>A web browser can't send email by itself; if it could, any page could send mail
+             pretending to be you. So the contact and newsletter forms post your message to
+             Formspree, which forwards it on. That means your message passes through their
+             service, and it's only fair to say so rather than let you assume it goes
+             straight from this page to an inbox.</p>
+        </article>
+        <article class="card reveal">
+          <h3>Comments never leave your device</h3>
+          <p>They're saved in your own browser's storage. Nobody else can see them, and
+             they won't follow you to another computer. Real comments need a server and a
+             database.</p>
+        </article>
+        <article class="card reveal">
+          <h3>There are no testimonials</h3>
+          <p>This site is new and has no users, so it has no reviews. The homepage carousel
+             carries real, sourced quotes from people who built this field instead. Writing
+             fake reviews and attaching names to them is one of the fastest ways for a site
+             to deserve losing your trust, so there aren't any.</p>
+        </article>
+        <article class="card reveal">
+          <h3>Nothing is tracked</h3>
+          <p>No analytics, no cookies, no accounts, no third-party scripts of any kind.
+             Nothing you do here is recorded anywhere. The only data stored is your theme
+             choice and any comments you type, both in your own browser.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="terms">
+    <div class="container">
+      <div class="card reveal" style="text-align:center;padding:clamp(2rem,5vw,3.4rem)">
+        <span class="eyebrow">Terms, briefly</span>
+        <h2>Use it however you like</h2>
+        <p style="max-width:56ch;margin-inline:auto">
+          This is a learning project. The content is free to read, the code is free to copy,
+          and there's no warranty of any kind — if a script eats your homework, that's on
+          both of us. Always read a script before running it, including this one's.
+        </p>
+        <div class="btn-row btn-row--center" style="margin-top:1.5rem">
+          <a class="btn btn--primary" href="learn.html">Browse the tracks</a>
+          <a class="btn btn--ghost" href="contact.html">Ask a question</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a class="brand" href="../index.html"><span class="brand-mark" aria-hidden="true">;</span> Semicolon</a>
+        <p>A free, plain-English introduction to programming. Built with HTML, CSS and
+           JavaScript — and readable by anyone who wants to see how.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Learn</h4>
+        <ul>
+          <li><a href="learn.html?cat=Python">Python</a></li>
+          <li><a href="learn.html?cat=Web">Web development</a></li>
+          <li><a href="learn.html?cat=Tools">Tools &amp; Git</a></li>
+          <li><a href="learn.html?cat=Projects">Projects</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Site</h4>
+        <ul>
+          <li><a href="about.html">About</a></li>
+          <li><a href="blog.html">Blog</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Elsewhere</h4>
+        <ul>
+          <li><a href="https://developer.mozilla.org/" target="_blank" rel="noopener">MDN Web Docs</a></li>
+          <li><a href="https://docs.python.org/3/tutorial/" target="_blank" rel="noopener">Python Tutorial</a></li>
+          <li><a href="https://stackoverflow.com/" target="_blank" rel="noopener">Stack Overflow</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>&copy; <span class="js-year"></span> Semicolon. All rights reserved.</span>
+      <ul>
+        <li><a href="about.html#privacy">Privacy</a></li>
+        <li><a href="about.html#terms">Terms</a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul>
+    </div>
+    <!-- Creator signature — the last thing on the page -->
+    <div class="creator-signature">
+      <div class="creator-divider" aria-hidden="true">
+        <span class="creator-rule"></span>
+        <span class="creator-diamond"></span>
+        <span class="creator-rule"></span>
+      </div>
+      <p class="creator-line">
+        <span class="creator-label">Made with passion by</span>
+        <span class="creator-name">Anshuman Srivastava</span>
+      </p>
+    </div>
+  </div>
+</footer>
+
+<script src="../js/config.js"></script>
+<script src="../js/data.js"></script>
+<script src="../components/ui.js"></script>
+<script src="../js/main.js"></script>
+</body>
+</html>
