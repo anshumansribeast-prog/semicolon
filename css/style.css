@@ -1545,3 +1545,78 @@ select.control:focus { outline: none; border-color: var(--primary); box-shadow: 
 @media (max-width: 860px) {
   #preview, #proPreview { height: 240px; }
 }
+
+/* ---- big landscape preview -----------------------------------------
+
+   The preview is now stacked ABOVE the editor and spans the full width
+   of the container, because that is the shape a web page actually is.
+   Side by side gave it a narrow square, which is the one shape no
+   website is.
+   -------------------------------------------------------------------- */
+.play-stack { display: grid; gap: 1.4rem; }
+
+.preview-pane { padding: 1rem 1.1rem 1.1rem; }
+
+.preview-tools {
+  display: flex; align-items: center; gap: .6rem; flex-wrap: wrap;
+}
+.size-switch {
+  display: inline-flex; border: 1px solid var(--border);
+  border-radius: 999px; overflow: hidden; background: var(--surface-2);
+}
+.size-btn {
+  font: inherit; font-size: .76rem; cursor: pointer;
+  padding: .28rem .7rem; border: 0; background: none; color: var(--text-muted);
+}
+.size-btn + .size-btn { border-left: 1px solid var(--border); }
+.size-btn:hover { color: var(--text); }
+.size-btn.is-on { background: var(--primary); color: #fff; font-weight: 600; }
+
+/* The frame wrapper is what gets tall. 62vh keeps it landscape on a
+   laptop without pushing the editor off the bottom of the screen. */
+.preview-frame {
+  height: clamp(360px, 62vh, 720px);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  background: #fff;
+  border: 1px solid var(--border);
+}
+.preview-frame.is-narrow {
+  display: flex; justify-content: center;
+  background: var(--surface-2);
+  padding: 0;
+}
+#preview, #proPreview {
+  width: 100%; height: 100%;
+  border: 0; border-radius: 0; background: #fff;
+  display: block;
+}
+.preview-frame.is-narrow > iframe {
+  border-left: 1px solid var(--border);
+  border-right: 1px solid var(--border);
+  box-shadow: 0 0 40px rgba(15, 27, 45, .12);
+}
+
+/* Real fullscreen, and the fallback for when the browser blocks it. */
+.preview-pane:fullscreen {
+  padding: 1rem; background: var(--bg); display: flex; flex-direction: column;
+}
+.preview-pane:fullscreen .preview-frame { flex: 1; height: auto; }
+
+.preview-pane.is-faux-fs {
+  position: fixed; inset: 0; z-index: 950;
+  margin: 0; border-radius: 0;
+  display: flex; flex-direction: column;
+  background: var(--bg);
+  padding: 1rem;
+}
+.preview-pane.is-faux-fs .preview-frame { flex: 1; height: auto; }
+
+/* Under the preview the editor and console sit side by side, and the
+   console no longer needs to be short since it has its own pane. */
+.play-stack .play-output { min-height: 300px; }
+
+@media (max-width: 860px) {
+  .preview-frame { height: clamp(300px, 52vh, 520px); }
+  .play-stack .play-output { min-height: 180px; }
+}

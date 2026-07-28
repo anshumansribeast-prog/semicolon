@@ -315,6 +315,86 @@ var WEB_TEMPLATES = [
     download(assembleClean(proFiles), "my-project.html");
   });
 
+  /* -------------------------------------------------------------------
+     Preview size controls and fullscreen.
+
+     Phone and Tablet do NOT shrink the page — they narrow the frame,
+     which is a real responsive test. A page that looks fine at full
+     width and breaks at 390px has a genuine bug, and this is how you
+     find it without owning a phone.
+
+     Fullscreen uses the browser's own Fullscreen API where available
+     and falls back to a fixed-position class where it is not, so the
+     button always does something rather than failing silently.
+     ------------------------------------------------------------------- */
+  var SIZES = { phone: "390px", tablet: "820px", full: "100%" };
+
+  document.querySelectorAll(".size-btn").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var which = btn.dataset.for;
+      var wrap = document.getElementById(which === "web" ? "webFrameWrap" : "proFrameWrap");
+      var frame = document.getElementById(which === "web" ? "preview" : "proPreview");
+
+      frame.style.width = SIZES[btn.dataset.size];
+      wrap.classList.toggle("is-narrow", btn.dataset.size !== "full");
+
+      document.querySelectorAll('.size-btn[data-for="' + which + '"]').forEach(function (b) {
+        b.classList.toggle("is-on", b === btn);
+        b.setAttribute("aria-pressed", b === btn ? "true" : "false");
+      });
+    });
+  });
+
+  function wireExpand(btnId, paneId) {
+    var btn = document.getElementById(btnId);
+    var pane = document.getElementById(paneId);
+    if (!btn || !pane) return;
+
+    btn.addEventListener("click", function () {
+      var isFs = document.fullscreenElement === pane || pane.classList.contains("is-faux-fs");
+
+      if (isFs) {
+        if (document.fullscreenElement && document.exitFullscreen) document.exitFullscreen();
+        pane.classList.remove("is-faux-fs");
+        btn.textContent = "⛶ Fullscreen";
+        return;
+      }
+
+      if (pane.requestFullscreen) {
+        pane.requestFullscreen().catch(function () {
+          pane.classList.add("is-faux-fs");     // blocked - fall back
+        });
+      } else {
+        pane.classList.add("is-faux-fs");
+      }
+      btn.textContent = "✕ Exit fullscreen";
+    });
+  }
+  wireExpand("webExpand", "webPreviewPane");
+  wireExpand("proExpand", "proPreviewPane");
+
+  /* Pressing Escape leaves real fullscreen by itself, but the button
+     label would be left lying. Keep it honest. */
+  document.addEventListener("fullscreenchange", function () {
+    if (document.fullscreenElement) return;
+    var w = document.getElementById("webExpand");
+    var p = document.getElementById("proExpand");
+    if (w) w.textContent = "⛶ Fullscreen";
+    if (p) p.textContent = "⛶ Fullscreen";
+  });
+
+  /* Escape also leaves the fallback version. */
+  document.addEventListener("keydown", function (e) {
+    if (e.key !== "Escape") return;
+    document.querySelectorAll(".is-faux-fs").forEach(function (el) {
+      el.classList.remove("is-faux-fs");
+    });
+    var w = document.getElementById("webExpand");
+    var p = document.getElementById("proExpand");
+    if (w) w.textContent = "⛶ Fullscreen";
+    if (p) p.textContent = "⛶ Fullscreen";
+  });
+
   openSlot("1");
 
   /* ---- honour ?mode= on arrival ----

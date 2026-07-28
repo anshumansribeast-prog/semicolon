@@ -116,36 +116,58 @@
           <span class="tb-label">Start from:</span>
         </div>
 
-        <div class="play-grid">
-          <div class="play-pane">
+        <!-- Stacked, not side by side: the preview gets the full width of
+             the page, which is the shape a web page actually is. -->
+        <div class="play-stack">
+
+          <div class="play-pane preview-pane" id="webPreviewPane">
             <div class="pane-head">
-              <div class="file-tabs" role="tablist" aria-label="Files">
-                <button class="file-tab is-on" data-file="html" type="button" role="tab" aria-selected="true">index.html</button>
-                <button class="file-tab" data-file="css" type="button" role="tab" aria-selected="false">style.css</button>
-                <button class="file-tab" data-file="js" type="button" role="tab" aria-selected="false">script.js</button>
+              <span class="pane-title">Live preview</span>
+              <div class="preview-tools">
+                <div class="size-switch" role="group" aria-label="Preview size">
+                  <button class="size-btn" data-size="phone" data-for="web" type="button">Phone</button>
+                  <button class="size-btn" data-size="tablet" data-for="web" type="button">Tablet</button>
+                  <button class="size-btn is-on" data-size="full" data-for="web" type="button" aria-pressed="true">Full width</button>
+                </div>
+                <button class="btn btn--ghost btn--sm" id="webExpand" type="button">⛶ Fullscreen</button>
               </div>
             </div>
-            <label class="sr-only" for="webInput">Your web code</label>
-            <textarea id="webInput" spellcheck="false" autocomplete="off"></textarea>
-            <div class="play-actions">
-              <button class="btn btn--primary" id="webRun" type="button">▶ Run page</button>
-              <label class="auto-run">
-                <input type="checkbox" id="webAuto" checked> run as I type
-              </label>
-              <button class="btn btn--ghost btn--sm" id="webDownload" type="button">⤓ Download .html</button>
+            <div class="preview-frame" id="webFrameWrap">
+              <iframe id="preview" title="Live preview of your page"
+                      sandbox="allow-scripts"></iframe>
             </div>
           </div>
 
-          <div class="play-pane">
-            <div class="pane-head">
-              <span class="pane-title">Live preview</span>
-              <span class="pane-lang">your page</span>
+          <div class="play-grid">
+            <div class="play-pane">
+              <div class="pane-head">
+                <div class="file-tabs" role="tablist" aria-label="Files">
+                  <button class="file-tab is-on" data-file="html" type="button" role="tab" aria-selected="true">index.html</button>
+                  <button class="file-tab" data-file="css" type="button" role="tab" aria-selected="false">style.css</button>
+                  <button class="file-tab" data-file="js" type="button" role="tab" aria-selected="false">script.js</button>
+                </div>
+              </div>
+              <label class="sr-only" for="webInput">Your web code</label>
+              <textarea id="webInput" spellcheck="false" autocomplete="off"></textarea>
+              <div class="play-actions">
+                <button class="btn btn--primary" id="webRun" type="button">▶ Run page</button>
+                <label class="auto-run">
+                  <input type="checkbox" id="webAuto" checked> run as I type
+                </label>
+                <button class="btn btn--ghost btn--sm" id="webDownload" type="button">⤓ Download .html</button>
+              </div>
             </div>
-            <iframe id="preview" title="Live preview of your page"
-                    sandbox="allow-scripts"></iframe>
-            <pre class="play-output play-output--short" id="webConsole"
-                 aria-live="polite">console output from your page appears here</pre>
+
+            <div class="play-pane">
+              <div class="pane-head">
+                <span class="pane-title">Console</span>
+                <span class="pane-lang">from your page</span>
+              </div>
+              <pre class="play-output" id="webConsole"
+                   aria-live="polite">console output from your page appears here</pre>
+            </div>
           </div>
+
         </div>
       </div>
 
@@ -159,35 +181,55 @@
           <span class="save-state" id="saveState">not saved yet</span>
         </div>
 
-        <div class="play-grid">
-          <div class="play-pane">
+        <div class="play-stack">
+
+          <div class="play-pane preview-pane" id="proPreviewPane">
             <div class="pane-head">
-              <div class="file-tabs" role="tablist" aria-label="Files">
-                <button class="file-tab is-on" data-pfile="html" type="button" role="tab" aria-selected="true">index.html</button>
-                <button class="file-tab" data-pfile="css" type="button" role="tab" aria-selected="false">style.css</button>
-                <button class="file-tab" data-pfile="js" type="button" role="tab" aria-selected="false">script.js</button>
+              <span class="pane-title">Live preview</span>
+              <div class="preview-tools">
+                <div class="size-switch" role="group" aria-label="Preview size">
+                  <button class="size-btn" data-size="phone" data-for="pro" type="button">Phone</button>
+                  <button class="size-btn" data-size="tablet" data-for="pro" type="button">Tablet</button>
+                  <button class="size-btn is-on" data-size="full" data-for="pro" type="button" aria-pressed="true">Full width</button>
+                </div>
+                <button class="btn btn--ghost btn--sm" id="proExpand" type="button">⛶ Fullscreen</button>
               </div>
-              <button class="linklike" id="proClear" type="button">empty this slot</button>
             </div>
-            <label class="sr-only" for="proInput">Your project code</label>
-            <textarea id="proInput" spellcheck="false" autocomplete="off"></textarea>
-            <div class="play-actions">
-              <button class="btn btn--primary" id="proRun" type="button">▶ Run</button>
-              <button class="btn btn--ghost btn--sm" id="proSave" type="button">💾 Save</button>
-              <button class="btn btn--ghost btn--sm" id="proDownload" type="button">⤓ Download .html</button>
+            <div class="preview-frame" id="proFrameWrap">
+              <iframe id="proPreview" title="Live preview of your project"
+                      sandbox="allow-scripts"></iframe>
             </div>
           </div>
 
-          <div class="play-pane">
-            <div class="pane-head">
-              <span class="pane-title">Live preview</span>
-              <span class="pane-lang">your project</span>
+          <div class="play-grid">
+            <div class="play-pane">
+              <div class="pane-head">
+                <div class="file-tabs" role="tablist" aria-label="Files">
+                  <button class="file-tab is-on" data-pfile="html" type="button" role="tab" aria-selected="true">index.html</button>
+                  <button class="file-tab" data-pfile="css" type="button" role="tab" aria-selected="false">style.css</button>
+                  <button class="file-tab" data-pfile="js" type="button" role="tab" aria-selected="false">script.js</button>
+                </div>
+                <button class="linklike" id="proClear" type="button">empty this slot</button>
+              </div>
+              <label class="sr-only" for="proInput">Your project code</label>
+              <textarea id="proInput" spellcheck="false" autocomplete="off"></textarea>
+              <div class="play-actions">
+                <button class="btn btn--primary" id="proRun" type="button">▶ Run</button>
+                <button class="btn btn--ghost btn--sm" id="proSave" type="button">💾 Save</button>
+                <button class="btn btn--ghost btn--sm" id="proDownload" type="button">⤓ Download .html</button>
+              </div>
             </div>
-            <iframe id="proPreview" title="Live preview of your project"
-                    sandbox="allow-scripts"></iframe>
-            <pre class="play-output play-output--short" id="proConsole"
-                 aria-live="polite">console output appears here</pre>
+
+            <div class="play-pane">
+              <div class="pane-head">
+                <span class="pane-title">Console</span>
+                <span class="pane-lang">from your project</span>
+              </div>
+              <pre class="play-output" id="proConsole"
+                   aria-live="polite">console output appears here</pre>
+            </div>
           </div>
+
         </div>
 
         <p class="pro-note">
