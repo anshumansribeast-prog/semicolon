@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Page not found — Semicolon</title>
+  <meta name="robots" content="noindex">
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%231d4ed8'/><text x='16' y='23' font-size='22' font-family='monospace' fill='white' text-anchor='middle'>;</text></svg>">
+  <style>
+    .nf { max-width: 42rem; margin: 0 auto; padding: 4rem 1.25rem 5rem; text-align: center; }
+    .nf .code { font-family: ui-monospace, Consolas, monospace; font-size: 4rem; font-weight: 700;
+                line-height: 1; opacity: .25; margin-bottom: .5rem; }
+    .nf h1 { font-size: 1.9rem; margin: 0 0 .75rem; }
+    .nf p { margin: 0 auto 1rem; max-width: 34rem; }
+    .nf .where { font-family: ui-monospace, Consolas, monospace; font-size: .9rem;
+                 word-break: break-all; opacity: .75; }
+    .nf .links { display: flex; flex-wrap: wrap; gap: .6rem; justify-content: center; margin-top: 2rem; }
+  </style>
+</head>
+<body>
+
+<a class="skip-link" href="#main">Skip to main content</a>
+
+<header class="site-header">
+  <nav class="container nav" aria-label="Main navigation">
+    <a class="brand" href="/index.html">
+      <span class="brand-mark" aria-hidden="true">;</span> Semicolon
+    </a>
+  </nav>
+</header>
+
+<main id="main" class="nf">
+  <div class="code">404</div>
+  <h1>There's no page at that address</h1>
+
+  <p>The link was probably mistyped, or it pointed at something that has since moved.
+     Nothing is broken — this address just doesn't exist.</p>
+
+  <p class="where">you asked for: <span id="what">…</span></p>
+
+  <p><strong>One thing worth checking:</strong> if you typed
+     <code>www.</code> at the start, remove it. This site lives at
+     <code>semicolon-anshuman.netlify.app</code> with no <code>www</code>,
+     and adding one stops the page loading at all.</p>
+
+  <div class="links">
+    <a class="btn btn--primary" href="/index.html">Go to the home page</a>
+    <a class="btn" href="/pages/learn.html">Browse the lessons</a>
+    <a class="btn" href="/pages/playground.html">Try the practice area</a>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <p style="text-align:center">© 2026 Semicolon · Made by Anshuman Srivastava, founder.</p>
+  </div>
+</footer>
+
+<script>
+  /* Show people what they actually asked for. It turns a dead end into a
+     clue — usually you can see the typo the moment you read it back. */
+  document.getElementById("what").textContent = location.pathname + location.search;
+</script>
+
+</body>
+</html>
