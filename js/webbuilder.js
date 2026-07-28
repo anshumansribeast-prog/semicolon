@@ -69,14 +69,39 @@ var WEB_TEMPLATES = [
     tabPro: document.getElementById("modePro")
   };
 
-  /* ---- mode switching ---- */
-  function show(which) {
+  /* -------------------------------------------------------------------
+     Mode switching, with the mode kept in the URL.
+
+       playground.html?mode=web   opens straight into the Web Builder
+       playground.html?mode=pro   opens straight into Free Build
+       playground.html            opens the challenges, as before
+
+     Putting the mode in the address means you can bookmark the builder,
+     send someone a link straight to it, and refresh without being
+     dumped back to the first tab. Same reasoning as lesson.html?n= —
+     state that belongs to "where am I" belongs in the URL, not in a
+     variable nobody else can see.
+
+     replaceState rather than pushState: switching tabs shouldn't stack
+     up ten entries you have to press Back through.
+     ------------------------------------------------------------------- */
+  var MODES = { js: "tabJs", web: "tabWeb", pro: "tabPro" };
+  var TAB_TO_MODE = { tabJs: "js", tabWeb: "web", tabPro: "pro" };
+
+  function show(which, updateUrl) {
     [tabJs, tabWeb, tabPro].forEach(function (t) {
       var on = t.id === which;
       t.setAttribute("aria-selected", on ? "true" : "false");
       panes[t.id].hidden = !on;
     });
+
+    if (updateUrl !== false && window.history && window.history.replaceState) {
+      var mode = TAB_TO_MODE[which];
+      var url = window.location.pathname + (mode === "js" ? "" : "?mode=" + mode);
+      window.history.replaceState(null, "", url);
+    }
   }
+
   tabJs.addEventListener("click",  function () { show("tabJs"); });
   tabWeb.addEventListener("click", function () { show("tabWeb"); buildRun(); });
   tabPro.addEventListener("click", function () { show("tabPro"); proRun(); });
@@ -291,4 +316,16 @@ var WEB_TEMPLATES = [
   });
 
   openSlot("1");
+
+  /* ---- honour ?mode= on arrival ----
+
+     Runs last, after both builders have loaded their starting content,
+     so opening ?mode=web lands on a preview that is already rendered
+     rather than an empty frame that fills in a moment later. */
+  var wanted = new URLSearchParams(window.location.search).get("mode");
+  if (wanted && MODES[wanted]) {
+    show(MODES[wanted], false);
+    if (wanted === "web") buildRun();
+    if (wanted === "pro") proRun();
+  }
 })();
