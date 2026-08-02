@@ -1,0 +1,14 @@
+# Same reasoning as .gitignore: keep secrets and dev-only cruft out of
+# the image. .dockerignore has its own file because Docker doesn't
+# read .gitignore automatically.
+.git
+.env
+.env.local
+.env.*.local
+.netlify/
+node_modules/
+dist/
+build/
+*.log
+.vscode/
+.idea/
