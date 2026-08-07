@@ -1,0 +1,152 @@
+# ===================================================================
+# ci.yml — the gate every change has to walk through.
+#
+# Semicolon is a static site (no build step, no server code), so like
+# astronomy-site there's no unit-test stage — the gate that matters is
+# different: does it build into an image, and does that image really
+# hand out every real page when asked? That is what "smoke" checks
+# below, page by page, rather than stopping at the homepage and hoping
+# the rest copied correctly.
+#
+# The order is still cheapest-first:
+#   1. image   — build, then run it and ask it real questions
+#   2. publish — only then, and only on main, is it pushed
+# ===================================================================
+
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  # Lets you press the button by hand in the Actions tab.
+  workflow_dispatch:
+
+# If two pushes land close together, cancel the older run. Nobody needs
+# the verdict on a commit that has already been replaced.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+# Least privilege, stated out loud — read the code, write packages
+# (the container registry), nothing else.
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  # -----------------------------------------------------------------
+  # BUILD THE IMAGE, THEN PROVE IT ACTUALLY SERVES THE SITE
+  # -----------------------------------------------------------------
+  image:
+    name: Build image and smoke-test it
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out the code
+        uses: actions/checkout@v5
+
+      - name: Build the image
+        run: docker build -t semicolon:ci .
+
+      # A BUILD THAT SUCCEEDS PROVES ALMOST NOTHING.
+      #
+      # An nginx image can build perfectly and still serve nothing
+      # useful: files copied to the wrong path, a container that never
+      # actually reaches "ready". So it is started for real and asked
+      # the same questions a visitor's browser would ask.
+      - name: Start the container
+        run: |
+          docker run -d --name semicolon -p 8080:80 semicolon:ci
+          echo "waiting for nginx to come up…"
+
+      - name: Smoke test — does it really serve the site?
+        run: |
+          # Poll rather than sleep for a fixed time — a fixed sleep is
+          # always either too slow or too short on a bad day.
+          for i in $(seq 1 15); do
+            if curl -fsS http://localhost:8080/ > /dev/null; then
+              echo "up after ${i}s"
+              break
+            fi
+            if [ "$i" = "15" ]; then
+              echo "::error::server never came up"
+              docker logs semicolon
+              exit 1
+            fi
+            sleep 1
+          done
+
+          # Every real page, not just the homepage. A build that only
+          # copied index.html — or forgot the pages/, css/ or js/
+          # folder — would still pass a check that stopped there.
+          pages="/ /index.html /pages/about.html /pages/blog.html /pages/contact.html /pages/learn.html /pages/lesson.html /pages/playground.html /pages/post.html /css/style.css /js/main.js"
+          for page in $pages; do
+            code=$(curl -s -o /dev/null -w "%{http_code}" "http://localhost:8080${page}")
+            echo "GET ${page} -> ${code}"
+            if [ "$code" != "200" ]; then
+              echo "::error::${page} returned ${code}, expected 200"
+              docker logs semicolon
+              exit 1
+            fi
+          done
+
+          # A page that was never going to exist should land on this
+          # site's own 404 page, not nginx's bare stock one.
+          code=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:8080/does-not-exist)
+          if [ "$code" != "404" ]; then
+            echo "::error::expected 404 for a missing page, got ${code}"
+            docker logs semicolon
+            exit 1
+          fi
+
+      # Runs even if the smoke test failed — the logs are most wanted
+      # precisely when something went wrong.
+      - name: Container logs
+        if: always()
+        run: docker logs semicolon || true
+
+      - name: Stop the container
+        if: always()
+        run: docker rm -f semicolon || true
+
+  # -----------------------------------------------------------------
+  # PUBLISH — only from main, only after the image above is green
+  # -----------------------------------------------------------------
+  publish:
+    name: Publish to GitHub Container Registry
+    runs-on: ubuntu-latest
+    needs: image
+    # Never publish from a pull request — a PR is a proposed change,
+    # not an accepted one.
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+
+    steps:
+      - name: Check out the code
+        uses: actions/checkout@v5
+
+      - name: Log in to ghcr.io
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      # TWO TAGS, ON PURPOSE — :latest for convenience, the commit SHA
+      # for the truth.
+      - name: Build and push
+        run: |
+          OWNER=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')
+          IMAGE="ghcr.io/${OWNER}/semicolon"
+
+          docker build \
+            -t "${IMAGE}:latest" \
+            -t "${IMAGE}:${{ github.sha }}" \
+            .
+
+          docker push "${IMAGE}:latest"
+          docker push "${IMAGE}:${{ github.sha }}"
+
+          echo "### Published" >> $GITHUB_STEP_SUMMARY
+          echo "\`${IMAGE}:${{ github.sha }}\`" >> $GITHUB_STEP_SUMMARY
