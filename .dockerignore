@@ -12,3 +12,10 @@ build/
 *.log
 .vscode/
 .idea/
+
+# ada_server.py is a local-only backend for the Ada chat tutor — it
+# needs Ollama running on the same machine, which this static nginx
+# image never has. Shipping it here would just be dead weight (and
+# would publish backend source through the web server for no reason).
+ada_server.py
+__pycache__/
