@@ -10,9 +10,11 @@ Zero extra dependencies: stdlib only.
 
 import json
 import os
+import socket
+import struct
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from urllib import request as urlreq
-from urllib.error import URLError
+from urllib.error import HTTPError, URLError
 from urllib.parse import urlparse
 
 HOST = os.environ.get("ADA_HOST", "0.0.0.0")
@@ -61,6 +63,102 @@ def greeting_reply():
     )
 
 
+def docker_gateway_url():
+    """Host IP as seen from inside a Docker bridge network."""
+    try:
+        with open("/proc/net/route") as fh:
+            for line in fh:
+                parts = line.split()
+                if len(parts) > 2 and parts[1] == "00000000":
+                    packed = struct.pack("<L", int(parts[2], 16))
+                    ip = socket.inet_ntoa(packed)
+                    return "http://%s:11434/api/generate" % ip
+    except (OSError, ValueError, IndexError):
+        return None
+    return None
+
+
+def ollama_candidates():
+    urls = []
+    env = os.environ.get("OLLAMA_URL")
+    for item in (
+        env,
+        "http://127.0.0.1:11434/api/generate",
+        "http://localhost:11434/api/generate",
+        "http://ollama:11434/api/generate",
+        "http://host.docker.internal:11434/api/generate",
+        docker_gateway_url(),
+    ):
+        if item and item not in urls:
+            urls.append(item)
+    return urls
+
+
+def ask_ollama(prompt):
+    payload = json.dumps({
+        "model": OLLAMA_MODEL,
+        "prompt": prompt,
+        "system": SYSTEM_PROMPT,
+        "stream": False,
+    }).encode()
+    last_error = None
+    for url in ollama_candidates():
+        try:
+            req = urlreq.Request(
+                url,
+                data=payload,
+                headers={"Content-Type": "application/json"},
+            )
+            with urlreq.urlopen(req, timeout=120) as resp:
+                reply = json.loads(resp.read()).get("response", "").strip()
+                if reply:
+                    return reply
+        except (URLError, TimeoutError, ValueError, OSError, HTTPError) as err:
+            last_error = err
+            continue
+    raise last_error or URLError("no Ollama URL to try")
+
+
+def fallback_tutor(message):
+    """Answer from Ada's built-in notes when Ollama is not reachable."""
+    q = " " + message.lower() + " "
+    topics = [
+        (["variable", "variables"],
+         "A variable is a labelled box. name = \"AnshX\" puts that text in the box called name. "
+         "In code, = is an instruction, not a maths fact — the next line can put something else in the same box. "
+         "Try the First Program track if you want to type one."),
+        (["loop", "loops", "repeat", "for "],
+         "A loop makes the computer repeat work. for i in range(1, 11) prints 1 to 10 — the end number is never included. "
+         "Use while when you do not know how many times. See Thinking in Loops on Semicolon."),
+        (["error", "traceback", "crash", "broke"],
+         "Read the error from the bottom up: last line is what went wrong, above that is the code, above that is the file and line. "
+         "The line number is where it fell over, not always where the mistake started."),
+        (["python"],
+         "Python is the best default first language here. Install from python.org, tick Add Python to PATH on Windows, then run python --version before you write a file."),
+        (["html", "css", "web page"],
+         "HTML is structure (what something IS). CSS is looks. JavaScript is decisions. Build Your First Web Page on Semicolon walks through a real file you can open in a browser."),
+        (["git", "commit"],
+         "Git remembers every version you save. Write .gitignore first so secrets never get committed. git add then git commit -m \"why you changed it\"."),
+        (["cipher", "secret", "caesar"],
+         "A Caesar cipher slides letters: HELLO + 3 = KHOOR. Decode by sliding back. Secret Messages is track 10 — there is a full Python example and a web page."),
+        (["javascript", "js "],
+         "JavaScript is what makes a page react. Find an element, listen for a click, change the text. The Practice area and Interactive Pages track cover that."),
+        (["who am i", "my name", "who i am"],
+         "You are %s. I am Ada, your tutor on Semicolon." % VISITOR_NAME),
+        (["what can you", "help me", "what do you"],
+         "Ask me about a lesson, an error, Python, HTML, Git, or the Secret Messages project. Keep it to one stuck thing at a time and I will point you at the fix."),
+    ]
+    for keys, answer in topics:
+        if any(k in q for k in keys):
+            return "Hey %s — %s" % (VISITOR_NAME, answer)
+    return (
+        "Hey %s. I heard you. From my Semicolon notes: start with one stuck thing — "
+        "a variable, a loop, an error message, Python, HTML, Git, or the Secret Messages cipher. "
+        "Or open https://semicolon.punah.pro/pages/learn.html and paste the line that broke."
+        % VISITOR_NAME
+    )
+
+
 class AdaHandler(SimpleHTTPRequestHandler):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, directory=ROOT, **kwargs)
@@ -77,7 +175,22 @@ class AdaHandler(SimpleHTTPRequestHandler):
 
     def do_GET(self):
         if urlparse(self.path).path == "/api/ada":
-            self._reply(200, {"ok": True, "model": OLLAMA_MODEL})
+            ollama_ok = False
+            for url in ollama_candidates():
+                tags = url.replace("/api/generate", "/api/tags")
+                try:
+                    with urlreq.urlopen(tags, timeout=2) as resp:
+                        if resp.status == 200:
+                            ollama_ok = True
+                            break
+                except (URLError, TimeoutError, OSError, ValueError):
+                    continue
+            self._reply(200, {
+                "ok": True,
+                "model": OLLAMA_MODEL,
+                "ollama": ollama_ok,
+                "visitor": VISITOR_NAME,
+            })
             return
         super().do_GET()
 
@@ -111,21 +224,9 @@ class AdaHandler(SimpleHTTPRequestHandler):
         prompt += f"{VISITOR_NAME}: {message}\nAda:"
 
         try:
-            req = urlreq.Request(
-                OLLAMA_URL,
-                data=json.dumps({
-                    "model": OLLAMA_MODEL,
-                    "prompt": prompt,
-                    "system": SYSTEM_PROMPT,
-                    "stream": False,
-                }).encode(),
-                headers={"Content-Type": "application/json"},
-            )
-            with urlreq.urlopen(req, timeout=120) as resp:
-                reply = json.loads(resp.read()).get("response", "").strip()
-        except (URLError, TimeoutError, ValueError, OSError):
-            self._reply(502, {"error": "Ada's model isn't reachable. Is `ollama serve` running?"})
-            return
+            reply = ask_ollama(prompt)
+        except (URLError, TimeoutError, ValueError, OSError, HTTPError):
+            reply = fallback_tutor(message)
 
         self._reply(200, {"reply": reply or "Hmm, I've got nothing - try rephrasing that?"})
 

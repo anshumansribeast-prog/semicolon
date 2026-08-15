@@ -44,8 +44,14 @@
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ message: text, history: history.slice(-HISTORY_LIMIT) }),
       });
-      if (!resp.ok) throw new Error("bad status " + resp.status);
-      const data = await resp.json();
+      const data = await resp.json().catch(function () { return {}; });
+      if (!resp.ok) {
+        thinking.textContent = data.reply || data.error ||
+          "Ada is offline right now. The tutor server isn't running — try again in a bit.";
+        thinking.className = "ada-bubble ada-bubble--" + (data.reply ? "bot" : "error");
+        if (data.reply) history.push({ role: "assistant", content: data.reply });
+        return;
+      }
       thinking.textContent = data.reply || "I didn't get that — try asking again?";
       thinking.className = "ada-bubble ada-bubble--bot";
       history.push({ role: "assistant", content: data.reply || "" });
