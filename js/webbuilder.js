@@ -52,6 +52,13 @@ var WEB_TEMPLATES = [
     html: '<h1>To do</h1>\n<form id="add">\n  <input id="task" placeholder="What needs doing?" autocomplete="off">\n  <button>Add</button>\n</form>\n<ul id="list"></ul>\n',
     css:  'body {\n  font-family: system-ui, sans-serif;\n  max-width: 26rem;\n  margin: 2rem auto;\n  padding: 0 1rem;\n}\n\nform { display: flex; gap: .5rem; }\ninput { flex: 1; padding: .5rem; border: 1px solid #cbd5e1; border-radius: 8px; }\nbutton { padding: .5rem 1rem; border: 0; border-radius: 8px; background: #1d4ed8; color: #fff; cursor: pointer; }\nli { padding: .4rem 0; border-bottom: 1px solid #e2e8f0; cursor: pointer; }\nli.done { text-decoration: line-through; opacity: .5; }\n',
     js:   'const form = document.getElementById("add");\nconst input = document.getElementById("task");\nconst list = document.getElementById("list");\n\nform.addEventListener("submit", function (e) {\n  e.preventDefault();\n  if (!input.value.trim()) return;\n\n  const li = document.createElement("li");\n  li.textContent = input.value;\n  li.addEventListener("click", function () {\n    li.classList.toggle("done");\n  });\n  list.appendChild(li);\n\n  console.log("added:", input.value);\n  input.value = "";\n});\n'
+  },
+  {
+    id: "cipher",
+    name: "Secret message",
+    html: '<h1>Secret Messages</h1>\n<label>Message <input id="msg" value="HELLO ADA"></label>\n<label>Shift <input id="shift" type="number" value="3"></label>\n<button id="enc">Encode</button>\n<button id="dec">Decode</button>\n<p id="out"></p>\n',
+    css:  'body {\n  font-family: system-ui, sans-serif;\n  max-width: 22rem;\n  margin: 2rem auto;\n  padding: 0 1rem;\n}\nlabel { display: block; margin: .6rem 0; }\ninput { margin-left: .4rem; padding: .4rem; }\nbutton { margin-right: .4rem; padding: .5rem 1rem; border: 0; border-radius: 8px; background: #4338ca; color: #fff; cursor: pointer; }\n#out { font-size: 1.2rem; letter-spacing: .04em; }\n',
+    js:   'function shiftLetter(letter, amount) {\n  if (letter < "A" || letter > "Z") return letter;\n  var n = letter.charCodeAt(0) - 65;\n  n = (n + amount % 26 + 26) % 26;\n  return String.fromCharCode(n + 65);\n}\nfunction encode(text, amount) {\n  var out = "";\n  for (var i = 0; i < text.length; i++) {\n    out += shiftLetter(text[i].toUpperCase(), amount);\n  }\n  return out;\n}\nfunction run(dir) {\n  var t = document.getElementById("msg").value;\n  var s = Number(document.getElementById("shift").value);\n  var result = encode(t, dir * s);\n  document.getElementById("out").textContent = result;\n  console.log(result);\n}\ndocument.getElementById("enc").addEventListener("click", function () { run(1); });\ndocument.getElementById("dec").addEventListener("click", function () { run(-1); });\n'
   }
 ];
 

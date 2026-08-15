@@ -35,7 +35,7 @@ semicolon/
 ├── index.html                 Homepage
 ├── pages/
 │   ├── about.html             Story, values, timeline, honest limitations
-│   ├── learn.html             9 tracks — search, filter, sort, detail modal
+│   ├── learn.html             10 tracks — search, filter, sort, detail modal
 │   ├── blog.html              Post list — search, categories, pagination
 │   ├── post.html              Any single post, chosen by ?slug=
 │   └── contact.html           Validated contact form

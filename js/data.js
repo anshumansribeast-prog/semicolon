@@ -20,7 +20,7 @@ const TRACKS = [
     level: "Beginner",
     category: "Python",
     hours: 2,
-    lessons: 3,
+    lessons: 4,
     price: "Free",
     initials: "01",
     c1: "#1d4ed8", c2: "#4f46e5",
@@ -200,6 +200,27 @@ const TRACKS = [
       "Explain why HTML and CSS aren't programming languages, and why that's fine",
       "Tell compiled and interpreted languages apart, and know why the difference matters",
       "Avoid language tourism — why one finished project beats ten hello-worlds"
+    ]
+  },
+  {
+    id: 10,
+    slug: "secret-messages",
+    title: "Secret Messages",
+    blurb: "How a Caesar cipher hides a sentence by sliding the alphabet. A small project you can explain to anyone — and then put on a web page.",
+    level: "Beginner",
+    category: "Projects",
+    hours: 3,
+    lessons: 3,
+    price: "Free",
+    initials: "10",
+    c1: "#4338ca", c2: "#7c3aed",
+    build: "A cipher page that encodes and decodes a message in the browser.",
+    prereq: "Your First Program, or the Practice area loops.",
+    outcomes: [
+      "Explain a Caesar cipher with a real worked example, not a metaphor",
+      "Encode and decode text in Python, including wrapping past Z",
+      "Put the same idea on a web page people can type into",
+      "See why this is a toy, not a real password locker"
     ]
   }
 ];

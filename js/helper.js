@@ -148,7 +148,7 @@ var HELP_TOPICS = [
   },
   {
     k: ["practice", "exercise", "challenge", "try", "playground", "write code"],
-    a: "The Practice area has ten challenges you can run right in your browser — from printing your name up to FizzBuzz. Each has a hint and a worked solution.<br><br>Reading about code and writing code are different skills, and only one makes you a programmer.",
+    a: "The Practice area has challenges you can run right in your browser — from printing your name up to FizzBuzz and a Caesar cipher. Each has a hint and a worked solution.<br><br>Reading about code and writing code are different skills, and only one makes you a programmer.",
     link: { href: "playground.html", text: "Go to the Practice area" }
   },
   {
@@ -163,8 +163,13 @@ var HELP_TOPICS = [
   },
   {
     k: ["semicolon", "this site", "who made", "about"],
-    a: "Semicolon is a free learn-to-code site built by <strong>Anshuman Srivastava</strong> — 9 tracks, 27 lessons, 7 articles and a practice area.<br><br>It's built with no frameworks and no build step: plain HTML, CSS and JavaScript. The whole thing is about 130 KB and works offline.",
+    a: "Semicolon is a free learn-to-code site built by <strong>Anshuman Srivastava</strong> — 10 tracks, 31 lessons, 7 articles and a practice area.<br><br>It's built with no frameworks and no build step: plain HTML, CSS and JavaScript. The whole thing is about 130 KB and works offline.",
     link: { href: "about.html", text: "About Semicolon" }
+  },
+  {
+    k: ["cipher", "caesar", "secret message", "encode", "decode", "shift letter"],
+    a: "A Caesar cipher slides every letter along the alphabet. <code>HELLO</code> shifted by 3 becomes <code>KHOOR</code>. Decode by sliding the same amount backwards.<br><br>It is a toy — there are only 26 possible shifts — but it is a clean way to see that computers treat letters as numbers.",
+    link: { href: "lesson.html?track=secret-messages&n=1", text: "Track: Secret Messages" }
   }
 ];
 

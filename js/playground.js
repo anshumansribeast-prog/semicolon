@@ -134,6 +134,15 @@ var CHALLENGES = [
       var want = ["1","2","Fizz","4","Buzz","Fizz","7","8","Fizz","Buzz","11","Fizz","13","14","FizzBuzz"];
       return out.trim().split(/\s*\n\s*/).join(",") === want.join(",");
     }
+  },
+  {
+    id: "cipher",
+    title: "11 · Shift a word",
+    task: "Print HELLO shifted forward by 1 letter: IFMMP",
+    start: 'const word = "HELLO";\nlet out = "";\n\n',
+    hint: "Loop each letter, add 1 to its char code with String.fromCharCode(ch.charCodeAt(0) + 1), and join them.",
+    solution: 'const word = "HELLO";\nlet out = "";\nfor (const ch of word) {\n  out += String.fromCharCode(ch.charCodeAt(0) + 1);\n}\nconsole.log(out);',
+    check: function (out) { return out.trim() === "IFMMP"; }
   }
 ];
 
