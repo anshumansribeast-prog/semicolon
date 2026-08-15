@@ -12,6 +12,7 @@ import json
 import os
 import socket
 import struct
+import threading
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from urllib import request as urlreq
 from urllib.error import HTTPError, URLError
@@ -94,6 +95,41 @@ def ollama_candidates():
     return urls
 
 
+def resolve_host(host, timeout=0.4):
+    """DNS can hang on names like ollama inside a lone container. Cap it."""
+    box = []
+
+    def run():
+        try:
+            box.append(socket.getaddrinfo(host, None)[0][4][0])
+        except OSError:
+            box.append(None)
+
+    t = threading.Thread(target=run)
+    t.daemon = True
+    t.start()
+    t.join(timeout)
+    if t.is_alive() or not box:
+        return None
+    return box[0]
+
+
+def tcp_open(url, timeout=1.2):
+    parsed = urlparse(url)
+    host = parsed.hostname
+    port = parsed.port or (443 if parsed.scheme == "https" else 80)
+    if not host:
+        return False
+    ip = resolve_host(host, timeout=0.4)
+    if not ip:
+        return False
+    try:
+        with socket.create_connection((ip, port), timeout=timeout):
+            return True
+    except OSError:
+        return False
+
+
 def ask_ollama(prompt):
     payload = json.dumps({
         "model": OLLAMA_MODEL,
@@ -103,13 +139,15 @@ def ask_ollama(prompt):
     }).encode()
     last_error = None
     for url in ollama_candidates():
+        if not tcp_open(url, timeout=1.2):
+            continue
         try:
             req = urlreq.Request(
                 url,
                 data=payload,
                 headers={"Content-Type": "application/json"},
             )
-            with urlreq.urlopen(req, timeout=120) as resp:
+            with urlreq.urlopen(req, timeout=90) as resp:
                 reply = json.loads(resp.read()).get("response", "").strip()
                 if reply:
                     return reply
@@ -177,6 +215,8 @@ class AdaHandler(SimpleHTTPRequestHandler):
         if urlparse(self.path).path == "/api/ada":
             ollama_ok = False
             for url in ollama_candidates():
+                if not tcp_open(url, timeout=0.8):
+                    continue
                 tags = url.replace("/api/generate", "/api/tags")
                 try:
                     with urlreq.urlopen(tags, timeout=2) as resp:
