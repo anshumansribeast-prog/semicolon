@@ -1,24 +1,25 @@
-"""Ada's brain — a tiny local HTTP server bridging Semicolon's Ada
-chat widget (js/ada.js) to Ollama, the same local AI model Jarvis
-uses. A static site's browser JS can't reach Ollama directly (it only
-listens on localhost with no CORS headers), so this fills that gap.
+"""Ada's brain — a tiny HTTP server for Semicolon's Ada chat.
+
+Serves the site and /api/ada on one port. The browser talks to the same
+origin, so Ada works when you visit the page through this server.
 
 Run:  python ada_server.py     (needs `ollama serve` already running)
 
-This only serves localhost. Ada only answers while THIS machine is
-running this script — it does not make Ada work for a real visitor
-on the deployed site unless this computer is itself the public server.
-Zero extra dependencies: stdlib only, same spirit as Cosmos v2's server.
+Zero extra dependencies: stdlib only.
 """
 
 import json
-from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
+import os
+from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from urllib import request as urlreq
 from urllib.error import URLError
+from urllib.parse import urlparse
 
-PORT = 8420
-OLLAMA_URL = "http://localhost:11434/api/generate"
-OLLAMA_MODEL = "llama3.2:3b"
+HOST = os.environ.get("ADA_HOST", "0.0.0.0")
+PORT = int(os.environ.get("ADA_PORT", "8420"))
+ROOT = os.path.dirname(os.path.abspath(__file__))
+OLLAMA_URL = os.environ.get("OLLAMA_URL", "http://127.0.0.1:11434/api/generate")
+OLLAMA_MODEL = os.environ.get("OLLAMA_MODEL", "llama3.2:3b")
 SYSTEM_PROMPT = (
     "You are Ada, a friendly coding tutor on Semicolon, a free learn-to-code "
     "site for a complete beginner (a class 8 student). When they're stuck, "
@@ -28,10 +29,13 @@ SYSTEM_PROMPT = (
 )
 
 
-class AdaHandler(BaseHTTPRequestHandler):
+class AdaHandler(SimpleHTTPRequestHandler):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, directory=ROOT, **kwargs)
+
     def _cors(self):
         self.send_header("Access-Control-Allow-Origin", "*")
-        self.send_header("Access-Control-Allow-Methods", "POST, OPTIONS")
+        self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
         self.send_header("Access-Control-Allow-Headers", "Content-Type")
 
     def do_OPTIONS(self):
@@ -39,8 +43,14 @@ class AdaHandler(BaseHTTPRequestHandler):
         self._cors()
         self.end_headers()
 
+    def do_GET(self):
+        if urlparse(self.path).path == "/api/ada":
+            self._reply(200, {"ok": True, "model": OLLAMA_MODEL})
+            return
+        super().do_GET()
+
     def do_POST(self):
-        if self.path != "/api/ada":
+        if urlparse(self.path).path != "/api/ada":
             self.send_response(404)
             self._cors()
             self.end_headers()
@@ -77,8 +87,8 @@ class AdaHandler(BaseHTTPRequestHandler):
             )
             with urlreq.urlopen(req, timeout=120) as resp:
                 reply = json.loads(resp.read()).get("response", "").strip()
-        except (URLError, TimeoutError, ValueError):
-            self._reply(502, {"error": "Ollama isn't reachable - is `ollama serve` running?"})
+        except (URLError, TimeoutError, ValueError, OSError):
+            self._reply(502, {"error": "Ada's model isn't reachable. Is `ollama serve` running?"})
             return
 
         self._reply(200, {"reply": reply or "Hmm, I've got nothing - try rephrasing that?"})
@@ -97,6 +107,7 @@ class AdaHandler(BaseHTTPRequestHandler):
 
 
 if __name__ == "__main__":
-    server = ThreadingHTTPServer(("localhost", PORT), AdaHandler)
-    print(f"Ada server listening on http://localhost:{PORT} (Ollama model: {OLLAMA_MODEL})")
+    server = ThreadingHTTPServer((HOST, PORT), AdaHandler)
+    print(f"Ada server listening on http://{HOST}:{PORT} (Ollama model: {OLLAMA_MODEL})")
+    print(f"Open http://127.0.0.1:{PORT}/pages/ada.html")
     server.serve_forever()

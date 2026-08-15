@@ -16,6 +16,10 @@ Double-click index.html
 # Option 2 — run a local server (needed for share links and clean URLs)
 python -m http.server 8000
 # then visit http://localhost:8000
+
+# Option 3 — Ada (the coding tutor) needs this server, plus Ollama
+python ada_server.py
+# then visit http://localhost:8420/pages/ada.html
 ```
 
 > **Why a server helps:** opening files directly uses the `file://` protocol, where the
@@ -47,6 +51,9 @@ semicolon/
 │   └── contact.js             Form validation
 ├── components/
 │   └── ui.js                  Icons, escaping, toasts, shared card renderers
+├── pages/ada.html             Ada — coding tutor chat
+├── js/ada.js                  Ada chat widget
+├── ada_server.py              Serves the site + /api/ada (needs Ollama)
 ├── tools/
 │   └── set-site-url.py         Points all 15 URL references at your domain
 ├── .env.example               Template for secrets (never commit the real .env)
@@ -266,6 +273,11 @@ the `css/` folder behind.
 **Blog posts open blank**
 `post.html` needs a `?slug=` in the address. Reach it by clicking a post from
 `blog.html`, not by opening the file directly.
+
+**Ada says it's offline**
+Ada only answers while `python ada_server.py` is running and Ollama is up
+(`ollama serve`, with model `llama3.2:3b`). Open the page through that server
+(`http://localhost:8420/pages/ada.html`), not as a raw file.
 
 **"Copy link" says the clipboard isn't available**
 The clipboard API needs `https://` or `localhost`. Run `python -m http.server 8000`

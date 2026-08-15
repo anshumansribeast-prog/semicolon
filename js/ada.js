@@ -1,15 +1,12 @@
 /* ===================================================================
    js/ada.js — Ada, Semicolon's tutor chat.
 
-   Ada's brain is Ollama running LOCALLY on Anshuman's own computer
-   (see ../ada_server.py) — same model Jarvis uses, no cloud, no API
-   key. That means Ada only answers while that server is running on
-   that machine; it can't work for a random visitor on the deployed
-   site unless that's hosted somewhere reachable. Honest about that in
-   the UI rather than pretending it's always on.
+   Talks to /api/ada on the same host that served this page
+   (ada_server.py). Same-origin, so it works when the site is opened
+   through that server rather than as a raw file.
    =================================================================== */
 (function () {
-  const ADA_URL = "http://localhost:8420/api/ada";
+  const ADA_URL = "/api/ada";
   const HISTORY_LIMIT = 6; // last N messages sent as context, so replies don't explode the prompt
 
   const log = document.getElementById("adaLog");
@@ -54,9 +51,7 @@
       history.push({ role: "assistant", content: data.reply || "" });
     } catch (err) {
       thinking.textContent =
-        "Ada is offline right now — it only answers while Anshuman's " +
-        "computer is running the Ada server (python ada_server.py) " +
-        "with Ollama on. Ask him to start it.";
+        "Ada is offline right now. The tutor server isn't running — try again in a bit.";
       thinking.className = "ada-bubble ada-bubble--error";
     } finally {
       input.disabled = false;
