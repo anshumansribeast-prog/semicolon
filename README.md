@@ -240,7 +240,23 @@ Already fast. If you want it faster: minify the CSS and JS for production, and a
 
 ## Deploying
 
-Any static host works, all free:
+### Main server (Ada + the site)
+
+The published image is `ghcr.io/anshumansribeast-prog/semicolon:latest`.
+On the server that should actually run Ada:
+
+```bash
+docker compose up -d --build
+docker compose exec ollama ollama pull llama3.2:3b   # first time only
+```
+
+nginx serves the pages on port 80 and proxies `/api/ada` to Ada. Ollama
+is the model. Open `http://YOUR-SERVER/pages/ada.html`.
+
+### Static hosts (no Ada)
+
+Any static host still works for the pages, but Ada will show as offline
+because those hosts cannot run Python or Ollama:
 
 - **Netlify** — drag the folder onto [app.netlify.com/drop](https://app.netlify.com/drop). Live in ten seconds.
 - **GitHub Pages** — push to GitHub, Settings → Pages → deploy from `main`.

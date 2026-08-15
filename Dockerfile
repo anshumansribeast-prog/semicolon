@@ -1,17 +1,20 @@
-# Semicolon is a static site (no build step, no server code), so all
-# this image needs is a small web server to hand out the files.
-# nginx:alpine is ~40MB and is the standard choice for that job.
+# Site on nginx:80. Ada's Python bridge listens on 127.0.0.1:8420 and
+# nginx proxies /api/ada there. Pair with docker-compose.yml so Ollama
+# is on the same Docker network (OLLAMA_URL=http://ollama:11434/...).
 FROM nginx:alpine
 
-# nginx's default config already serves /usr/share/nginx/html on port 80.
-# We only override it to point 404s at the site's own 404.html instead
-# of nginx's generic error page.
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+RUN apk add --no-cache python3
 
-# Copy the site itself in. .dockerignore keeps .git, .env, and docs out.
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+COPY docker/40-start-ada.sh /docker-entrypoint.d/40-start-ada.sh
+RUN chmod +x /docker-entrypoint.d/40-start-ada.sh
+
+COPY ada_server.py /opt/ada/ada_server.py
 COPY . /usr/share/nginx/html
+RUN rm -rf /usr/share/nginx/html/ada_server.py \
+           /usr/share/nginx/html/docker \
+           /usr/share/nginx/html/Dockerfile \
+           /usr/share/nginx/html/docker-compose.yml \
+           /usr/share/nginx/html/.github
 
 EXPOSE 80
-
-# nginx:alpine's base image already runs nginx in the foreground as the
-# container's main process — nothing else to start here.

@@ -1,0 +1,30 @@
+# Semicolon on the main server: site on port 80 + Ada (Ollama).
+#
+#   docker compose up -d --build
+#   docker compose exec ollama ollama pull llama3.2:3b   # first time only
+#
+# Then open http://SERVER/pages/ada.html
+
+services:
+  ollama:
+    image: ollama/ollama:latest
+    volumes:
+      - ollama:/root/.ollama
+    restart: unless-stopped
+
+  web:
+    build: .
+    image: ghcr.io/anshumansribeast-prog/semicolon:latest
+    ports:
+      - "80:80"
+    environment:
+      ADA_HOST: "127.0.0.1"
+      ADA_PORT: "8420"
+      OLLAMA_URL: "http://ollama:11434/api/generate"
+      OLLAMA_MODEL: "llama3.2:3b"
+    depends_on:
+      - ollama
+    restart: unless-stopped
+
+volumes:
+  ollama:
