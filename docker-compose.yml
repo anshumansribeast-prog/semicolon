@@ -22,6 +22,7 @@ services:
       ADA_PORT: "8420"
       OLLAMA_URL: "http://ollama:11434/api/generate"
       OLLAMA_MODEL: "llama3.2:3b"
+      ADA_VISITOR_NAME: "AnshX"
     depends_on:
       - ollama
     restart: unless-stopped

@@ -20,13 +20,45 @@ PORT = int(os.environ.get("ADA_PORT", "8420"))
 ROOT = os.path.dirname(os.path.abspath(__file__))
 OLLAMA_URL = os.environ.get("OLLAMA_URL", "http://127.0.0.1:11434/api/generate")
 OLLAMA_MODEL = os.environ.get("OLLAMA_MODEL", "llama3.2:3b")
-SYSTEM_PROMPT = (
-    "You are Ada, a friendly coding tutor on Semicolon, a free learn-to-code "
-    "site for a complete beginner (a class 8 student). When they're stuck, "
-    "explain the concept simply and point them toward the fix rather than just "
-    "handing over a finished solution, unless they clearly ask for the actual "
-    "code. Keep replies short (3-5 sentences), plain text, no markdown."
-)
+VISITOR_NAME = os.environ.get("ADA_VISITOR_NAME", "AnshX")
+SYSTEM_PROMPT = f"""You are Ada, the coding tutor on Semicolon (https://semicolon.punah.pro).
+
+Who you are talking to:
+The person chatting is {VISITOR_NAME} (Anshuman Srivastava), who built this site.
+When they say hi, hello, hey, or similar, greet them by name: "Hey {VISITOR_NAME}!"
+Never call them Student. Always use {VISITOR_NAME}.
+
+What you know (your brain):
+- Semicolon is a free, no-framework learn-to-code site: HTML, CSS and JavaScript only.
+- Live at https://semicolon.punah.pro. 10 tracks, 31 lessons, a practice area, and you.
+- Tracks: Your First Program, Thinking in Loops, First Web Page, Interactive Pages,
+  Files and Data, Git Basics, Debugging, Ship a Real Project, Choosing a Language,
+  Secret Messages (Caesar cipher: HELLO + 3 = KHOOR).
+- Practice area has challenges (hello world through FizzBuzz and a letter-shift).
+- You explain simply, point toward the fix, and only paste full solutions if asked.
+- Keep replies short (2-5 sentences), plain text, no markdown, no bullet asterisks.
+
+If they ask who they are: they are {VISITOR_NAME}. If they ask who you are: Ada, Semicolon's tutor.
+"""
+
+
+def looks_like_greeting(message):
+    text = message.lower().strip()
+    for ch in "!.?,":
+        text = text.replace(ch, "")
+    text = " ".join(text.split())
+    greetings = {
+        "hi", "hello", "hey", "yo", "hiya", "sup", "hola",
+        "hi ada", "hello ada", "hey ada", "hi there", "hello there",
+        "hey there", "good morning", "good afternoon", "good evening",
+    }
+    return text in greetings or text.startswith("hi ") or text.startswith("hello ") or text.startswith("hey ")
+
+
+def greeting_reply():
+    return (
+        f"Hey {VISITOR_NAME}! I'm Ada. What do you want to build or debug today?"
+    )
 
 
 class AdaHandler(SimpleHTTPRequestHandler):
@@ -68,11 +100,15 @@ class AdaHandler(SimpleHTTPRequestHandler):
             self._reply(400, {"error": "empty message"})
             return
 
+        if looks_like_greeting(message):
+            self._reply(200, {"reply": greeting_reply()})
+            return
+
         prompt = ""
         for turn in history[-6:]:
-            role = "Student" if turn.get("role") == "user" else "Ada"
+            role = VISITOR_NAME if turn.get("role") == "user" else "Ada"
             prompt += f"{role}: {turn.get('content', '')}\n"
-        prompt += f"Student: {message}\nAda:"
+        prompt += f"{VISITOR_NAME}: {message}\nAda:"
 
         try:
             req = urlreq.Request(
