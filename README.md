@@ -243,6 +243,7 @@ Already fast. If you want it faster: minify the CSS and JS for production, and a
 ### Main server (Ada + the site)
 
 The published image is `ghcr.io/anshumansribeast-prog/semicolon:latest`.
+The live site is **https://semicolon.punah.pro**.
 On the server that should actually run Ada:
 
 ```bash

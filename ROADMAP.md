@@ -1,7 +1,7 @@
 # Semicolon — Roadmap
 
 **Owner:** Anshuman Srivastava
-**Live at:** https://roaring-selkie-cbdd4b.netlify.app
+**Live at:** https://semicolon.punah.pro
 **Written:** 28 July 2026
 **Status:** shipped and public — now the interesting part starts
 

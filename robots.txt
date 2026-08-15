@@ -7,7 +7,7 @@ User-agent: *
 Allow: /
 
 # Point crawlers at the full page list
-Sitemap: https://semicolon-anshu.netlify.app/sitemap.xml
+Sitemap: https://semicolon.punah.pro/sitemap.xml
 
 # Be polite to smaller servers (ignored by Google, honoured by others)
 Crawl-delay: 1
