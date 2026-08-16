@@ -1714,10 +1714,10 @@ select.control:focus { outline: none; border-color: var(--primary); box-shadow: 
 /* ---------- ADA (chat tutor) --------------------------------------- */
 .ada-layout {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 280px;
+  grid-template-columns: minmax(0, 1fr) 260px;
   gap: 1.5rem;
   align-items: start;
-  max-width: 1080px;
+  max-width: 1120px;
 }
 .ada-shell {
   background: var(--bg);
@@ -1727,7 +1727,7 @@ select.control:focus { outline: none; border-color: var(--primary); box-shadow: 
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  min-height: 62vh;
+  min-height: 74vh;
 }
 .ada-toolbar {
   display: flex; align-items: center; gap: .85rem;
@@ -1762,7 +1762,7 @@ select.control:focus { outline: none; border-color: var(--primary); box-shadow: 
 .ada-log {
   display: flex; flex-direction: column; gap: .85rem;
   flex: 1;
-  min-height: 38vh; max-height: 56vh; overflow-y: auto;
+  min-height: 48vh; max-height: 62vh; overflow-y: auto;
   padding: 1.1rem 1.1rem .4rem;
 }
 .ada-row { display: flex; gap: .55rem; align-items: flex-start; }
@@ -1770,7 +1770,7 @@ select.control:focus { outline: none; border-color: var(--primary); box-shadow: 
 .ada-bubble {
   max-width: 78%; padding: .75rem 1rem;
   border-radius: 1rem 1rem 1rem .35rem;
-  font-size: .93rem; line-height: 1.55; white-space: pre-wrap;
+  font-size: .93rem; line-height: 1.55; white-space: normal;
 }
 .ada-bubble--bot {
   background: var(--bg-alt); border: 1px solid var(--border);
@@ -2021,6 +2021,17 @@ select.control:focus { outline: none; border-color: var(--primary); box-shadow: 
 .ada-bubble p { margin: 0 0 .6rem; }
 .ada-bubble p:last-child { margin-bottom: 0; }
 
+.gen-any { font-size: .9rem; color: var(--text-muted); margin: .35rem 0 .6rem; }
+.gen-ideas { display: flex; flex-wrap: wrap; gap: .4rem; margin: .65rem 0 1rem; }
+.gen-chat-place {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 1.15rem 1.25rem 1.3rem;
+  margin-bottom: 1.6rem;
+}
+.gen-chat-place h2 { margin: 0 0 .35rem; font-size: 1.15rem; }
+.gen-chat-log { min-height: 12rem; max-height: 22rem; border: 1px solid var(--border); border-radius: 12px; margin: .8rem 0; }
 .gen-form, .gen-challenge {
   background: var(--surface);
   border: 1px solid var(--border);

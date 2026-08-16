@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Code Generator — Semicolon</title>
   <meta name="description" content="Describe what you want to build. Ada generates working code you can edit, preview, copy and download.">
-  <link rel="stylesheet" href="../css/style.css?v=20260816h">
+  <link rel="stylesheet" href="../css/style.css?v=20260816i">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css" crossorigin="anonymous">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%234f46e5'/><text x='16' y='23' font-size='22' font-family='monospace' fill='white' text-anchor='middle'>;</text></svg>">
 </head>
@@ -50,7 +50,7 @@
       <nav class="breadcrumb" aria-label="Breadcrumb"><a href="../index.html">Home</a> / Generator</nav>
       <span class="eyebrow">Learn. Code. Build.</span>
       <h1>Semicolon Code Generator</h1>
-      <p class="lede">Describe a project. Ada writes the files. You edit, preview HTML in the browser, then copy or download. Python, C and Java are shown — not run on this server.</p>
+      <p class="lede">This is Ada's workshop. Describe anything you want to build. Files appear in the editor. Chat underneath to change them — like a normal assistant, not a form that forgets you.</p>
     </div>
   </section>
 
@@ -58,7 +58,9 @@
     <div class="container">
       <form id="genForm" class="gen-form" novalidate>
         <label for="genPrompt"><strong>What do you want to build?</strong></label>
+        <p class="gen-any">Any topic — a shop, a game, homework, a dashboard, a story site. Ada writes the files here.</p>
         <textarea id="genPrompt" rows="4" required placeholder="Create a responsive portfolio website for a photographer."></textarea>
+        <div class="gen-ideas" id="genIdeas" aria-label="Example projects"></div>
         <div class="gen-opts">
           <label>Language
             <select id="genLang">
@@ -101,7 +103,7 @@
         <p class="form-msg" id="genMsg" role="status"></p>
       </form>
 
-      <div class="gen-work" id="genWork" hidden>
+      <div class="gen-work" id="genWork">
         <aside class="gen-files" aria-label="Project files">
           <h2>Project</h2>
           <ul id="genTree"></ul>
@@ -134,6 +136,17 @@
           <div class="ada-bubble ada-bubble--bot gen-explain" id="genExplain" hidden></div>
         </div>
       </div>
+
+      <section class="gen-chat-place" id="genChatBox">
+        <h2>Chat with Ada</h2>
+        <p>A real conversation about this project — or anything else. Follow-ups stay in context.</p>
+        <div id="genChatLog" class="ada-log gen-chat-log" aria-live="polite"></div>
+        <form id="genChatForm" class="ada-form" novalidate>
+          <label class="sr-only" for="genChatInput">Message Ada</label>
+          <textarea id="genChatInput" rows="2" placeholder="Make the header sticky. Or ask anything — Ada will keep this chat."></textarea>
+          <button class="btn btn--primary" type="submit" id="genChatSend">Send</button>
+        </form>
+      </section>
 
       <section class="gen-challenge" id="challengeBox">
         <h2>Create a challenge</h2>
@@ -194,7 +207,7 @@
 <script src="../js/data.js"></script>
 <script src="../components/ui.js"></script>
 <script src="../js/main.js"></script>
-<script src="../js/ada-api.js?v=20260816h"></script>
-<script src="../js/generate.js?v=20260816h"></script>
+<script src="../js/ada-api.js?v=20260816i"></script>
+<script src="../js/generate.js?v=20260816i"></script>
 </body>
 </html>

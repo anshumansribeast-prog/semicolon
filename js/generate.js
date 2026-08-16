@@ -9,6 +9,7 @@
   var lastPrompt = "";
   var abort = null;
   var pendingApply = "";
+  var genHistory = [];
   var editor = document.getElementById("genEditor");
   var tree = document.getElementById("genTree");
   var nameEl = document.getElementById("genFileName");
@@ -60,7 +61,7 @@
       tree.appendChild(li);
     });
     openFile(0);
-    work.hidden = files.length === 0;
+    work.hidden = false;
   }
 
   function canPreview() {
@@ -122,17 +123,25 @@
       framework: document.getElementById("genFw").value,
       difficulty: document.getElementById("genDiff").value,
       output: document.getElementById("genOut").value,
+      history: genHistory.slice(-12),
+      files: files.map(function (x) { return { path: x.path, content: (x.content || "").slice(0, 4000) }; }),
       abort: abort
     });
     abort = null;
     go.disabled = false;
     stop.hidden = true;
     if (data.aborted) { showMsg("Stopped."); return; }
-    files = data.files && data.files.length ? data.files : [{ path: "main.txt", content: data.reply || "" }];
-    renderTree();
-    showMsg(data.reply || "Ready.");
-    explain.hidden = true;
-    runPreview();
+    if (data.files && data.files.length) {
+      files = data.files;
+      genHistory.push({ role: "user", content: prompt });
+      genHistory.push({ role: "assistant", content: data.reply || "Generated files." });
+      renderTree();
+      showMsg(data.reply || "Ready.");
+      explain.hidden = true;
+      runPreview();
+    } else {
+      showMsg(data.reply || api.FAIL, true);
+    }
   }
 
   document.getElementById("genForm").addEventListener("submit", function (e) {
@@ -255,4 +264,96 @@
   document.getElementById("chSol").addEventListener("click", function () {
     document.getElementById("chSolBox").hidden = false;
   });
+
+  var IDEAS = [
+    "Responsive portfolio for a photographer",
+    "To-do list with localStorage",
+    "Cricket scoreboard",
+    "Bakery landing page",
+    "Python quiz on planets",
+    "SQL table for a library",
+    "Snake game in JavaScript",
+    "Study timer with breaks"
+  ];
+  var ideas = document.getElementById("genIdeas");
+  if (ideas) {
+    IDEAS.forEach(function (text) {
+      var b = document.createElement("button");
+      b.type = "button";
+      b.className = "ada-chip";
+      b.textContent = text;
+      b.addEventListener("click", function () {
+        document.getElementById("genPrompt").value = "Create: " + text;
+        generate();
+      });
+      ideas.appendChild(b);
+    });
+  }
+
+  files = [
+    { path: "index.html", content: "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"UTF-8\">\n  <title>Your project</title>\n  <link rel=\"stylesheet\" href=\"style.css\">\n</head>\n<body>\n  <h1>Code Generator</h1>\n  <p>Describe anything above, then Generate. This editor is the place the files land.</p>\n  <script src=\"script.js\"></script>\n</body>\n</html>\n" },
+    { path: "style.css", content: "body { font-family: system-ui, sans-serif; margin: 2rem; }\n" },
+    { path: "script.js", content: "console.log(\"Ada is ready\");\n" },
+    { path: "README.md", content: "# Your project\n\nGenerate to replace these starter files.\n" }
+  ];
+  renderTree();
+  runPreview();
+
+  var chatLog = document.getElementById("genChatLog");
+  var chatForm = document.getElementById("genChatForm");
+  var chatInput = document.getElementById("genChatInput");
+  var chatHistory = [];
+
+  function chatRow(kind, html) {
+    if (!chatLog) return;
+    var row = document.createElement("div");
+    row.className = "ada-row ada-row--" + (kind === "user" ? "user" : "bot");
+    var el = document.createElement("div");
+    el.className = "ada-bubble ada-bubble--" + kind;
+    if (kind === "user") el.textContent = html;
+    else el.innerHTML = html;
+    row.appendChild(el);
+    chatLog.appendChild(row);
+    chatLog.scrollTop = chatLog.scrollHeight;
+    return el;
+  }
+
+  if (chatForm && chatInput) {
+    chatRow("bot", "<p>This chat is tied to the files on the left. Ask for a change, an explanation, or anything else.</p>");
+    chatForm.addEventListener("submit", async function (e) {
+      e.preventDefault();
+      var text = chatInput.value.trim();
+      if (!text) return;
+      chatInput.value = "";
+      chatRow("user", text);
+      saveCurrent();
+      var thinking = chatRow("bot", "<p>…</p>");
+      var data = await api.ask({
+        mode: "chat",
+        message: text,
+        history: chatHistory.slice(-16),
+        files: files.map(function (x) { return { path: x.path, content: (x.content || "").slice(0, 4000) }; }),
+        language: lang()
+      });
+      thinking.innerHTML = api.renderMarkdown(data.reply || api.FAIL);
+      thinking.querySelectorAll(".ada-copy").forEach(function (btn) {
+        btn.addEventListener("click", function () {
+          var id = btn.getAttribute("data-copy");
+          var code = thinking.querySelector('code[data-copy-src="' + id + '"]');
+          if (code) navigator.clipboard.writeText(code.textContent || "");
+        });
+      });
+      chatHistory.push({ role: "user", content: text });
+      chatHistory.push({ role: "assistant", content: data.reply || "" });
+      var block = thinking.querySelector("code[data-copy-src]");
+      if (block && /```|file:/.test(data.reply || "") && files[current]) {
+        pendingApply = block.textContent;
+        var applyBtn = document.getElementById("actApply");
+        if (applyBtn && pendingApply) {
+          applyBtn.hidden = false;
+          showMsg("Ada proposed an edit. Press Apply change to put it in the editor.");
+        }
+      }
+    });
+  }
 })();

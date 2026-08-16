@@ -26,7 +26,7 @@
       return resp.json().then(function (data) {
         data = data || {};
         if (!data.reply && data.error) data.reply = FAIL;
-        if (!data.reply) data.reply = FAIL;
+        if (!data.reply && !(data.files && data.files.length)) data.reply = FAIL;
         data._okHttp = resp.ok;
         return data;
       }).catch(function () {

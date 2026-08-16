@@ -16,17 +16,18 @@
   const statusEl = document.getElementById("adaStatus");
   if (!form) return;
 
-  const HISTORY_LIMIT = 16;
+  const HISTORY_LIMIT = 20;
+  const STORE = "semicolon-ada-chat";
   const history = [];
   let lastUser = "";
   let abort = null;
 
   const SUGGESTIONS = [
-    "How do I create a Python function?",
+    "Write a Python function that scores a cricket innings",
+    "Make a bakery homepage in HTML",
+    "Explain black holes like I'm 15, then show a tiny sim in JS",
     "Debug this: print('hi'",
-    "Explain Git commits",
-    "Write a CSS flexbox navbar",
-    "What is a binary search?",
+    "Plan a study timetable, then turn it into a page"
   ];
 
   function addRow(kind) {
@@ -80,7 +81,7 @@
     setBusy(true);
     const thinking = addRow("bot");
     thinking.classList.add("is-thinking");
-    thinking.textContent = "…";
+    thinking.textContent = "Ada is writing…";
     abort = new AbortController();
 
     const data = await api.ask({
@@ -112,6 +113,7 @@
       });
     }
     history.push({ role: "assistant", content: data.reply || "" });
+    try { localStorage.setItem(STORE, JSON.stringify(history.slice(-HISTORY_LIMIT))); } catch (e) {}
     setBusy(false);
     input.focus();
   }
@@ -139,8 +141,9 @@
       history.length = 0;
       lastUser = "";
       log.innerHTML = "";
+      try { localStorage.removeItem(STORE); } catch (e) {}
       const el = addRow("bot");
-      el.textContent = "Chat cleared. What do you want to build or debug?";
+      el.textContent = "New chat. Ask anything — code, a project on any topic, or a normal question.";
       if (regenBtn) regenBtn.disabled = true;
     });
   }
@@ -165,12 +168,32 @@
     });
   }
 
+  try {
+    const saved = JSON.parse(localStorage.getItem(STORE) || "[]");
+    if (Array.isArray(saved) && saved.length) {
+      log.innerHTML = "";
+      saved.forEach(function (turn) {
+        if (!turn || !turn.content) return;
+        history.push({ role: turn.role === "assistant" ? "assistant" : "user", content: turn.content });
+        const el = addRow(turn.role === "assistant" ? "bot" : "user");
+        if (turn.role === "assistant") {
+          el.innerHTML = api.renderMarkdown(turn.content);
+          wireCopy(el);
+        } else {
+          el.textContent = turn.content;
+          lastUser = turn.content;
+        }
+      });
+      if (regenBtn && lastUser) regenBtn.disabled = false;
+    }
+  } catch (e) {}
+
   fetch(api.URL).then(function (r) { return r.json(); }).then(function (data) {
     if (!statusEl || !data) return;
     const bits = [];
     if (data.api) bits.push("API ready");
     else if (data.ollama) bits.push("model ready");
-    else bits.push("model offline, notes still work");
+    else bits.push("notes ready — live model still connecting");
     statusEl.textContent = bits.join(" · ");
     statusEl.classList.toggle("is-model-off", !data.ollama && !data.api);
   }).catch(function () {
