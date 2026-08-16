@@ -228,6 +228,118 @@ const TRACKS = [
 /* ---------- BLOG POSTS ---------------------------------------------- */
 const POSTS = [
   {
+    id: 11,
+    slug: "how-computers-run-code",
+    title: "How a computer actually runs your code",
+    excerpt: "Source is text. An interpreter or compiler turns it into steps. The CPU does the steps. That picture is why error messages exist.",
+    category: "Fundamentals",
+    tags: ["computers", "interpreters", "beginners"],
+    author: "Anshuman Srivastava",
+    date: "2026-08-16",
+    readTime: 6,
+    initials: "CPU",
+    c1: "#1a3d8f", c2: "#c24e12",
+    body: `
+      <p>Beginners often treat a program as a magic box: you type, something happens, or it explodes in red text. The real picture is smaller and more useful.</p>
+      <p><strong>Your file is not running.</strong> Your file is a recipe. Another program — Python, Node, a C compiler, or the JavaScript engine in Chrome — reads that recipe and either follows it or refuses.</p>
+
+      <h2>Three layers</h2>
+      <ol>
+        <li><strong>Source code</strong> — characters in a file. Humans edit this.</li>
+        <li><strong>Runtime or compiler</strong> — turns those characters into operations. This is where syntax errors die.</li>
+        <li><strong>The machine</strong> — copies values in memory, adds, compares, jumps. Loops and <code>if</code> are just those jumps.</li>
+      </ol>
+      <p>When Python says <code>SyntaxError: invalid syntax</code>, layer 2 never finished reading. Nothing “almost ran”. When it says <code>ZeroDivisionError</code>, layer 2 succeeded and layer 3 hit a rule it cannot follow.</p>
+
+      <h2>Interpreted vs compiled, in one minute</h2>
+      <p><code>python hello.py</code> reads and runs in one sitting. <code>gcc hello.c -o hello</code> then <code>./hello</code> is two sittings: translate first, run later. Same idea either way — text becomes steps — different when the translation happens.</p>
+
+      <h2>Why this helps you debug</h2>
+      <p>Ask: did it fail while <em>reading</em> the file, or while <em>doing</em> the instructions? Reading failures are spelling and structure. Doing failures are values: empty lists, the wrong type, a path that does not exist.</p>
+      <blockquote><p>The computer is not angry. It followed a rule and the rule had no next step.</p></blockquote>
+    `
+  },
+  {
+    id: 10,
+    slug: "strings-are-not-numbers",
+    title: "Why \"5\" is not 5",
+    excerpt: "input() and HTML forms give you text. Maths needs numbers. That one mix-up causes a shocking number of first-week bugs.",
+    category: "Fundamentals",
+    tags: ["types", "python", "javascript"],
+    author: "Anshuman Srivastava",
+    date: "2026-08-15",
+    readTime: 5,
+    initials: "TYP",
+    c1: "#146c43", c2: "#1a3d8f",
+    body: `
+      <p>A type is a rule for what you are allowed to do with a value. <code>5</code> is a number. <code>"5"</code> is a picture of a digit — text.</p>
+      <p>In Python, <code>"5" + "5"</code> is <code>"55"</code>. <code>5 + 5</code> is <code>10</code>. <code>"5" + 5</code> is a TypeError. The computer will not guess which you meant.</p>
+      <p>JavaScript is sneakier: <code>"5" + 5</code> becomes <code>"55"</code> because <code>+</code> also glues strings. <code>"5" - 1</code> becomes <code>4</code> because minus is only for numbers, so it converts. That inconsistency is why people say JS is “weird”. It is following rules — just not the ones you expected.</p>
+
+      <h2>The everyday trap</h2>
+      <pre><code>age = input("Age? ")
+if age > 18:      # TypeError: you compared text to a number
+    print("ok")</code></pre>
+      <p>Fix: <code>age = int(input("Age? "))</code>. Same idea in the browser: <code>input.value</code> is always a string; use <code>Number(...)</code> before maths.</p>
+      <blockquote><p>If a comparison looks right and never matches, check the types before you rewrite the logic.</p></blockquote>
+    `
+  },
+  {
+    id: 9,
+    slug: "what-is-an-algorithm",
+    title: "An algorithm is a recipe that cannot shrug",
+    excerpt: "Not a scary maths word — a finite list of exact steps that always finishes. FizzBuzz and sorting a downloads folder both count.",
+    category: "Fundamentals",
+    tags: ["algorithms", "problem-solving"],
+    author: "Anshuman Srivastava",
+    date: "2026-08-14",
+    readTime: 5,
+    initials: "ALG",
+    c1: "#5b21b6", c2: "#1a3d8f",
+    body: `
+      <p>An algorithm is a recipe a machine can follow without asking you what you “kind of meant”.</p>
+      <p>Human recipe: “cook until it looks done.” Machine recipe: “repeat until the temperature is 74, or 20 minutes have passed, whichever first.”</p>
+
+      <h2>You already use them</h2>
+      <ul>
+        <li><strong>FizzBuzz</strong> — for each number, if divisible by 15 print FizzBuzz, else if by 3 print Fizz, else if by 5 print Buzz, else print the number.</li>
+        <li><strong>Caesar cipher</strong> — for each letter, slide it N places, wrap from Z back to A, leave spaces alone.</li>
+        <li><strong>Binary search</strong> — guess the middle, throw away half, repeat. That is why phone books (and sorted lists) can be searched fast.</li>
+      </ul>
+      <p>The skill is not memorising names. It is writing steps that cover the boring cases: empty input, the last item, wrapping past Z.</p>
+      <blockquote><p>If you cannot say the steps out loud without “you know what I mean”, the computer cannot run them either.</p></blockquote>
+    `
+  },
+  {
+    id: 8,
+    slug: "operators-you-need",
+    title: "The operators you actually need in week one",
+    excerpt: "= stores. == asks. + adds or glues. % is remainder. and/or combine tests. That is most of it.",
+    category: "Fundamentals",
+    tags: ["operators", "python", "basics"],
+    author: "Anshuman Srivastava",
+    date: "2026-08-13",
+    readTime: 4,
+    initials: "OP",
+    c1: "#c24e12", c2: "#1a3d8f",
+    body: `
+      <p>Operators are the tiny verbs of a language. You do not need a poster of all of them. You need these.</p>
+      <ul>
+        <li><code>=</code> put this value in that box</li>
+        <li><code>==</code> are these equal? (Python and JS; JS also has <code>===</code> which refuses to convert types)</li>
+        <li><code>!=</code> not equal</li>
+        <li><code>&lt; &gt; &lt;= &gt;=</code> compare numbers (and, carefully, text)</li>
+        <li><code>+</code> add numbers, or glue strings</li>
+        <li><code>-</code> <code>*</code> <code>/</code> minus, times, divide</li>
+        <li><code>%</code> remainder — <code>10 % 3</code> is 1. FizzBuzz lives here</li>
+        <li><code>and</code> / <code>or</code> / <code>not</code> (JS: <code>&amp;&amp;</code> <code>||</code> <code>!</code>)</li>
+      </ul>
+      <p>The classic mix-up is writing <code>if score = 10</code>. That stores 10, then (in many languages) treats it as true. You meant <code>==</code>.</p>
+      <pre><code>if score == 10:
+    print("perfect")</code></pre>
+    `
+  },
+  {
     id: 7,
     slug: "which-language-first",
     title: "Python, JavaScript, or something else? Start here.",
@@ -690,9 +802,97 @@ const FAQS = [
     a: "No. People start at 12 and people start at 50. The only thing that meaningfully predicts progress is doing a little regularly rather than a lot occasionally — twenty minutes most days beats six hours one Saturday."
   },
   {
+    q: "What is the difference between a language and a library?",
+    a: "The language is the grammar: if, for, functions, types. A library is a bag of already-written functions you call (opening files, drawing on a page). You learn the language first; libraries you look up as you need them."
+  },
+  {
+    q: "What does 'running' a program mean?",
+    a: "Another program reads your text file and carries out the instructions. Python's interpreter does that for .py files. A browser's JavaScript engine does it for JS. If it cannot even read the file (syntax error), nothing has run yet."
+  },
+  {
+    q: "Why does my text and my number not add up?",
+    a: "They are different types. input() and form fields give you strings. Convert with int() or float() in Python, Number() in JavaScript, before you do maths. \"5\" + \"5\" is \"55\", not 10."
+  },
+  {
     q: "What if I get stuck?",
-    a: "You will — that's the job, not a sign of failure. Read the error message properly, cut the problem in half to find where it goes wrong, then search the exact error text. If that fails, ask somewhere like Stack Overflow with your error message and the smallest piece of code that reproduces it."
+    a: "You will — that's the job, not a sign of failure. Read the error message properly, cut the problem in half to find where it goes wrong, then search the exact error text. If that fails, ask Ada on this site, or somewhere like Stack Overflow with your error message and the smallest piece of code that reproduces it."
   }
+];
+
+/* ---------- CONCEPTS GUIDE ------------------------------------------ */
+const CONCEPTS = [
+  { id: "source", cat: "Machine", title: "Source code",
+    blurb: "The text you type. A program is a file of characters until something reads it.",
+    more: "Python, JavaScript and HTML files are all source. The computer does not run your thoughts — only what made it onto disk.",
+    example: "print(\"hello\")  # this line is source", link: "learn.html?cat=Python" },
+  { id: "interpreter", cat: "Machine", title: "Interpreter",
+    blurb: "A program that reads source and carries it out immediately.",
+    more: "python hello.py uses CPython. Browsers interpret JavaScript. Syntax errors mean the interpreter could not finish reading.",
+    example: "python hello.py", link: "lesson.html?track=first-program&n=1" },
+  { id: "compiler", cat: "Machine", title: "Compiler",
+    blurb: "Translates source into a runnable file first, then you run that file.",
+    more: "C, Go, Rust and Java work this way. Slower to try ideas, faster at runtime, and many mistakes show up before you execute.",
+    example: "gcc hello.c -o hello\n./hello", link: "post.html?slug=which-language-first" },
+  { id: "variable", cat: "Core", title: "Variable",
+    blurb: "A labelled box. = puts a value in. The next line may put a different value in.",
+    more: "The name is a label, not the value. Two names can point at the same list — then changing one 'changes' both.",
+    example: "score = 0\nscore = score + 10", link: "post.html?slug=variables-are-boxes" },
+  { id: "type", cat: "Core", title: "Type",
+    blurb: "The kind of value: number, text, list, true/false. Types decide which operations are legal.",
+    more: "\"5\" is text. 5 is a number. Mixing them is a TypeError in Python and a silent glue in some JavaScript + uses.",
+    example: "int(\"5\")   # 5\nstr(5)     # \"5\"", link: "post.html?slug=strings-are-not-numbers" },
+  { id: "operator", cat: "Core", title: "Operator",
+    blurb: "Tiny verbs: = stores, == asks, + adds or glues, % is remainder.",
+    more: "if score = 10 is almost always a bug. You meant ==. Learn % early — FizzBuzz and wrapping a Caesar cipher both use it.",
+    example: "if n % 2 == 0:\n    print(\"even\")", link: "post.html?slug=operators-you-need" },
+  { id: "condition", cat: "Core", title: "Condition (if)",
+    blurb: "Pick a path. The test must be True or False (or truthy/falsey).",
+    more: "elif/else if chain extra tests. There is no third path unless you write it. Empty string, 0 and None/null count as false-ish.",
+    example: "if age >= 18:\n    print(\"ok\")\nelse:\n    print(\"no\")", link: "lesson.html?track=thinking-in-loops&n=1" },
+  { id: "loop", cat: "Core", title: "Loop",
+    blurb: "Repeat work. for when you have a collection or a count. while until a test fails.",
+    more: "range(1, 11) is 1…10. A while that never changes its test is infinite — Ctrl+C stops it.",
+    example: "for name in names:\n    print(name)", link: "post.html?slug=three-loops" },
+  { id: "function", cat: "Core", title: "Function",
+    blurb: "A named chunk of work. Arguments go in, return sends a value back.",
+    more: "print shows a human. return talks to the rest of your code. Forget return and you get None.",
+    example: "def greet(name):\n    return \"Hi \" + name", link: "learn.html?cat=Python" },
+  { id: "list", cat: "Core", title: "List / array",
+    blurb: "Many values in order. Index 0 is the first. The last of four items is index 3.",
+    more: "Off-by-one errors are asking for index 4. append/push adds at the end. Loops and lists are a pair.",
+    example: "planets[0]  # first\nlen(planets)", link: "learn.html?cat=Python" },
+  { id: "algorithm", cat: "Core", title: "Algorithm",
+    blurb: "A finite list of exact steps. No shrugging. FizzBuzz and a cipher both count.",
+    more: "Write the boring cases: empty input, the last item, wrap from Z to A. If you cannot say it out loud, you cannot code it yet.",
+    example: "# for each n: Fizz / Buzz / number", link: "post.html?slug=what-is-an-algorithm" },
+  { id: "error", cat: "Debug", title: "Error / traceback",
+    blurb: "Read from the bottom: type of problem, then the line, then the file.",
+    more: "The line is where it fell over, not always the cause. SyntaxError = could not read. TypeError = illegal operation on a value.",
+    example: "ZeroDivisionError: division by zero", link: "post.html?slug=read-the-error-message" },
+  { id: "html", cat: "Web", title: "HTML",
+    blurb: "Structure: headings, paragraphs, links. Not a programming language — no if, no loop.",
+    more: "Pick tags for meaning. h1 is the main heading, not 'big text'. Browsers, screen readers and search engines all use that meaning.",
+    example: "<h1>Title</h1>\n<p>A paragraph.</p>", link: "lesson.html?track=first-web-page&n=1" },
+  { id: "css", cat: "Web", title: "CSS",
+    blurb: "Looks: colour, space, layout. Flexbox for one direction, grid for two.",
+    more: "Selectors pick HTML; declarations style it. Variables at the top let you retheme a whole page from one line.",
+    example: "h1 { color: navy; }", link: "lesson.html?track=first-web-page&n=2" },
+  { id: "javascript", cat: "Web", title: "JavaScript",
+    blurb: "Decisions in the browser. Find an element, listen, change it.",
+    more: "Put script before </body> so the page exists first. console.log + F12 is your print().",
+    example: "btn.addEventListener(\"click\", ...)", link: "lesson.html?track=interactive-pages&n=1" },
+  { id: "git", cat: "Tools", title: "Git commit",
+    blurb: "A snapshot of the whole project plus a note about why.",
+    more: "status, add, commit, push, pull cover daily use. .gitignore before the first commit so secrets never enter history.",
+    example: "git commit -m \"fix empty-folder crash\"", link: "post.html?slug=first-ten-git-commands" },
+  { id: "file", cat: "Tools", title: "Files",
+    blurb: "with open(...) as f closes even if you crash. Mode w wipes the file instantly.",
+    more: "Use a for append. Dry-run anything that deletes or moves. Paths are text until pathlib treats them as paths.",
+    example: "with open(\"n.txt\") as f:\n    print(f.read())", link: "lesson.html?track=files-and-data&n=1" },
+  { id: "cipher", cat: "Projects", title: "Caesar cipher",
+    blurb: "Slide each letter N places. HELLO + 3 = KHOOR. A toy with 26 keys.",
+    more: "Letters are numbers underneath (A=0). Wrapping uses remainder. Good first project because you can check it by hand.",
+    example: "HELLO + 3 → KHOOR", link: "lesson.html?track=secret-messages&n=1" }
 ];
 
 /* Publish to the page for the other scripts. */
@@ -700,3 +900,4 @@ window.TRACKS = TRACKS;
 window.POSTS = POSTS;
 window.QUOTES = QUOTES;
 window.FAQS = FAQS;
+window.CONCEPTS = CONCEPTS;

@@ -270,10 +270,28 @@ TOPICS = [
         "Secret message template for the cipher project. Practice → Web Builder.",
     ),
     (
+        ["algorithm", "fizzbuzz recipe", "exact steps"],
+        "An algorithm is a recipe a machine can follow without guessing — finite, exact steps. "
+        "FizzBuzz, sorting a folder, and a Caesar cipher all count. If you cannot say the steps "
+        "out loud, you cannot code them yet. Concepts guide on Semicolon.",
+    ),
+    (
+        ["compiler", "interpreter", "how code runs", "runtime"],
+        "Your file is a recipe. An interpreter (Python, the browser) reads and follows it now. "
+        "A compiler (C, Go) translates first, then you run the result. SyntaxError means it could "
+        "not even read the file. TypeError means it read it, then hit an illegal operation.",
+    ),
+    (
+        ["operator", "modulo", "===", "not equal"],
+        "= stores. == asks. % is remainder — 10 % 3 is 1, which is how FizzBuzz works. "
+        "JavaScript also has === which refuses to convert types. if score = 10 is almost always a bug.",
+    ),
+    (
         ["what can you", "help me", "what do you know"],
         "Ask about variables, loops, errors, Python install, HTML/CSS/JS, Git, files, "
         "localStorage, functions, lists, if vs ==, input/int, indent, deploy, JSON, "
-        "the Caesar cipher, or any Semicolon lesson. One stuck thing at a time.",
+        "types, algorithms, interpreters, the Caesar cipher, or any Semicolon lesson. "
+        "One stuck thing at a time.",
     ),
 ]
 

@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Semicolon — Learn to code from zero</title>
-  <meta name="description" content="A free, plain-English introduction to programming. What code is, what it's used for, and how to write your first working program — no experience needed.">
+  <meta name="description" content="A free, plain-English introduction to programming: what code is, how computers run it, Python, HTML, CSS, JavaScript, Git, and your first working programs.">
   <meta name="keywords" content="learn to code, programming for beginners, python tutorial, html css javascript, coding for students">
   <meta name="author" content="Anshuman Srivastava">
 
@@ -43,6 +43,7 @@
           <li><a href="pages/learn.html?cat=Projects">Projects <small>Build and ship something real</small></a></li>
         </ul>
       </li>
+      <li><a class="nav-link" href="pages/concepts.html">Concepts</a></li>
       <li><a class="nav-link" href="pages/playground.html">Practice</a></li>
       <li><a class="nav-link" href="pages/ada.html">Ada</a></li>
       <li><a class="nav-link" href="pages/blog.html">Blog</a></li>
@@ -64,12 +65,12 @@
   <section class="hero">
     <div class="container hero-grid">
       <div>
-        <span class="pill"><b>FREE</b> No account needed</span>
-        <h1>Code is just<br>instructions you<br><span style="color:var(--primary)">write down</span>.</h1>
+        <span class="pill"><b>FREE</b> Plain English · no account</span>
+        <h1>Learn what code <em>is</em>,<br>then write some.</h1>
         <p class="lede">
-          Every app, website and game you've used is somebody telling a computer
-          what to do, one step at a time. That's all programming is — and you can
-          learn to do it. Start with zero experience.
+          Programming is writing exact instructions for a machine that does
+          exactly what you said — including the mistakes. Semicolon teaches the
+          ideas (variables, loops, errors, the web) and then lets you try them.
         </p>
         <div class="btn-row">
           <a class="btn btn--primary" href="pages/learn.html">
@@ -81,7 +82,7 @@
 
         <div class="hero-stats">
           <div><span class="n">10</span><span class="l">Learning tracks</span></div>
-          <div><span class="n">27</span><span class="l">Lessons</span></div>
+          <div><span class="n">31</span><span class="l">Lessons</span></div>
           <div><span class="n">£0</span><span class="l">Cost, forever</span></div>
         </div>
       </div>
@@ -142,6 +143,72 @@
           <h3>Name a recipe</h3>
           <p>A function is a set of steps with a name. Write it once, use it anywhere,
              fix it in one place when it's wrong.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================= HOW A PROGRAM RUNS =================== -->
+  <section class="section" id="how-code-runs">
+    <div class="container">
+      <div class="section-head">
+        <span class="eyebrow">How coding works</span>
+        <h2>From a file you typed to something happening</h2>
+        <p>A computer does not “understand” English. It follows a short pipeline.
+           Once you can picture that pipeline, errors stop looking like magic.</p>
+      </div>
+      <div class="run-steps">
+        <article class="run-step">
+          <h3>You write source</h3>
+          <p>A <code>.py</code> or <code>.js</code> file is just text. The interesting part is that every character is a rule, including the spaces in Python.</p>
+        </article>
+        <article class="run-step">
+          <h3>A program reads it</h3>
+          <p>Python’s interpreter (or a compiler, or the browser) turns that text into steps the machine can run. If a bracket is missing, it stops here and prints an error.</p>
+        </article>
+        <article class="run-step">
+          <h3>The CPU does work</h3>
+          <p>Add numbers, copy values in memory, jump to another instruction. Loops and <code>if</code> are just “do this again” and “skip that bit”.</p>
+        </article>
+        <article class="run-step">
+          <h3>You see a result</h3>
+          <p>Print to the terminal, paint a web page, write a file. If the result is wrong but there is no crash, the instructions were legal — and still not what you meant.</p>
+        </article>
+      </div>
+      <div class="btn-row btn-row--center" style="margin-top:2rem">
+        <a class="btn btn--ghost" href="pages/concepts.html">Open the coding concepts guide</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================= LANGUAGES ============================ -->
+  <section class="section section--alt" id="languages">
+    <div class="container">
+      <div class="section-head">
+        <span class="eyebrow">The tools</span>
+        <h2>What each language is actually for</h2>
+        <p>You do not need all of them. You need one that matches what you want to make.</p>
+      </div>
+      <div class="lang-map">
+        <article class="lang-card">
+          <span class="tag tag--primary">Start here</span>
+          <h3>Python</h3>
+          <p>Readable, useful the same day. Automation, data, scripts, learning the ideas. <code>python hello.py</code> runs the file.</p>
+        </article>
+        <article class="lang-card">
+          <span class="tag tag--accent">The web</span>
+          <h3>HTML, CSS, JavaScript</h3>
+          <p>HTML is structure. CSS is looks. JavaScript is the only language browsers run for decisions, clicks and live updates.</p>
+        </article>
+        <article class="lang-card">
+          <span class="tag">Memory</span>
+          <h3>Git</h3>
+          <p>Not a language — a save-history for your project. Commit when something works. Write <code>.gitignore</code> first.</p>
+        </article>
+        <article class="lang-card">
+          <span class="tag">Later</span>
+          <h3>SQL, C, and friends</h3>
+          <p>SQL asks questions of tables of data. C talks close to the machine. Add them when a project actually needs them.</p>
         </article>
       </div>
     </div>
@@ -305,6 +372,7 @@
           <li><a href="pages/about.html">About</a></li>
           <li><a href="pages/blog.html">Blog</a></li>
           <li><a href="pages/contact.html">Contact</a></li>
+          <li><a href="pages/concepts.html">Concepts</a></li>
           <li><a href="pages/learn.html">All tracks</a></li>
         </ul>
       </div>
