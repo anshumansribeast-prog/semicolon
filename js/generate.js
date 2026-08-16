@@ -22,6 +22,12 @@
   var go = document.getElementById("genGo");
   var stop = document.getElementById("genStop");
 
+  function persistForPractice() {
+    saveCurrent();
+    if (window.SemiGen && window.SemiGen.save) {
+      window.SemiGen.save({ prompt: lastPrompt, language: lang(), files: files });
+    }
+  }
   function lang() { return document.getElementById("genLang").value; }
   function showMsg(text, bad) {
     msg.textContent = text || "";
@@ -123,6 +129,7 @@
     files = localFiles;
     renderTree();
     runPreview();
+    persistForPractice();
     if (work && work.scrollIntoView) work.scrollIntoView({ behavior: "smooth", block: "start" });
     showMsg("Code is in the editor. Preview is on the right.");
     go.disabled = true;
@@ -148,6 +155,7 @@
     go.disabled = false;
     stop.hidden = true;
     if (data.aborted) {
+      persistForPractice();
       showMsg("Code is ready in the editor (Ada's live model was slow, so this version was built here).");
       return;
     }
@@ -156,6 +164,7 @@
       renderTree();
       runPreview();
     }
+    persistForPractice();
     genHistory.push({ role: "user", content: prompt });
     genHistory.push({ role: "assistant", content: data.reply || "Generated files." });
     showMsg(data.reply || "Code generated. Use Run / Preview, Copy, or Download.");
@@ -195,6 +204,12 @@
     saveCurrent();
   });
   document.getElementById("actPreview").addEventListener("click", runPreview);
+  var practiceBtn = document.getElementById("actPractice");
+  if (practiceBtn) {
+    practiceBtn.addEventListener("click", function (e) {
+      persistForPractice();
+    });
+  }
 
   async function assist(mode) {
     saveCurrent();

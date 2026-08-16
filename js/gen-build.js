@@ -235,5 +235,57 @@
     return webProject(prompt, language, output);
   }
 
-  w.SemiGen = { build: build, titleOf: titleOf, kindOf: kindOf };
+  w.SemiGen = { build: build, titleOf: titleOf, kindOf: kindOf, toWeb: toWeb, save: save, load: load };
+
+  var STORE = "semicolon_gen_run_v1";
+
+  function toWeb(fileList) {
+    var html = "", css = "", js = "";
+    (fileList || []).forEach(function (f) {
+      var p = String(f.path || "").toLowerCase();
+      var c = f.content || "";
+      if (/\.css$/.test(p)) css += c + "\n";
+      else if (/\.js$/.test(p)) js += c + "\n";
+      else if (/\.html?$/.test(p)) {
+        var styles = c.match(/<style[^>]*>([\s\S]*?)<\/style>/gi) || [];
+        styles.forEach(function (block) {
+          var inner = block.replace(/^<style[^>]*>/i, "").replace(/<\/style>$/i, "");
+          css += inner + "\n";
+        });
+        var scripts = c.match(/<script(?![^>]*\bsrc=)[^>]*>([\s\S]*?)<\/script>/gi) || [];
+        scripts.forEach(function (block) {
+          var inner = block.replace(/^<script[^>]*>/i, "").replace(/<\/script>$/i, "");
+          js += inner + "\n";
+        });
+        var body = c.match(/<body[^>]*>([\s\S]*?)<\/body>/i);
+        var chunk = body ? body[1] : c;
+        chunk = chunk.replace(/<script[\s\S]*?<\/script>/gi, "").replace(/<style[\s\S]*?<\/style>/gi, "").trim();
+        html += chunk + "\n";
+      }
+    });
+    if (!html.trim()) html = "<h1>Generated project</h1>\n<p>Press Run to try the script.</p>\n";
+    return { html: html, css: css, js: js };
+  }
+
+  function save(payload) {
+    try {
+      localStorage.setItem(STORE, JSON.stringify({
+        prompt: payload.prompt || "",
+        language: payload.language || "HTML",
+        files: payload.files || [],
+        savedAt: Date.now()
+      }));
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  function load() {
+    try {
+      return JSON.parse(localStorage.getItem(STORE) || "null");
+    } catch (e) {
+      return null;
+    }
+  }
 })(window);
