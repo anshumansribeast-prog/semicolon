@@ -301,8 +301,10 @@ def ask_model(system, prompt, history=None):
 def fallback_tutor(message, history):
     if looks_like_greeting(message):
         return greeting_reply()
-    note, score = ada_knowledge.lookup(message, min_score=2)
-    if note and score >= 3:
+    q = message.lower()
+    words = message.split()
+    note, score = ada_knowledge.lookup(message, min_score=5)
+    if note and score >= 6 and len(words) < 14 and "joke" not in q and "story" not in q:
         return (
             "The live model is busy, so this is from Semicolon's notes — still yours to use.\n\n%s"
             % note
@@ -312,16 +314,20 @@ def fallback_tutor(message, history):
         if turn["role"] == "assistant" and turn["content"]:
             last = turn["content"][:900]
             break
+    bits = [
+        "I'm still here, %s. The live model is warming up, so this reply is shorter than usual."
+        % VISITOR_NAME
+    ]
+    if "joke" in q:
+        bits.append("Quick one: a SQL query walks into a bar, walks up to two tables, and asks, \"May I join you?\"")
+    if any(k in q for k in ("hello", "python", "print")):
+        bits.append("```python\nprint(\"Hello, %s\")\n```" % VISITOR_NAME)
     if last:
-        return (
-            "I still have our thread. The model hiccuped on that last send. "
-            "Ask me again, or open the Code Generator and I'll write files for any topic.\n\n"
-            "Last thing I had:\n%s" % last
-        )
-    return (
-        "I can still help. Describe what you want — any topic — and I'll draft code in the "
-        "Code Generator, or try the question once more here."
+        bits.append("I still have our thread. Last thing I had:\n%s" % last)
+    bits.append(
+        "Ask again in a moment, or open the Code Generator and describe any topic — files will appear in the editor."
     )
+    return "\n\n".join(bits)
 
 
 FILE_MARK = re.compile(
