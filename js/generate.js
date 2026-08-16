@@ -1,8 +1,9 @@
 /* Semicolon Code Generator — same Ada backend as chat. */
 (function () {
   "use strict";
+  if (!document.getElementById("genForm")) return;
   var api = window.AdaAPI;
-  if (!api || !document.getElementById("genForm")) return;
+  var buildLocal = window.SemiGen && window.SemiGen.build;
 
   var files = [];
   var current = 0;
@@ -110,38 +111,55 @@
 
   async function generate() {
     var prompt = document.getElementById("genPrompt").value.trim();
-    if (!prompt) return;
+    if (!prompt) {
+      showMsg("Type what you want to build, then press Generate code.", true);
+      document.getElementById("genPrompt").focus();
+      return;
+    }
     lastPrompt = prompt;
+    var localFiles = buildLocal
+      ? buildLocal(prompt, lang(), document.getElementById("genFw").value, document.getElementById("genDiff").value, document.getElementById("genOut").value)
+      : [{ path: "index.html", content: "<h1>" + prompt.replace(/</g, "") + "</h1>" }];
+    files = localFiles;
+    renderTree();
+    runPreview();
+    if (work && work.scrollIntoView) work.scrollIntoView({ behavior: "smooth", block: "start" });
+    showMsg("Code is in the editor. Preview is on the right.");
     go.disabled = true;
     stop.hidden = false;
-    showMsg("Ada is writing…");
     abort = new AbortController();
-    var data = await api.ask({
-      mode: "generate",
-      message: prompt,
-      language: lang(),
-      framework: document.getElementById("genFw").value,
-      difficulty: document.getElementById("genDiff").value,
-      output: document.getElementById("genOut").value,
-      history: genHistory.slice(-12),
-      files: files.map(function (x) { return { path: x.path, content: (x.content || "").slice(0, 4000) }; }),
-      abort: abort
-    });
+    var timer = setTimeout(function () { if (abort) abort.abort(); }, 8000);
+    var data = { files: localFiles, reply: "Code generated.", aborted: false };
+    if (api) {
+      data = await api.ask({
+        mode: "generate",
+        message: prompt,
+        language: lang(),
+        framework: document.getElementById("genFw").value,
+        difficulty: document.getElementById("genDiff").value,
+        output: document.getElementById("genOut").value,
+        history: genHistory.slice(-12),
+        files: files.map(function (x) { return { path: x.path, content: (x.content || "").slice(0, 2500) }; }),
+        abort: abort
+      });
+    }
+    clearTimeout(timer);
     abort = null;
     go.disabled = false;
     stop.hidden = true;
-    if (data.aborted) { showMsg("Stopped."); return; }
-    if (data.files && data.files.length) {
-      files = data.files;
-      genHistory.push({ role: "user", content: prompt });
-      genHistory.push({ role: "assistant", content: data.reply || "Generated files." });
-      renderTree();
-      showMsg(data.reply || "Ready.");
-      explain.hidden = true;
-      runPreview();
-    } else {
-      showMsg(data.reply || api.FAIL, true);
+    if (data.aborted) {
+      showMsg("Code is ready in the editor (Ada's live model was slow, so this version was built here).");
+      return;
     }
+    if (data.files && data.files.length && data.source && data.source !== "local") {
+      files = data.files;
+      renderTree();
+      runPreview();
+    }
+    genHistory.push({ role: "user", content: prompt });
+    genHistory.push({ role: "assistant", content: data.reply || "Generated files." });
+    showMsg(data.reply || "Code generated. Use Run / Preview, Copy, or Download.");
+    explain.hidden = true;
   }
 
   document.getElementById("genForm").addEventListener("submit", function (e) {
@@ -182,6 +200,7 @@
     saveCurrent();
     var f = files[current];
     if (!f) return;
+    if (!api) { showMsg("Live Ada is not loaded.", true); return; }
     showMsg("Ada is reading the project…");
     var data = await api.ask({
       mode: mode,
@@ -328,6 +347,10 @@
       chatRow("user", text);
       saveCurrent();
       var thinking = chatRow("bot", "<p>…</p>");
+      if (!api) {
+        thinking.textContent = "Code is already in the editor. The live chat needs /api/ada.";
+        return;
+      }
       var data = await api.ask({
         mode: "chat",
         message: text,

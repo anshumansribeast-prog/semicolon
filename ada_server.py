@@ -770,11 +770,13 @@ class AdaHandler(SimpleHTTPRequestHandler):
             )
             reply = ""
             source = "local"
-            try:
-                reply, source = ask_model(GENERATE_PROMPT, spec, history)
-            except (URLError, TimeoutError, ValueError, OSError, HTTPError):
-                reply = ""
-                source = "local"
+            use_model = bool(AI_API_KEY) or ollama_up()
+            if use_model:
+                try:
+                    reply, source = ask_model(GENERATE_PROMPT, spec, history)
+                except (URLError, TimeoutError, ValueError, OSError, HTTPError):
+                    reply = ""
+                    source = "local"
             parsed = extract_json(reply) if reply else None
             out_files = normalize_files(parsed, reply, language)
             out_files, used_local = merge_or_local(out_files, message, language, framework, difficulty, output)
