@@ -1,15 +1,12 @@
-"""Ada's brain — a tiny HTTP server for Semicolon's Ada chat.
+"""Ada's brain — HTTP API for Semicolon chat, code generation, and practice.
 
-Serves the site and /api/ada on one port. The browser talks to the same
-origin, so Ada works when you visit the page through this server.
-
-Run:  python ada_server.py     (needs `ollama serve` already running)
-
-Zero extra dependencies: stdlib only.
+Stdlib only. Talks to Ollama on the server, or an OpenAI-compatible API
+when AI_API_KEY is set. Keys never go to the browser.
 """
 
 import json
 import os
+import re
 import socket
 import struct
 import threading
@@ -25,44 +22,89 @@ PORT = int(os.environ.get("ADA_PORT", "8420"))
 ROOT = os.path.dirname(os.path.abspath(__file__))
 OLLAMA_URL = os.environ.get("OLLAMA_URL", "http://127.0.0.1:11434/api/generate")
 OLLAMA_MODEL = os.environ.get("OLLAMA_MODEL", "llama3.2:3b")
+AI_API_URL = os.environ.get("AI_API_URL", "").strip()
+AI_API_KEY = os.environ.get("AI_API_KEY", "").strip()
+AI_MODEL = os.environ.get("AI_MODEL", "").strip() or OLLAMA_MODEL
 VISITOR_NAME = os.environ.get("ADA_VISITOR_NAME", "AnshX")
-SYSTEM_PROMPT = f"""You are Ada, the coding tutor on Semicolon (https://semicolon.punah.pro).
-
-Who you are talking to:
-The person chatting is {VISITOR_NAME} (Anshuman Srivastava), who built this site.
-When they say hi, hello, hey, or similar, greet them by name: "Hey {VISITOR_NAME}!"
-Never call them Student. Always use {VISITOR_NAME}.
-
-What Semicolon is:
-Free, no-framework learn-to-code site: HTML, CSS and JavaScript only. About 130 KB.
-Live at https://semicolon.punah.pro. 10 tracks, 31 lessons, a practice area, Web Builder, and you.
-
-Tracks (teach these by name when relevant):
-1. Your First Program — install Python, PATH, print, variables, input/int, temperature converter.
-2. Thinking in Loops — for, while, range end excluded, infinite loops, Ctrl+C.
-3. First Web Page — HTML structure vs CSS looks, flexbox vs grid.
-4. Interactive Pages — getElementById, addEventListener, textContent, localStorage + JSON.
-5. Files and Data — with open, mode w wipes, JSON.
-6. Git Basics — .gitignore first, add, commit, git restore.
-7. Debugging — read errors bottom-up, one change at a time, rubber duck.
-8. Ship a Real Project — static hosting serves files, it never runs a program.
-9. Choosing a Language — Python default, JS for the browser, concepts over brands.
-10. Secret Messages — Caesar cipher, HELLO + 3 = KHOOR, letters as numbers.
-
-Core teaching (keep these accurate):
-- Variable = labelled box. = stores, == asks.
-- input() is always text; int() for maths.
-- Python indent is 4 spaces, never mix tabs.
-- NameError = unknown name. TypeError = wrong type. NoneType = something returned nothing.
-- Lists/arrays index from 0.
-- print vs return. console.log in the browser (F12).
-- You explain simply, point toward the fix, and only paste full solutions if asked.
-- Keep replies short (2-5 sentences), plain text, no markdown, no bullet asterisks.
-
-If they ask who they are: they are {VISITOR_NAME}. If they ask who you are: Ada, Semicolon's tutor.
-"""
+FAIL_MSG = "ADA couldn't complete that request. Please try again."
+HISTORY_TURNS = 16
+TURN_CHARS = 4000
 
 ada_knowledge.VISITOR = VISITOR_NAME
+
+MENTOR_PROMPT = f"""You are Ada, the AI coding mentor inside Semicolon (https://semicolon.punah.pro).
+
+Semicolon is a learn-to-code platform. Tagline: Learn. Code. Build.
+You are NOT a generic chatbot. Coding is your main job. You may answer ordinary
+questions briefly, then steer back to building or learning.
+
+Who you are talking to: {VISITOR_NAME}. Greet them by that name. Never say Student.
+
+You help with: Python, JavaScript, HTML, CSS, C, C++, Java, SQL, TypeScript, React,
+Git, GitHub, algorithms, data structures, debugging, web development, and beginner
+computer science. You know Semicolon's 10 tracks and 31 lessons.
+
+When they ask for code:
+1. Understand the requirement.
+2. Pick a sensible language if they did not.
+3. Produce working code in markdown fenced blocks with a language tag.
+4. Explain the important parts in plain English.
+5. Say how to run it when useful.
+6. Warn about real mistakes or limits. Do not invent errors.
+
+When they paste broken code:
+1. Name the actual problem.
+2. Explain the cause.
+3. Show corrected code.
+4. Explain the fix.
+
+Follow-ups modify the previous example — do not start from zero.
+Use markdown. Keep explanations clear. Prefer complete small examples over essays.
+If you are unsure, say so. Never reveal API keys, stack traces, or server paths.
+"""
+
+GENERATE_PROMPT = """You are Ada generating code for Semicolon's Code Generator.
+
+Return ONLY valid JSON (no markdown wrapper) with this shape:
+{
+  "title": "short project name",
+  "summary": "one or two sentences",
+  "files": [
+    {"path": "index.html", "content": "full file contents"},
+    {"path": "style.css", "content": "..."},
+    {"path": "script.js", "content": "..."},
+    {"path": "README.md", "content": "how to run it"}
+  ]
+}
+
+Rules:
+- Working code only. Match the requested language and difficulty.
+- If output is "single", one main file plus README.md.
+- If output is "project" or the user asked for a website, use multiple files
+  (index.html, style.css, script.js, README.md) unless another language was chosen.
+- Python/C/Java/SQL: one or two source files plus README.md. Do not invent a server.
+- HTML/CSS/JS may be previewed in a browser. Other languages are shown, not executed.
+- Escape JSON strings correctly.
+"""
+
+CHALLENGE_PROMPT = """You are Ada writing a coding challenge for Semicolon Practice.
+
+Return ONLY valid JSON:
+{
+  "title": "short title",
+  "language": "javascript or python etc",
+  "difficulty": "beginner",
+  "topic": "loops",
+  "description": "what to build, 2-4 sentences",
+  "example_in": "example input",
+  "example_out": "example output",
+  "starter": "starter code as a string",
+  "hints": ["small clue 1", "small clue 2"],
+  "solution": "working solution code"
+}
+
+Keep it solvable. Do not contradict the examples. Beginner challenges stay small.
+"""
 
 
 def looks_like_greeting(message):
@@ -78,14 +120,27 @@ def looks_like_greeting(message):
     return text in greetings or text.startswith("hi ") or text.startswith("hello ") or text.startswith("hey ")
 
 
+def looks_like_code_task(message):
+    q = message.lower()
+    keys = (
+        "write ", "write a", "create a", "generate", "function", "class ",
+        "debug", "fix ", "traceback", "```", "make it", "add ", "implement",
+        "code for", "html", "css", "javascript", "python", "sql", "react",
+        "compile", "algorithm", "sort ", "loop", "array", "refactor",
+        "improve", "explain this code", "how do i", "how to",
+    )
+    return any(k in q for k in keys) or "\n" in message
+
+
 def greeting_reply():
     return (
-        f"Hey {VISITOR_NAME}! I'm Ada. What do you want to build or debug today?"
+        "Hey %s — I'm Ada, Semicolon's coding mentor. Ask me to explain an idea, "
+        "debug a snippet, or generate a small project. Follow-ups stay in context."
+        % VISITOR_NAME
     )
 
 
 def docker_gateway_url():
-    """Host IP as seen from inside a Docker bridge network."""
     try:
         with open("/proc/net/route") as fh:
             for line in fh:
@@ -116,7 +171,6 @@ def ollama_candidates():
 
 
 def resolve_host(host, timeout=0.4):
-    """DNS can hang on names like ollama inside a lone container. Cap it."""
     box = []
 
     def run():
@@ -150,11 +204,59 @@ def tcp_open(url, timeout=1.2):
         return False
 
 
-def ask_ollama(prompt):
+def clip_history(history):
+    out = []
+    for turn in (history or [])[-HISTORY_TURNS:]:
+        role = turn.get("role") or "user"
+        content = (turn.get("content") or "")[:TURN_CHARS]
+        out.append({"role": role, "content": content})
+    return out
+
+
+def history_prompt(history, message):
+    prompt = ""
+    for turn in clip_history(history):
+        who = VISITOR_NAME if turn["role"] == "user" else "Ada"
+        prompt += "%s: %s\n" % (who, turn["content"])
+    prompt += "%s: %s\nAda:" % (VISITOR_NAME, message)
+    return prompt
+
+
+def ask_openai_compatible(system, prompt):
+    if not AI_API_KEY or not AI_API_URL:
+        return None
+    url = AI_API_URL
+    if not url.endswith("/chat/completions") and not url.endswith("/v1/chat/completions"):
+        url = url.rstrip("/") + "/chat/completions"
+    payload = json.dumps({
+        "model": AI_MODEL,
+        "messages": [
+            {"role": "system", "content": system},
+            {"role": "user", "content": prompt},
+        ],
+        "temperature": 0.4,
+    }).encode()
+    req = urlreq.Request(
+        url,
+        data=payload,
+        headers={
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + AI_API_KEY,
+        },
+    )
+    with urlreq.urlopen(req, timeout=90) as resp:
+        data = json.loads(resp.read())
+        choices = data.get("choices") or []
+        if not choices:
+            return None
+        return (choices[0].get("message") or {}).get("content", "").strip() or None
+
+
+def ask_ollama(system, prompt):
     payload = json.dumps({
         "model": OLLAMA_MODEL,
         "prompt": prompt,
-        "system": SYSTEM_PROMPT,
+        "system": system,
         "stream": False,
     }).encode()
     last_error = None
@@ -177,12 +279,105 @@ def ask_ollama(prompt):
     raise last_error or URLError("no Ollama URL to try")
 
 
+def ask_model(system, prompt):
+    if AI_API_KEY:
+        try:
+            reply = ask_openai_compatible(system, prompt)
+            if reply:
+                return reply, "api"
+        except (URLError, TimeoutError, ValueError, OSError, HTTPError, KeyError):
+            pass
+    reply = ask_ollama(system, prompt)
+    return reply, "ollama"
+
+
 def fallback_tutor(message):
-    """Answer from Ada's written notes (scored keyword bank)."""
     note, score = ada_knowledge.lookup(message, min_score=2)
     if note:
         return "Hey %s — %s" % (VISITOR_NAME, note)
     return ada_knowledge.generic_fallback()
+
+
+def extract_json(text):
+    if not text:
+        return None
+    text = text.strip()
+    if text.startswith("```"):
+        text = re.sub(r"^```(?:json)?\s*", "", text)
+        text = re.sub(r"\s*```$", "", text)
+    try:
+        return json.loads(text)
+    except ValueError:
+        pass
+    start = text.find("{")
+    end = text.rfind("}")
+    if start >= 0 and end > start:
+        try:
+            return json.loads(text[start:end + 1])
+        except ValueError:
+            return None
+    return None
+
+
+def files_from_markdown(text):
+    files = []
+    pattern = re.compile(r"```(\w+)?\n(.*?)```", re.DOTALL)
+    n = 0
+    for lang, body in pattern.findall(text or ""):
+        n += 1
+        ext = {
+            "html": "html", "css": "css", "javascript": "js", "js": "js",
+            "python": "py", "py": "py", "c": "c", "cpp": "cpp", "java": "java",
+            "sql": "sql", "ts": "ts", "typescript": "ts", "json": "json",
+            "md": "md", "markdown": "md",
+        }.get((lang or "").lower(), "txt")
+        files.append({"path": "file-%s.%s" % (n, ext), "content": body.strip("\n")})
+    return files
+
+
+def normalize_files(obj, fallback_text, language):
+    files = []
+    if isinstance(obj, dict):
+        raw = obj.get("files") or []
+        for item in raw:
+            if not isinstance(item, dict):
+                continue
+            path = (item.get("path") or item.get("name") or "").strip() or "main.txt"
+            content = item.get("content")
+            if content is None:
+                continue
+            files.append({"path": path.replace("..", ""), "content": str(content)})
+        if not files and obj.get("code"):
+            files.append({"path": default_name(language), "content": str(obj.get("code"))})
+    if not files:
+        md = files_from_markdown(fallback_text)
+        if md:
+            files = md
+        else:
+            files = [{"path": default_name(language), "content": fallback_text or ""}]
+    return files
+
+
+def default_name(language):
+    return {
+        "html": "index.html", "css": "style.css", "javascript": "script.js",
+        "python": "main.py", "c": "main.c", "c++": "main.cpp", "java": "Main.java",
+        "sql": "query.sql", "typescript": "main.ts",
+    }.get((language or "txt").lower(), "main.txt")
+
+
+def ollama_up():
+    for url in ollama_candidates():
+        if not tcp_open(url, timeout=0.8):
+            continue
+        tags = url.replace("/api/generate", "/api/tags")
+        try:
+            with urlreq.urlopen(tags, timeout=2) as resp:
+                if resp.status == 200:
+                    return True
+        except (URLError, TimeoutError, OSError, ValueError):
+            continue
+    return False
 
 
 class AdaHandler(SimpleHTTPRequestHandler):
@@ -201,22 +396,11 @@ class AdaHandler(SimpleHTTPRequestHandler):
 
     def do_GET(self):
         if urlparse(self.path).path == "/api/ada":
-            ollama_ok = False
-            for url in ollama_candidates():
-                if not tcp_open(url, timeout=0.8):
-                    continue
-                tags = url.replace("/api/generate", "/api/tags")
-                try:
-                    with urlreq.urlopen(tags, timeout=2) as resp:
-                        if resp.status == 200:
-                            ollama_ok = True
-                            break
-                except (URLError, TimeoutError, OSError, ValueError):
-                    continue
             self._reply(200, {
                 "ok": True,
-                "model": OLLAMA_MODEL,
-                "ollama": ollama_ok,
+                "model": AI_MODEL if AI_API_KEY else OLLAMA_MODEL,
+                "ollama": ollama_up(),
+                "api": bool(AI_API_KEY),
                 "visitor": VISITOR_NAME,
                 "notes": len(ada_knowledge.TOPICS),
             })
@@ -224,51 +408,121 @@ class AdaHandler(SimpleHTTPRequestHandler):
         super().do_GET()
 
     def do_POST(self):
-        if urlparse(self.path).path != "/api/ada":
+        path = urlparse(self.path).path
+        if path not in ("/api/ada", "/api/ada/generate"):
             self.send_response(404)
             self._cors()
             self.end_headers()
             return
 
         length = int(self.headers.get("Content-Length", 0))
+        if length > 400000:
+            self._reply(413, {"error": FAIL_MSG})
+            return
         try:
             body = json.loads(self.rfile.read(length) or b"{}")
         except ValueError:
             body = {}
-        message = (body.get("message") or "").strip()
+
+        mode = (body.get("mode") or "chat").strip().lower()
+        if path.endswith("/generate"):
+            mode = "generate"
+        message = (body.get("message") or body.get("prompt") or "").strip()
         history = body.get("history") or []
+        language = (body.get("language") or "javascript").strip()
+        framework = (body.get("framework") or "none").strip()
+        difficulty = (body.get("difficulty") or "beginner").strip()
+        output = (body.get("output") or "single").strip()
+        files = body.get("files") or []
 
         if not message:
-            self._reply(400, {"error": "empty message"})
+            self._reply(400, {"error": "empty message", "reply": FAIL_MSG})
             return
-
-        if looks_like_greeting(message):
-            self._reply(200, {"reply": greeting_reply()})
-            return
-
-        note, note_score = ada_knowledge.lookup(message, min_score=2)
-        # Strong match: use the written notes so beginners get a stable, accurate answer.
-        if note and note_score >= 3:
-            self._reply(200, {"reply": "Hey %s — %s" % (VISITOR_NAME, note), "source": "notes"})
-            return
-
-        prompt = ""
-        for turn in history[-6:]:
-            role = VISITOR_NAME if turn.get("role") == "user" else "Ada"
-            prompt += f"{role}: {turn.get('content', '')}\n"
-        prompt += f"{VISITOR_NAME}: {message}\nAda:"
 
         try:
-            reply = ask_ollama(prompt)
-            source = "ollama"
+            result = self._handle(mode, message, history, language, framework, difficulty, output, files)
+            self._reply(200, result)
         except (URLError, TimeoutError, ValueError, OSError, HTTPError):
-            reply = fallback_tutor(message)
-            source = "notes"
+            self._reply(200, {"reply": FAIL_MSG, "source": "error", "ok": False})
+        except Exception:
+            self._reply(200, {"reply": FAIL_MSG, "source": "error", "ok": False})
 
-        self._reply(200, {
-            "reply": reply or "Hmm, I've got nothing - try rephrasing that?",
-            "source": source,
-        })
+    def _handle(self, mode, message, history, language, framework, difficulty, output, files):
+        extra = ""
+        if files:
+            extra = "\n\nProject files currently open:\n"
+            for item in files[:12]:
+                path = (item.get("path") or "file")[:80]
+                content = (item.get("content") or "")[:6000]
+                extra += "\n--- %s ---\n%s\n" % (path, content)
+
+        if mode == "generate":
+            spec = (
+                "Build this:\n%s\n\nLanguage: %s\nFramework: %s\n"
+                "Difficulty: %s\nOutput: %s%s"
+                % (message, language, framework, difficulty, output, extra)
+            )
+            reply, source = ask_model(GENERATE_PROMPT, spec)
+            parsed = extract_json(reply)
+            out_files = normalize_files(parsed, reply, language)
+            title = (parsed or {}).get("title") if isinstance(parsed, dict) else ""
+            summary = (parsed or {}).get("summary") if isinstance(parsed, dict) else ""
+            return {
+                "ok": True,
+                "reply": summary or "Here is a first version. Edit it, then ask me to improve it.",
+                "title": title or "Generated project",
+                "files": out_files,
+                "source": source,
+            }
+
+        if mode == "challenge":
+            spec = "Language: %s\nDifficulty: %s\nTopic: %s" % (language, difficulty, message)
+            reply, source = ask_model(CHALLENGE_PROMPT, spec)
+            parsed = extract_json(reply) or {}
+            if not parsed.get("title"):
+                parsed = {
+                    "title": "Practice: " + message[:40],
+                    "description": reply[:800],
+                    "starter": "// write your solution\n",
+                    "hints": ["Read the description twice.", "Print a small example first."],
+                    "solution": "",
+                    "language": language,
+                    "difficulty": difficulty,
+                    "topic": message,
+                }
+            parsed["source"] = source
+            parsed["ok"] = True
+            parsed["reply"] = parsed.get("description") or "Challenge ready."
+            return parsed
+
+        if mode in ("explain", "improve", "debug", "hint"):
+            jobs = {
+                "explain": "Explain this code clearly for a beginner. Use markdown. Do not dump a full rewrite unless needed.",
+                "improve": "Improve this code. Show the improved version in a fenced block, then list what changed.",
+                "debug": "Find real bugs. Explain the cause, then show corrected code. Do not invent errors.",
+                "hint": "Give a small hint only. Do not reveal the full solution.",
+            }
+            prompt = jobs[mode] + "\n\nUser:\n" + message + extra
+            reply, source = ask_model(MENTOR_PROMPT, history_prompt(history, prompt))
+            return {"ok": True, "reply": reply, "source": source}
+
+        if looks_like_greeting(message) and not looks_like_code_task(message):
+            return {"ok": True, "reply": greeting_reply(), "source": "greeting"}
+
+        note, note_score = ada_knowledge.lookup(message, min_score=2)
+        use_notes = (
+            note and note_score >= 5
+            and not looks_like_code_task(message)
+            and mode == "chat"
+        )
+        if use_notes:
+            return {"ok": True, "reply": "Hey %s — %s" % (VISITOR_NAME, note), "source": "notes"}
+
+        try:
+            reply, source = ask_model(MENTOR_PROMPT, history_prompt(history, message + extra))
+            return {"ok": True, "reply": reply, "source": source}
+        except (URLError, TimeoutError, ValueError, OSError, HTTPError):
+            return {"ok": True, "reply": fallback_tutor(message), "source": "notes"}
 
     def _reply(self, status, payload):
         data = json.dumps(payload).encode()
@@ -285,6 +539,6 @@ class AdaHandler(SimpleHTTPRequestHandler):
 
 if __name__ == "__main__":
     server = ThreadingHTTPServer((HOST, PORT), AdaHandler)
-    print(f"Ada server listening on http://{HOST}:{PORT} (Ollama model: {OLLAMA_MODEL})")
-    print(f"Open http://127.0.0.1:{PORT}/pages/ada.html")
+    print("Ada server listening on http://%s:%s (model: %s)" % (HOST, PORT, AI_MODEL if AI_API_KEY else OLLAMA_MODEL))
+    print("Open http://127.0.0.1:%s/pages/ada.html" % PORT)
     server.serve_forever()

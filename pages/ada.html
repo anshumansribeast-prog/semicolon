@@ -5,7 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Ada — Semicolon</title>
   <meta name="description" content="Ask Ada, Semicolon's coding tutor, when you're stuck. It explains and nudges you toward the answer instead of just handing it over.">
-  <link rel="stylesheet" href="../css/style.css?v=20260816e">
+  <link rel="stylesheet" href="../css/style.css?v=20260816h">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css" crossorigin="anonymous">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%231d4ed8'/><text x='16' y='23' font-size='22' font-family='monospace' fill='white' text-anchor='middle'>;</text></svg>">
 </head>
 <body>
@@ -31,7 +32,9 @@
       </li>
       <li><a class="nav-link" href="concepts.html">Concepts</a></li>
       <li><a class="nav-link" href="playground.html">Practice</a></li>
-      <li><a class="nav-link" href="ada.html">Ada</a></li>
+      <li><a class="nav-link" href="generate.html">Generator</a></li>
+      <li><a class="nav-link" href="projects.html">Projects</a></li>
+      <li><a class="nav-link" href="ada.html" aria-current="page">Ada</a></li>
       <li><a class="nav-link" href="blog.html">Blog</a></li>
       <li><a class="nav-link" href="about.html">About</a></li>
       <li><a class="nav-link" href="contact.html">Contact</a></li>
@@ -50,10 +53,10 @@
     <div class="container">
       <nav class="breadcrumb" aria-label="Breadcrumb"><a href="../index.html">Home</a> / Ada</nav>
       <span class="eyebrow">Ada</span>
-      <h1>Your coding tutor</h1>
+      <h1>Ada, Semicolon's coding mentor</h1>
       <p class="lede">
-        Ada explains the idea and points you at the fix. Forty-plus written notes
-        on beginner topics, plus a local model when it is running — not a homework dump.
+        Ask in plain English. Ada keeps the conversation, writes working examples,
+        debugs what you paste, and follows up — Python, JavaScript, HTML, CSS, C, Java, SQL, Git, and the rest of computer science.
       </p>
     </div>
   </section>
@@ -66,7 +69,7 @@
         <img class="ada-face" src="../img/ada.jpg" width="80" height="80" alt="">
         <div class="ada-toolbar-text">
             <strong>Ada</strong>
-            <span class="ada-status" id="adaStatus">Notes online · checking model…</span>
+            <span class="ada-status" id="adaStatus">Checking Ada…</span>
           </div>
         </header>
 
@@ -74,9 +77,8 @@
           <div class="ada-row ada-row--bot">
             <div class="ada-mini" aria-hidden="true">A</div>
             <div class="ada-bubble ada-bubble--bot">
-              Hey AnshX — I'm Ada. I know Semicolon's lessons plus the usual beginner traps:
-              variables, loops, errors, Python, HTML/CSS/JS, Git, files, and the Caesar cipher.
-              Ask one stuck thing, or tap a topic below.
+              Hey AnshX — I'm Ada, Semicolon's coding mentor. Ask for an explanation, a working
+              example, or help with broken code. Follow-ups stay in this chat.
             </div>
           </div>
         </div>
@@ -87,20 +89,25 @@
           <label for="adaInput" class="sr-only">Your message</label>
           <textarea id="adaInput" name="message" rows="2" required
                     placeholder="What are you stuck on?"></textarea>
-          <button class="btn btn--primary" type="submit" id="adaSend">Send</button>
+          <div class="ada-form-actions">
+            <button class="btn btn--primary" type="submit" id="adaSend">Send</button>
+            <button class="btn btn--ghost" type="button" id="adaStop" hidden>Stop</button>
+            <button class="btn btn--ghost" type="button" id="adaRegen" disabled>Regenerate</button>
+            <button class="btn btn--ghost" type="button" id="adaClear">Clear chat</button>
+          </div>
         </form>
       </div>
 
       <aside class="ada-rail" aria-label="What Ada knows">
-        <h2>What Ada knows</h2>
-        <p>Written notes first when the match is clear. The model fills in the rest if it is up.</p>
+        <h2>Coding first</h2>
+        <p>Ada is the coding brain inside Semicolon — not a generic chatbot. Ordinary questions are fine; building and debugging is the job.</p>
         <ul class="ada-know">
-          <li><strong>Python</strong> install, PATH, print, input, int, indent</li>
-          <li><strong>Core</strong> variables, loops, if vs ==, functions, lists</li>
-          <li><strong>Errors</strong> traceback, NameError, TypeError, debug method</li>
-          <li><strong>Web</strong> HTML, CSS, JavaScript, DOM, localStorage</li>
-          <li><strong>Tools</strong> Git, files, JSON, deploy, Practice area</li>
-          <li><strong>Project</strong> Caesar cipher / Secret Messages</li>
+          <li><strong>Languages</strong> Python, JS, HTML, CSS, C, C++, Java, SQL, TypeScript, React</li>
+          <li><strong>Mentor</strong> working examples, how to run them, real pitfalls only</li>
+          <li><strong>Debug</strong> cause, then the fix — no invented errors</li>
+          <li><strong>Context</strong> follow-ups change the last example</li>
+          <li><strong>Build</strong> send a project from the Code Generator</li>
+          <li><strong>Practice</strong> hints before solutions</li>
         </ul>
         <p class="ada-rail-note">You are AnshX. Ada will greet you by name.</p>
       </aside>
@@ -179,6 +186,8 @@
 <script src="../js/data.js"></script>
 <script src="../components/ui.js"></script>
 <script src="../js/main.js"></script>
-<script src="../js/ada.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" crossorigin="anonymous"></script>
+<script src="../js/ada-api.js?v=20260816h"></script>
+<script src="../js/ada.js?v=20260816h"></script>
 </body>
 </html>

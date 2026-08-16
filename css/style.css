@@ -1997,3 +1997,107 @@ select.control:focus { outline: none; border-color: var(--primary); box-shadow: 
 @media (max-width: 520px) {
   .shot-grid, .site-info { grid-template-columns: 1fr; }
 }
+
+/* ---------- Code Generator + Ada markdown --------------------------- */
+.ada-form-actions { display: flex; flex-wrap: wrap; gap: .5rem; }
+.ada-code {
+  margin: .7rem 0;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+  background: #0b1020;
+  color: #e2e8f0;
+}
+.ada-code-bar {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: .35rem .7rem; font-size: .75rem; letter-spacing: .04em;
+  background: #161b33; color: #a5b4fc; text-transform: uppercase;
+}
+.ada-copy {
+  border: 0; background: transparent; color: #c4b5fd; cursor: pointer;
+  font: inherit; font-size: .75rem;
+}
+.ada-code pre { margin: 0; padding: .8rem; overflow: auto; font-size: .85rem; }
+.ada-bubble p { margin: 0 0 .6rem; }
+.ada-bubble p:last-child { margin-bottom: 0; }
+
+.gen-form, .gen-challenge {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 1.25rem 1.35rem;
+  margin-bottom: 1.4rem;
+}
+.gen-form textarea, #genEditor, .gen-challenge input {
+  width: 100%;
+  font-family: ui-monospace, Consolas, monospace;
+  font-size: .92rem;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: .7rem .8rem;
+  background: var(--surface-2);
+  color: var(--text);
+}
+.gen-opts {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: .8rem;
+  margin: .9rem 0;
+}
+.gen-opts label { display: grid; gap: .3rem; font-size: .82rem; color: var(--text-muted); }
+.gen-opts select, .gen-opts input {
+  font: inherit; padding: .45rem .55rem; border-radius: 8px;
+  border: 1px solid var(--border); background: var(--surface); color: var(--text);
+}
+.gen-work {
+  display: grid;
+  grid-template-columns: 13rem minmax(0, 1fr);
+  gap: 1rem;
+  align-items: stretch;
+  margin-bottom: 1.6rem;
+}
+.gen-files {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: .9rem;
+}
+.gen-files h2 { font-size: .95rem; margin: 0 0 .6rem; }
+.gen-files ul { list-style: none; margin: 0; padding: 0; }
+.gen-files button {
+  width: 100%; text-align: left; border: 0; background: transparent;
+  padding: .4rem .5rem; border-radius: 8px; font: inherit; cursor: pointer;
+  color: var(--text); font-family: ui-monospace, Consolas, monospace; font-size: .82rem;
+}
+.gen-files button[aria-current="true"] { background: var(--primary-soft); color: var(--primary); }
+.gen-toolbar {
+  display: flex; flex-wrap: wrap; gap: .5rem; justify-content: space-between;
+  align-items: center; margin-bottom: .6rem;
+}
+.gen-split {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: .8rem;
+  min-height: 28rem;
+}
+.gen-editor-wrap, .gen-preview-wrap {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+  background: #0b1020;
+}
+#genEditor {
+  min-height: 28rem; border: 0; border-radius: 0; color: #e2e8f0;
+  background: #0b1020; resize: vertical;
+}
+#genPreview { width: 100%; min-height: 28rem; border: 0; background: #fff; }
+.gen-preview-note { font-size: .8rem; color: var(--text-muted); margin: .5rem .6rem .7rem; }
+.gen-explain { margin-top: 1rem; }
+.ada-tutor { margin-top: 1rem; padding-top: .8rem; border-top: 1px dashed var(--border); }
+.ada-tutor-reply { margin-top: .8rem; }
+.py-note { font-size: .88rem; color: var(--text-muted); margin: 0 0 .8rem; }
+
+@media (max-width: 960px) {
+  .gen-opts, .gen-work, .gen-split { grid-template-columns: 1fr; }
+  #genEditor, #genPreview { min-height: 16rem; }
+}

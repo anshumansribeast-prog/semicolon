@@ -70,10 +70,12 @@ var WEB_TEMPLATES = [
 
   var tabWeb = document.getElementById("tabWeb");
   var tabPro = document.getElementById("tabPro");
+  var tabPy  = document.getElementById("tabPy");
   var panes  = {
     tabJs:  document.getElementById("modeJs"),
     tabWeb: document.getElementById("modeWeb"),
-    tabPro: document.getElementById("modePro")
+    tabPro: document.getElementById("modePro"),
+    tabPy:  document.getElementById("modePy")
   };
 
   /* -------------------------------------------------------------------
@@ -92,11 +94,12 @@ var WEB_TEMPLATES = [
      replaceState rather than pushState: switching tabs shouldn't stack
      up ten entries you have to press Back through.
      ------------------------------------------------------------------- */
-  var MODES = { js: "tabJs", web: "tabWeb", pro: "tabPro" };
-  var TAB_TO_MODE = { tabJs: "js", tabWeb: "web", tabPro: "pro" };
+  var MODES = { js: "tabJs", web: "tabWeb", pro: "tabPro", py: "tabPy" };
+  var TAB_TO_MODE = { tabJs: "js", tabWeb: "web", tabPro: "pro", tabPy: "py" };
 
   function show(which, updateUrl) {
-    [tabJs, tabWeb, tabPro].forEach(function (t) {
+    [tabJs, tabWeb, tabPro, tabPy].forEach(function (t) {
+      if (!t || !panes[t.id]) return;
       var on = t.id === which;
       t.setAttribute("aria-selected", on ? "true" : "false");
       panes[t.id].hidden = !on;
@@ -112,6 +115,7 @@ var WEB_TEMPLATES = [
   tabJs.addEventListener("click",  function () { show("tabJs"); });
   tabWeb.addEventListener("click", function () { show("tabWeb"); buildRun(); });
   tabPro.addEventListener("click", function () { show("tabPro"); proRun(); });
+  if (tabPy) tabPy.addEventListener("click", function () { show("tabPy"); });
 
   /* -------------------------------------------------------------------
      Assemble three files into one complete HTML document.

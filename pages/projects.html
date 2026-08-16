@@ -3,15 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Lesson — Semicolon</title>
-  <meta name="description" content="Read a lesson from any Semicolon track — plain-English explanations with real code you can run.">
+  <title>Projects — Semicolon</title>
+  <meta name="description" content="Build and ship something real. Semicolon project tracks plus the Code Generator.">
   <link rel="stylesheet" href="../css/style.css?v=20260816h">
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%231d4ed8'/><text x='16' y='23' font-size='22' font-family='monospace' fill='white' text-anchor='middle'>;</text></svg>">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%234f46e5'/><text x='16' y='23' font-size='22' font-family='monospace' fill='white' text-anchor='middle'>;</text></svg>">
 </head>
 <body>
-
 <a class="skip-link" href="#main">Skip to main content</a>
-
 <header class="site-header">
   <nav class="container nav" aria-label="Main navigation">
     <a class="brand" href="../index.html"><span class="brand-mark" aria-hidden="true">;</span> Semicolon</a>
@@ -32,14 +30,13 @@
       <li><a class="nav-link" href="concepts.html">Concepts</a></li>
       <li><a class="nav-link" href="playground.html">Practice</a></li>
       <li><a class="nav-link" href="generate.html">Generator</a></li>
-      <li><a class="nav-link" href="projects.html">Projects</a></li>
+      <li><a class="nav-link" href="projects.html" aria-current="page">Projects</a></li>
       <li><a class="nav-link" href="ada.html">Ada</a></li>
       <li><a class="nav-link" href="blog.html">Blog</a></li>
       <li><a class="nav-link" href="about.html">About</a></li>
-      <li><a class="nav-link" href="contact.html">Contact</a></li>
     </ul>
     <div class="nav-actions">
-      <a class="btn btn--primary btn--sm nav-cta" href="learn.html">Start learning</a>
+      <a class="btn btn--primary btn--sm nav-cta" href="generate.html">Code Generator</a>
       <button class="icon-btn" type="button" data-theme-toggle aria-pressed="false"></button>
       <button class="icon-btn nav-toggle" type="button" aria-expanded="false" aria-controls="navMenu" aria-label="Open menu"></button>
     </div>
@@ -49,37 +46,22 @@
 <main id="main">
   <section class="page-header">
     <div class="container">
-      <nav class="breadcrumb" aria-label="Breadcrumb">
-        <a href="../index.html">Home</a> / <a href="learn.html">Learn</a> /
-        <span id="crumbTrack">Lesson</span>
-      </nav>
-      <span class="eyebrow" id="lessonEyebrow"></span>
-      <h1 id="lessonTitle">Loading…</h1>
-      <p class="lede" id="lessonMeta"></p>
+      <nav class="breadcrumb" aria-label="Breadcrumb"><a href="../index.html">Home</a> / Projects</nav>
+      <span class="eyebrow">Learn. Code. Build.</span>
+      <h1>Projects</h1>
+      <p class="lede">
+        Guided tracks that end with something you can show someone — plus Ada's Code Generator
+        when you already know what you want to make.
+      </p>
+      <div class="btn-row">
+        <a class="btn btn--primary" href="generate.html">Open Code Generator</a>
+        <a class="btn btn--ghost" href="playground.html">Practice first</a>
+      </div>
     </div>
   </section>
-
   <section class="section">
-    <div class="container lesson-layout">
-
-      <!-- the lesson itself -->
-      <article class="lesson-body" id="lessonBody"></article>
-
-      <!-- every lesson in this track -->
-      <aside class="lesson-side">
-        <h2 class="side-title">In this track</h2>
-        <ol class="lesson-list" id="lessonList"></ol>
-        <a class="btn btn--ghost btn--sm" href="learn.html">← All tracks</a>
-      </aside>
-
-    </div>
-
     <div class="container">
-      <nav class="lesson-nav" aria-label="Lesson navigation">
-        <a class="btn btn--ghost" id="prevLesson" href="#">← Previous</a>
-        <span class="lesson-counter" id="lessonCounter"></span>
-        <a class="btn btn--primary" id="nextLesson" href="#">Next →</a>
-      </nav>
+      <div class="grid grid-3" id="projectGrid"></div>
     </div>
   </section>
 </main>
@@ -102,13 +84,10 @@
     </div>
   </div>
 </footer>
-
 <script src="../js/config.js"></script>
 <script src="../js/data.js"></script>
-<script src="../js/lessons.js"></script>
 <script src="../components/ui.js"></script>
 <script src="../js/main.js"></script>
-<script src="../js/lesson.js"></script>
-<script src="../js/helper.js"></script>
+<script src="../js/projects.js?v=20260816h"></script>
 </body>
 </html>

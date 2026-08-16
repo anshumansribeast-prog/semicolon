@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Practice — Semicolon</title>
   <meta name="description" content="Write real code in your browser and run it instantly. Ten graded JavaScript challenges, a live web builder with HTML, CSS and JavaScript, and a free-build area for people who already know what they're doing.">
-  <link rel="stylesheet" href="../css/style.css?v=20260816e">
+  <link rel="stylesheet" href="../css/style.css?v=20260816h">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%231d4ed8'/><text x='16' y='23' font-size='22' font-family='monospace' fill='white' text-anchor='middle'>;</text></svg>">
 </head>
 <body>
@@ -31,6 +31,8 @@
       </li>
       <li><a class="nav-link" href="concepts.html">Concepts</a></li>
       <li><a class="nav-link" href="playground.html" aria-current="page">Practice</a></li>
+      <li><a class="nav-link" href="generate.html">Generator</a></li>
+      <li><a class="nav-link" href="projects.html">Projects</a></li>
       <li><a class="nav-link" href="ada.html">Ada</a></li>
       <li><a class="nav-link" href="blog.html">Blog</a></li>
       <li><a class="nav-link" href="about.html">About</a></li>
@@ -67,6 +69,10 @@
                 aria-controls="modeJs" type="button">
           <strong>Challenges</strong><span>10 graded JavaScript tasks</span>
         </button>
+        <button class="mode-tab" id="tabPy" role="tab" aria-selected="false"
+                aria-controls="modePy" type="button">
+          <strong>Python</strong><span>Write it, then ask Ada</span>
+        </button>
         <button class="mode-tab" id="tabWeb" role="tab" aria-selected="false"
                 aria-controls="modeWeb" type="button">
           <strong>Web Builder</strong><span>HTML + CSS + JS, live preview</span>
@@ -93,11 +99,22 @@
                       aria-describedby="challengeTask"></textarea>
             <div class="play-actions">
               <button class="btn btn--primary" id="runBtn" type="button">▶ Run</button>
+              <button class="btn btn--ghost btn--sm" id="submitBtn" type="button">Submit</button>
               <button class="btn btn--ghost btn--sm" id="resetBtn" type="button">Reset</button>
               <button class="btn btn--ghost btn--sm" id="hintBtn" type="button">Hint</button>
               <button class="btn btn--ghost btn--sm" id="solveBtn" type="button">Show solution</button>
             </div>
             <div class="hint-box" id="hintBox"></div>
+            <div class="ada-tutor">
+              <p><strong>Ask Ada</strong> — a clue first, the full answer only if you ask.</p>
+              <div class="play-actions">
+                <button class="btn btn--ghost btn--sm" type="button" data-ada-help="hint">Hint</button>
+                <button class="btn btn--ghost btn--sm" type="button" data-ada-help="debug">Debug</button>
+                <button class="btn btn--ghost btn--sm" type="button" data-ada-help="explain">Explain</button>
+                <button class="btn btn--ghost btn--sm" type="button" data-ada-help="solution">Solution</button>
+              </div>
+              <div class="ada-bubble ada-bubble--bot ada-tutor-reply" id="adaTutorReply" hidden></div>
+            </div>
           </div>
 
           <div class="play-pane">
@@ -108,6 +125,38 @@
             <pre class="play-output" id="output" aria-live="polite"
                  role="status">Press Run and your output appears here.</pre>
             <div class="check-result" id="checkResult"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============ MODE · PYTHON (reviewed by Ada, not run on the server) ============ -->
+      <div id="modePy" role="tabpanel" aria-labelledby="tabPy" hidden>
+        <p class="py-note">
+          Python is not executed on Semicolon's server. Write a solution here, then Ask Ada
+          for a hint, a review, or (only if you want it) the solution. Run it later in Lesson 1's interpreter.
+        </p>
+        <div class="play-grid">
+          <div class="play-pane">
+            <div class="pane-head">
+              <span class="pane-title" id="pyTitle">Python practice</span>
+              <span class="pane-lang">Python</span>
+            </div>
+            <p class="challenge-task" id="pyTask"></p>
+            <label class="sr-only" for="pyInput">Your Python</label>
+            <textarea id="pyInput" spellcheck="false" autocomplete="off"></textarea>
+            <div class="play-actions">
+              <button class="btn btn--primary" id="pySubmit" type="button">Submit to Ada</button>
+              <button class="btn btn--ghost btn--sm" id="pyReset" type="button">Reset</button>
+              <button class="btn btn--ghost btn--sm" type="button" data-py-help="hint">Hint</button>
+              <button class="btn btn--ghost btn--sm" type="button" data-py-help="debug">Debug</button>
+              <button class="btn btn--ghost btn--sm" type="button" data-py-help="explain">Explain</button>
+              <button class="btn btn--ghost btn--sm" type="button" data-py-help="solution">Solution</button>
+            </div>
+            <div class="ada-bubble ada-bubble--bot ada-tutor-reply" id="pyAdaReply" hidden></div>
+          </div>
+          <div class="play-pane">
+            <div class="pane-head"><span class="pane-title">Challenge list</span></div>
+            <div class="challenge-bar" id="pyBar"></div>
           </div>
         </div>
       </div>
@@ -298,8 +347,9 @@
 <script src="../js/config.js"></script>
 <script src="../components/ui.js"></script>
 <script src="../js/main.js"></script>
-<script src="../js/playground.js"></script>
-<script src="../js/webbuilder.js?v=20260816e"></script>
+<script src="../js/ada-api.js?v=20260816h"></script>
+<script src="../js/playground.js?v=20260816h"></script>
+<script src="../js/webbuilder.js?v=20260816h"></script>
 <script src="../js/helper.js"></script>
 </body>
 </html>

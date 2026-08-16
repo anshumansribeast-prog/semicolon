@@ -1,34 +1,35 @@
 /* ===================================================================
-   js/ada.js — Ada, Semicolon's tutor chat.
-
-   Talks to /api/ada on the same host that served this page
-   (ada_server.py). Same-origin, so it works when the site is opened
-   through that server rather than as a raw file.
+   js/ada.js — Ada chat on Semicolon.
    =================================================================== */
 (function () {
-  const ADA_URL = "/api/ada";
-  const HISTORY_LIMIT = 6;
+  const api = window.AdaAPI;
+  if (!api) return;
 
   const log = document.getElementById("adaLog");
   const form = document.getElementById("adaForm");
   const input = document.getElementById("adaInput");
   const sendBtn = document.getElementById("adaSend");
+  const stopBtn = document.getElementById("adaStop");
+  const clearBtn = document.getElementById("adaClear");
+  const regenBtn = document.getElementById("adaRegen");
   const chips = document.getElementById("adaChips");
   const statusEl = document.getElementById("adaStatus");
   if (!form) return;
 
+  const HISTORY_LIMIT = 16;
   const history = [];
+  let lastUser = "";
+  let abort = null;
 
   const SUGGESTIONS = [
-    "What is a variable?",
-    "How do loops work?",
-    "How do I read an error?",
-    "Python or JavaScript?",
-    "What is a Caesar cipher?",
-    "How do I use Git?",
+    "How do I create a Python function?",
+    "Debug this: print('hi'",
+    "Explain Git commits",
+    "Write a CSS flexbox navbar",
+    "What is a binary search?",
   ];
 
-  function addBubble(text, kind) {
+  function addRow(kind) {
     const row = document.createElement("div");
     row.className = "ada-row ada-row--" + (kind === "user" ? "user" : "bot");
     if (kind !== "user") {
@@ -40,51 +41,79 @@
     }
     const el = document.createElement("div");
     el.className = "ada-bubble ada-bubble--" + kind;
-    el.textContent = text;
     row.appendChild(el);
     log.appendChild(row);
     log.scrollTop = log.scrollHeight;
     return el;
   }
 
-  async function send(text) {
-    if (!text) return;
-    addBubble(text, "user");
-    history.push({ role: "user", content: text });
-    input.value = "";
-    input.disabled = true;
-    sendBtn.disabled = true;
-    const thinking = addBubble("…", "bot");
-    thinking.classList.add("is-thinking");
-
-    try {
-      const resp = await fetch(ADA_URL, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: text, history: history.slice(-HISTORY_LIMIT) }),
+  function wireCopy(root) {
+    root.querySelectorAll(".ada-copy").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        const id = btn.getAttribute("data-copy");
+        const code = root.querySelector('code[data-copy-src="' + id + '"]');
+        if (!code) return;
+        navigator.clipboard.writeText(code.textContent || "").then(function () {
+          btn.textContent = "Copied";
+          setTimeout(function () { btn.textContent = "Copy"; }, 1200);
+        });
       });
-      const data = await resp.json().catch(function () { return {}; });
-      thinking.classList.remove("is-thinking");
-      if (!resp.ok) {
-        thinking.textContent = data.reply || data.error ||
-          "Ada is offline right now. The tutor server isn't running — try again in a bit.";
-        thinking.className = "ada-bubble ada-bubble--" + (data.reply ? "bot" : "error");
-        if (data.reply) history.push({ role: "assistant", content: data.reply });
-        return;
-      }
-      thinking.textContent = data.reply || "I didn't get that — try asking again?";
-      thinking.className = "ada-bubble ada-bubble--bot";
-      history.push({ role: "assistant", content: data.reply || "" });
-    } catch (err) {
-      thinking.classList.remove("is-thinking");
-      thinking.textContent =
-        "Ada is offline right now. The tutor server isn't running — try again in a bit.";
-      thinking.className = "ada-bubble ada-bubble--error";
-    } finally {
-      input.disabled = false;
-      sendBtn.disabled = false;
-      input.focus();
+    });
+  }
+
+  function setBusy(on) {
+    input.disabled = on;
+    sendBtn.disabled = on;
+    if (stopBtn) stopBtn.hidden = !on;
+    if (regenBtn) regenBtn.disabled = on || !lastUser;
+  }
+
+  async function send(text, asFollowup) {
+    if (!text) return;
+    lastUser = text;
+    if (!asFollowup) {
+      const userEl = addRow("user");
+      userEl.textContent = text;
+      history.push({ role: "user", content: text });
     }
+    input.value = "";
+    setBusy(true);
+    const thinking = addRow("bot");
+    thinking.classList.add("is-thinking");
+    thinking.textContent = "…";
+    abort = new AbortController();
+
+    const data = await api.ask({
+      mode: "chat",
+      message: text,
+      history: history.slice(-HISTORY_LIMIT),
+      abort: abort
+    });
+    abort = null;
+    thinking.classList.remove("is-thinking");
+    if (data.aborted) {
+      thinking.textContent = "Stopped.";
+      setBusy(false);
+      input.focus();
+      return;
+    }
+    if (!data._okHttp && data.source === "error") {
+      thinking.className = "ada-bubble ada-bubble--error";
+      thinking.textContent = data.reply || api.FAIL;
+      setBusy(false);
+      input.focus();
+      return;
+    }
+    thinking.innerHTML = api.renderMarkdown(data.reply || api.FAIL);
+    wireCopy(thinking);
+    if (window.hljs) {
+      thinking.querySelectorAll("pre code").forEach(function (el) {
+        window.hljs.highlightElement(el);
+      });
+    }
+    history.push({ role: "assistant", content: data.reply || "" });
+    setBusy(false);
+    input.focus();
   }
 
   form.addEventListener("submit", function (e) {
@@ -99,6 +128,32 @@
     }
   });
 
+  if (stopBtn) {
+    stopBtn.addEventListener("click", function () {
+      if (abort) abort.abort();
+    });
+  }
+
+  if (clearBtn) {
+    clearBtn.addEventListener("click", function () {
+      history.length = 0;
+      lastUser = "";
+      log.innerHTML = "";
+      const el = addRow("bot");
+      el.textContent = "Chat cleared. What do you want to build or debug?";
+      if (regenBtn) regenBtn.disabled = true;
+    });
+  }
+
+  if (regenBtn) {
+    regenBtn.disabled = true;
+    regenBtn.addEventListener("click", function () {
+      if (!lastUser) return;
+      if (history.length && history[history.length - 1].role === "assistant") history.pop();
+      send(lastUser, true);
+    });
+  }
+
   if (chips) {
     SUGGESTIONS.forEach(function (s) {
       const b = document.createElement("button");
@@ -110,19 +165,17 @@
     });
   }
 
-  fetch(ADA_URL).then(function (r) { return r.json(); }).then(function (data) {
+  fetch(api.URL).then(function (r) { return r.json(); }).then(function (data) {
     if (!statusEl || !data) return;
-    const notes = data.notes ? data.notes + " notes" : "notes";
-    if (data.ollama) {
-      statusEl.textContent = notes + " · model ready";
-      statusEl.classList.remove("is-model-off");
-    } else {
-      statusEl.textContent = notes + " · model offline, notes still work";
-      statusEl.classList.add("is-model-off");
-    }
+    const bits = [];
+    if (data.api) bits.push("API ready");
+    else if (data.ollama) bits.push("model ready");
+    else bits.push("model offline, notes still work");
+    statusEl.textContent = bits.join(" · ");
+    statusEl.classList.toggle("is-model-off", !data.ollama && !data.api);
   }).catch(function () {
     if (statusEl) {
-      statusEl.textContent = "Could not reach Ada — refresh in a moment";
+      statusEl.textContent = "Could not reach Ada";
       statusEl.classList.add("is-model-off");
     }
   });
