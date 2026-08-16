@@ -18,6 +18,8 @@ from urllib import request as urlreq
 from urllib.error import HTTPError, URLError
 from urllib.parse import urlparse
 
+import ada_knowledge
+
 HOST = os.environ.get("ADA_HOST", "0.0.0.0")
 PORT = int(os.environ.get("ADA_PORT", "8420"))
 ROOT = os.path.dirname(os.path.abspath(__file__))
@@ -31,18 +33,36 @@ The person chatting is {VISITOR_NAME} (Anshuman Srivastava), who built this site
 When they say hi, hello, hey, or similar, greet them by name: "Hey {VISITOR_NAME}!"
 Never call them Student. Always use {VISITOR_NAME}.
 
-What you know (your brain):
-- Semicolon is a free, no-framework learn-to-code site: HTML, CSS and JavaScript only.
-- Live at https://semicolon.punah.pro. 10 tracks, 31 lessons, a practice area, and you.
-- Tracks: Your First Program, Thinking in Loops, First Web Page, Interactive Pages,
-  Files and Data, Git Basics, Debugging, Ship a Real Project, Choosing a Language,
-  Secret Messages (Caesar cipher: HELLO + 3 = KHOOR).
-- Practice area has challenges (hello world through FizzBuzz and a letter-shift).
+What Semicolon is:
+Free, no-framework learn-to-code site: HTML, CSS and JavaScript only. About 130 KB.
+Live at https://semicolon.punah.pro. 10 tracks, 31 lessons, a practice area, Web Builder, and you.
+
+Tracks (teach these by name when relevant):
+1. Your First Program — install Python, PATH, print, variables, input/int, temperature converter.
+2. Thinking in Loops — for, while, range end excluded, infinite loops, Ctrl+C.
+3. First Web Page — HTML structure vs CSS looks, flexbox vs grid.
+4. Interactive Pages — getElementById, addEventListener, textContent, localStorage + JSON.
+5. Files and Data — with open, mode w wipes, JSON.
+6. Git Basics — .gitignore first, add, commit, git restore.
+7. Debugging — read errors bottom-up, one change at a time, rubber duck.
+8. Ship a Real Project — static hosting serves files, it never runs a program.
+9. Choosing a Language — Python default, JS for the browser, concepts over brands.
+10. Secret Messages — Caesar cipher, HELLO + 3 = KHOOR, letters as numbers.
+
+Core teaching (keep these accurate):
+- Variable = labelled box. = stores, == asks.
+- input() is always text; int() for maths.
+- Python indent is 4 spaces, never mix tabs.
+- NameError = unknown name. TypeError = wrong type. NoneType = something returned nothing.
+- Lists/arrays index from 0.
+- print vs return. console.log in the browser (F12).
 - You explain simply, point toward the fix, and only paste full solutions if asked.
 - Keep replies short (2-5 sentences), plain text, no markdown, no bullet asterisks.
 
 If they ask who they are: they are {VISITOR_NAME}. If they ask who you are: Ada, Semicolon's tutor.
 """
+
+ada_knowledge.VISITOR = VISITOR_NAME
 
 
 def looks_like_greeting(message):
@@ -158,43 +178,11 @@ def ask_ollama(prompt):
 
 
 def fallback_tutor(message):
-    """Answer from Ada's built-in notes when Ollama is not reachable."""
-    q = " " + message.lower() + " "
-    topics = [
-        (["variable", "variables"],
-         "A variable is a labelled box. name = \"AnshX\" puts that text in the box called name. "
-         "In code, = is an instruction, not a maths fact — the next line can put something else in the same box. "
-         "Try the First Program track if you want to type one."),
-        (["loop", "loops", "repeat", "for "],
-         "A loop makes the computer repeat work. for i in range(1, 11) prints 1 to 10 — the end number is never included. "
-         "Use while when you do not know how many times. See Thinking in Loops on Semicolon."),
-        (["error", "traceback", "crash", "broke"],
-         "Read the error from the bottom up: last line is what went wrong, above that is the code, above that is the file and line. "
-         "The line number is where it fell over, not always where the mistake started."),
-        (["python"],
-         "Python is the best default first language here. Install from python.org, tick Add Python to PATH on Windows, then run python --version before you write a file."),
-        (["html", "css", "web page"],
-         "HTML is structure (what something IS). CSS is looks. JavaScript is decisions. Build Your First Web Page on Semicolon walks through a real file you can open in a browser."),
-        (["git", "commit"],
-         "Git remembers every version you save. Write .gitignore first so secrets never get committed. git add then git commit -m \"why you changed it\"."),
-        (["cipher", "secret", "caesar"],
-         "A Caesar cipher slides letters: HELLO + 3 = KHOOR. Decode by sliding back. Secret Messages is track 10 — there is a full Python example and a web page."),
-        (["javascript", "js "],
-         "JavaScript is what makes a page react. Find an element, listen for a click, change the text. The Practice area and Interactive Pages track cover that."),
-        (["who am i", "my name", "who i am"],
-         "You are %s. I am Ada, your tutor on Semicolon." % VISITOR_NAME),
-        (["what can you", "help me", "what do you"],
-         "Ask me about a lesson, an error, Python, HTML, Git, or the Secret Messages project. Keep it to one stuck thing at a time and I will point you at the fix."),
-    ]
-    for keys, answer in topics:
-        if any(k in q for k in keys):
-            return "Hey %s — %s" % (VISITOR_NAME, answer)
-    return (
-        "Hey %s. I heard you. From my Semicolon notes: start with one stuck thing — "
-        "a variable, a loop, an error message, Python, HTML, Git, or the Secret Messages cipher. "
-        "Or open https://semicolon.punah.pro/pages/learn.html and paste the line that broke."
-        % VISITOR_NAME
-    )
+    """Answer from Ada's written notes (scored keyword bank)."""
+    note, score = ada_knowledge.lookup(message, min_score=2)
+    if note:
+        return "Hey %s — %s" % (VISITOR_NAME, note)
+    return ada_knowledge.generic_fallback()
 
 
 class AdaHandler(SimpleHTTPRequestHandler):
@@ -230,6 +218,7 @@ class AdaHandler(SimpleHTTPRequestHandler):
                 "model": OLLAMA_MODEL,
                 "ollama": ollama_ok,
                 "visitor": VISITOR_NAME,
+                "notes": len(ada_knowledge.TOPICS),
             })
             return
         super().do_GET()
@@ -257,6 +246,12 @@ class AdaHandler(SimpleHTTPRequestHandler):
             self._reply(200, {"reply": greeting_reply()})
             return
 
+        note, note_score = ada_knowledge.lookup(message, min_score=2)
+        # Strong match: use the written notes so beginners get a stable, accurate answer.
+        if note and note_score >= 3:
+            self._reply(200, {"reply": "Hey %s — %s" % (VISITOR_NAME, note), "source": "notes"})
+            return
+
         prompt = ""
         for turn in history[-6:]:
             role = VISITOR_NAME if turn.get("role") == "user" else "Ada"
@@ -265,10 +260,15 @@ class AdaHandler(SimpleHTTPRequestHandler):
 
         try:
             reply = ask_ollama(prompt)
+            source = "ollama"
         except (URLError, TimeoutError, ValueError, OSError, HTTPError):
             reply = fallback_tutor(message)
+            source = "notes"
 
-        self._reply(200, {"reply": reply or "Hmm, I've got nothing - try rephrasing that?"})
+        self._reply(200, {
+            "reply": reply or "Hmm, I've got nothing - try rephrasing that?",
+            "source": source,
+        })
 
     def _reply(self, status, payload):
         data = json.dumps(payload).encode()

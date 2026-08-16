@@ -49,32 +49,60 @@
     <div class="container">
       <nav class="breadcrumb" aria-label="Breadcrumb"><a href="../index.html">Home</a> / Ada</nav>
       <span class="eyebrow">Ada</span>
-      <h1>Ask Ada anything</h1>
+      <h1>Your coding tutor</h1>
       <p class="lede">
-        Ada is Semicolon's coding tutor. When you're stuck, it explains the idea
-        and points you toward the fix rather than handing over finished code.
+        Ada explains the idea and points you at the fix. Forty-plus written notes
+        on beginner topics, plus a local model when it is running — not a homework dump.
       </p>
     </div>
   </section>
 
-  <section class="section">
-    <div class="container" style="max-width:760px">
+  <section class="section ada-page">
+    <div class="container ada-layout">
 
-      <div class="card" id="adaCard">
+      <div class="ada-shell" id="adaCard">
+        <header class="ada-toolbar">
+          <div class="ada-avatar" aria-hidden="true">A</div>
+          <div class="ada-toolbar-text">
+            <strong>Ada</strong>
+            <span class="ada-status" id="adaStatus">Notes online · checking model…</span>
+          </div>
+        </header>
+
         <div id="adaLog" class="ada-log" aria-live="polite">
-          <div class="ada-bubble ada-bubble--bot">
-            Hey AnshX — I'm Ada. Say hi, or ask me about a lesson, an error,
-            or anything you're stuck on.
+          <div class="ada-row ada-row--bot">
+            <div class="ada-mini" aria-hidden="true">A</div>
+            <div class="ada-bubble ada-bubble--bot">
+              Hey AnshX — I'm Ada. I know Semicolon's lessons plus the usual beginner traps:
+              variables, loops, errors, Python, HTML/CSS/JS, Git, files, and the Caesar cipher.
+              Ask one stuck thing, or tap a topic below.
+            </div>
           </div>
         </div>
 
+        <div class="ada-chips" id="adaChips" aria-label="Suggested questions"></div>
+
         <form id="adaForm" class="ada-form" novalidate>
-          <label for="adaInput" style="display:none">Your message</label>
+          <label for="adaInput" class="sr-only">Your message</label>
           <textarea id="adaInput" name="message" rows="2" required
-                    placeholder="Hi AnshX — or tell me what you're stuck on"></textarea>
+                    placeholder="What are you stuck on?"></textarea>
           <button class="btn btn--primary" type="submit" id="adaSend">Send</button>
         </form>
       </div>
+
+      <aside class="ada-rail" aria-label="What Ada knows">
+        <h2>What Ada knows</h2>
+        <p>Written notes first when the match is clear. The model fills in the rest if it is up.</p>
+        <ul class="ada-know">
+          <li><strong>Python</strong> install, PATH, print, input, int, indent</li>
+          <li><strong>Core</strong> variables, loops, if vs ==, functions, lists</li>
+          <li><strong>Errors</strong> traceback, NameError, TypeError, debug method</li>
+          <li><strong>Web</strong> HTML, CSS, JavaScript, DOM, localStorage</li>
+          <li><strong>Tools</strong> Git, files, JSON, deploy, Practice area</li>
+          <li><strong>Project</strong> Caesar cipher / Secret Messages</li>
+        </ul>
+        <p class="ada-rail-note">You are AnshX. Ada will greet you by name.</p>
+      </aside>
     </div>
   </section>
 
@@ -150,6 +178,5 @@
 <script src="../components/ui.js"></script>
 <script src="../js/main.js"></script>
 <script src="../js/ada.js"></script>
-<script src="../js/helper.js"></script>
 </body>
 </html>

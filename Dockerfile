@@ -10,6 +10,7 @@ COPY docker/40-start-ada.sh /docker-entrypoint.d/40-start-ada.sh
 RUN chmod +x /docker-entrypoint.d/40-start-ada.sh
 
 COPY ada_server.py /opt/ada/ada_server.py
+COPY ada_knowledge.py /opt/ada/ada_knowledge.py
 COPY . /usr/share/nginx/html
 RUN rm -rf /usr/share/nginx/html/ada_server.py \
            /usr/share/nginx/html/docker \
