@@ -1650,3 +1650,35 @@ select.control:focus { outline: none; border-color: var(--primary); box-shadow: 
   border: 1px solid var(--border); background: var(--bg); color: var(--text);
 }
 .ada-form textarea:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-ring); }
+
+/* ---- Ada on phones ------------------------------------------------------
+   Make the chat shell fill the viewport, hide the suggestion rail / chip
+   bar (which are desktop aids), and pin the message form to the bottom so
+   the textarea is always large enough to actually type into. The 7.5rem
+   min-height and 16px font-size stop iOS Safari from auto-zooming the
+   layout when the field gets focus; 44px buttons match Apple'''s HIG and
+   WCAG 2.5.5 touch-target minimums.
+   ----------------------------------------------------------------------- */
+@media (max-width: 860px) {
+  .ada-shell { min-height: 100dvh; }
+  .ada-rail  { display: none; }
+  .ada-chips { display: none; }
+  .ada-form {
+    position: sticky;
+    bottom: 0;
+    background: var(--bg);
+    padding: .65rem 0 .8rem;
+    border-top: 1px solid var(--border);
+    z-index: 5;
+  }
+  .ada-form textarea {
+    min-height: 7.5rem;
+    font-size: 16px;
+    line-height: 1.5;
+  }
+  .ada-form button {
+    min-height: 44px;
+    min-width: 44px;
+  }
+}
+
