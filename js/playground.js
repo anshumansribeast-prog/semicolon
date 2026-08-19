@@ -134,15 +134,6 @@ var CHALLENGES = [
       var want = ["1","2","Fizz","4","Buzz","Fizz","7","8","Fizz","Buzz","11","Fizz","13","14","FizzBuzz"];
       return out.trim().split(/\s*\n\s*/).join(",") === want.join(",");
     }
-  },
-  {
-    id: "cipher",
-    title: "11 · Shift a word",
-    task: "Print HELLO shifted forward by 1 letter: IFMMP",
-    start: 'const word = "HELLO";\nlet out = "";\n\n',
-    hint: "Loop each letter, add 1 to its char code with String.fromCharCode(ch.charCodeAt(0) + 1), and join them.",
-    solution: 'const word = "HELLO";\nlet out = "";\nfor (const ch of word) {\n  out += String.fromCharCode(ch.charCodeAt(0) + 1);\n}\nconsole.log(out);',
-    check: function (out) { return out.trim() === "IFMMP"; }
   }
 ];
 
@@ -261,8 +252,6 @@ var CHALLENGES = [
   }
 
   document.getElementById("runBtn").addEventListener("click", run);
-  var submitBtn = document.getElementById("submitBtn");
-  if (submitBtn) submitBtn.addEventListener("click", run);
 
   /* Ctrl+Enter runs, the way most real editors do. */
   editor.addEventListener("keydown", function (e) {
@@ -309,107 +298,4 @@ var CHALLENGES = [
   });
 
   load(0);
-
-  /* ---- Ask Ada (same /api/ada as chat and the generator) ---- */
-  function showAdaReply(el, html) {
-    el.hidden = false;
-    el.innerHTML = html;
-    el.querySelectorAll(".ada-copy").forEach(function (btn) {
-      btn.addEventListener("click", function () {
-        var id = btn.getAttribute("data-copy");
-        var code = el.querySelector('code[data-copy-src="' + id + '"]');
-        if (code && navigator.clipboard) navigator.clipboard.writeText(code.textContent || "");
-      });
-    });
-  }
-
-  async function askPracticeAda(kind, task, code, target) {
-    var api = window.AdaAPI;
-    if (!api) {
-      target.hidden = false;
-      target.textContent = "Ada is not loaded.";
-      return;
-    }
-    var mode = kind === "solution" ? "chat" : kind;
-    var message = kind === "hint"
-      ? "Give a small hint only for this challenge. Do not show the full solution.\n\n" + task + "\n\nStudent code:\n" + code
-      : kind === "debug"
-      ? "The student is stuck. Find real problems in this code for the challenge. Do not invent errors.\n\nChallenge:\n" + task + "\n\nCode:\n" + code
-      : kind === "explain"
-      ? "Explain the concept for this challenge in plain English. Do not dump the full solution unless a tiny fragment is needed.\n\n" + task + "\n\nStudent code:\n" + code
-      : "Show a working solution because the student asked for it. Explain it briefly.\n\nChallenge:\n" + task + "\n\nTheir code:\n" + code;
-    target.hidden = false;
-    target.textContent = "Ada is thinking…";
-    var data = await api.ask({ mode: mode, message: message, language: "javascript" });
-    showAdaReply(target, api.renderMarkdown(data.reply || api.FAIL));
-  }
-
-  var adaBox = document.getElementById("adaTutorReply");
-  if (adaBox) {
-    document.querySelectorAll("[data-ada-help]").forEach(function (btn) {
-      btn.addEventListener("click", function () {
-        var c = CHALLENGES[currentIndex];
-        askPracticeAda(btn.getAttribute("data-ada-help"), c.task, editor.value, adaBox);
-      });
-    });
-  }
-
-  var PY = [
-    {
-      title: "Largest in a list",
-      task: "Write a function largest(nums) that returns the biggest number in a list.",
-      start: "def largest(nums):\n    # your code\n    pass\n\nprint(largest([3, 9, 2, 7]))\n"
-    },
-    {
-      title: "Count vowels",
-      task: "Write a function vowels(text) that returns how many vowels are in the string.",
-      start: "def vowels(text):\n    # your code\n    pass\n\nprint(vowels(\"semicolon\"))\n"
-    },
-    {
-      title: "Fizz buzz",
-      task: "Print numbers 1 to 20. For multiples of 3 print Fizz, of 5 print Buzz, of both FizzBuzz.",
-      start: "for i in range(1, 21):\n    # your code\n    pass\n"
-    }
-  ];
-  var pyIndex = 0;
-  var pyInput = document.getElementById("pyInput");
-  var pyBar = document.getElementById("pyBar");
-  var pyTitle = document.getElementById("pyTitle");
-  var pyTask = document.getElementById("pyTask");
-  var pyReply = document.getElementById("pyAdaReply");
-
-  function loadPy(i) {
-    pyIndex = i;
-    var p = PY[i];
-    if (!p || !pyInput) return;
-    pyTitle.textContent = p.title;
-    pyTask.textContent = p.task;
-    pyInput.value = p.start;
-    if (pyBar) {
-      [].forEach.call(pyBar.querySelectorAll("button"), function (b, idx) {
-        b.setAttribute("aria-pressed", idx === i ? "true" : "false");
-      });
-    }
-  }
-
-  if (pyBar) {
-    PY.forEach(function (p, i) {
-      var b = document.createElement("button");
-      b.type = "button";
-      b.className = "chip";
-      b.textContent = p.title;
-      b.addEventListener("click", function () { loadPy(i); });
-      pyBar.appendChild(b);
-    });
-    loadPy(0);
-    document.getElementById("pyReset").addEventListener("click", function () { loadPy(pyIndex); });
-    document.getElementById("pySubmit").addEventListener("click", function () {
-      askPracticeAda("debug", PY[pyIndex].task, pyInput.value, pyReply);
-    });
-    document.querySelectorAll("[data-py-help]").forEach(function (btn) {
-      btn.addEventListener("click", function () {
-        askPracticeAda(btn.getAttribute("data-py-help"), PY[pyIndex].task, pyInput.value, pyReply);
-      });
-    });
-  }
 })();

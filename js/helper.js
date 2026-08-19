@@ -148,7 +148,7 @@ var HELP_TOPICS = [
   },
   {
     k: ["practice", "exercise", "challenge", "try", "playground", "write code"],
-    a: "The Practice area has challenges you can run right in your browser — from printing your name up to FizzBuzz and a Caesar cipher. Each has a hint and a worked solution.<br><br>Reading about code and writing code are different skills, and only one makes you a programmer.",
+    a: "The Practice area has ten challenges you can run right in your browser — from printing your name up to FizzBuzz. Each has a hint and a worked solution.<br><br>Reading about code and writing code are different skills, and only one makes you a programmer.",
     link: { href: "playground.html", text: "Go to the Practice area" }
   },
   {
@@ -157,39 +157,14 @@ var HELP_TOPICS = [
     link: { href: "post.html?slug=why-your-code-breaks", text: "Read: Why your code breaks, and why that's normal" }
   },
   {
-    k: ["algorithm", "algorithms", "recipe", "fizzbuzz"],
-    a: "An algorithm is a recipe a machine can follow without guessing. Finite, exact steps. FizzBuzz, sorting files, and a Caesar cipher all count.<br><br>If you cannot say the steps out loud without <em>you know what I mean</em>, you cannot code them yet.",
-    link: { href: "post.html?slug=what-is-an-algorithm", text: "Read: An algorithm is a recipe" }
-  },
-  {
-    k: ["type", "types", "string vs number", "int()", "\"5\""],
-    a: "<code>\"5\"</code> is text. <code>5</code> is a number. <code>input()</code> always gives text. Convert with <code>int()</code> or <code>float()</code> before maths.<br><br>In JavaScript, <code>\"5\" + 5</code> becomes <code>\"55\"</code> because <code>+</code> also glues strings.",
-    link: { href: "post.html?slug=strings-are-not-numbers", text: "Read: Why \"5\" is not 5" }
-  },
-  {
-    k: ["interpreter", "compiler", "runtime", "how does code run", "cpu"],
-    a: "Your file is a recipe. An interpreter (Python, a browser) reads and follows it now. A compiler (C, Go) translates first, then you run the result.<br><br>SyntaxError = it could not even read the file. TypeError = it read it, then hit an illegal operation.",
-    link: { href: "post.html?slug=how-computers-run-code", text: "Read: How a computer runs code" }
-  },
-  {
-    k: ["operator", "operators", "modulo", "==="],
-    a: "<code>=</code> stores. <code>==</code> asks. <code>%</code> is remainder (<code>10 % 3</code> is 1). JavaScript's <code>===</code> compares without converting types.<br><br>Writing <code>if score = 10</code> is the classic mix-up.",
-    link: { href: "post.html?slug=operators-you-need", text: "Read: Operators you need" }
-  },
-  {
     k: ["ai", "are you ai", "chatgpt", "robot", "real person", "who are you", "bot"],
     a: "I'm not an AI — I'm a lookup table with a keyword matcher in front of it. Every answer here was written by hand and is always the same.<br><br>That means I can't understand a question I don't have an entry for. When that happens I'll say so rather than invent something, because a made-up answer is worse than no answer when you can't tell the difference.<br><br>A real AI helper needs a server to hold an API key safely. It's on the roadmap.",
     link: null
   },
   {
     k: ["semicolon", "this site", "who made", "about"],
-    a: "Semicolon is a free learn-to-code site built by <strong>Anshuman Srivastava</strong> — 10 tracks, 31 lessons, a concepts guide, articles and a practice area.<br><br>It's built with no frameworks and no build step: plain HTML, CSS and JavaScript.",
+    a: "Semicolon is a free learn-to-code site built by <strong>Anshuman Srivastava</strong> — 9 tracks, 27 lessons, 7 articles and a practice area.<br><br>It's built with no frameworks and no build step: plain HTML, CSS and JavaScript. The whole thing is about 130 KB and works offline.",
     link: { href: "about.html", text: "About Semicolon" }
-  },
-  {
-    k: ["cipher", "caesar", "secret message", "encode", "decode", "shift letter"],
-    a: "A Caesar cipher slides every letter along the alphabet. <code>HELLO</code> shifted by 3 becomes <code>KHOOR</code>. Decode by sliding the same amount backwards.<br><br>It is a toy — there are only 26 possible shifts — but it is a clean way to see that computers treat letters as numbers.",
-    link: { href: "lesson.html?track=secret-messages&n=1", text: "Track: Secret Messages" }
   }
 ];
 

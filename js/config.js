@@ -18,7 +18,7 @@ const CONFIG = {
     description:
       "A free, plain-English introduction to programming — what code is, " +
       "what it's used for, and how to write your first working program.",
-    url:     "https://semicolon.punah.pro",     // live site
+    url:     "https://semicolon-anshu.netlify.app",     // live site
     author:  "Anshuman Srivastava",
     founded: 2026
   },

@@ -5,8 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Ada — Semicolon</title>
   <meta name="description" content="Ask Ada, Semicolon's coding tutor, when you're stuck. It explains and nudges you toward the answer instead of just handing it over.">
-  <link rel="stylesheet" href="../css/style.css?v=20260816i">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css" crossorigin="anonymous">
+  <link rel="stylesheet" href="../css/style.css?v=20260818a">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%231d4ed8'/><text x='16' y='23' font-size='22' font-family='monospace' fill='white' text-anchor='middle'>;</text></svg>">
 </head>
 <body>
@@ -30,11 +29,8 @@
           <li><a href="learn.html?cat=Projects">Projects <small>Build and ship something real</small></a></li>
         </ul>
       </li>
-      <li><a class="nav-link" href="concepts.html">Concepts</a></li>
       <li><a class="nav-link" href="playground.html">Practice</a></li>
-      <li><a class="nav-link" href="generate.html">Generator</a></li>
-      <li><a class="nav-link" href="projects.html">Projects</a></li>
-      <li><a class="nav-link" href="ada.html" aria-current="page">Ada</a></li>
+      <li><a class="nav-link" href="ada.html">Ada</a></li>
       <li><a class="nav-link" href="blog.html">Blog</a></li>
       <li><a class="nav-link" href="about.html">About</a></li>
       <li><a class="nav-link" href="contact.html">Contact</a></li>
@@ -53,62 +49,39 @@
     <div class="container">
       <nav class="breadcrumb" aria-label="Breadcrumb"><a href="../index.html">Home</a> / Ada</nav>
       <span class="eyebrow">Ada</span>
-      <h1>Chat with Ada</h1>
+      <h1>Ask Ada anything</h1>
       <p class="lede">
-        A real conversation — follow-ups, code, any topic. Ada is Semicolon's assistant:
-        she writes projects, debugs, and also answers ordinary questions the way ChatGPT or Claude would.
+        Ada is Semicolon's own tutor — it runs on the same local AI brain (Ollama)
+        as Anshuman's Jarvis. It explains ideas and points you toward the fix rather
+        than just handing over finished code, so you actually learn the thing.
       </p>
     </div>
   </section>
 
-  <section class="section ada-page">
-    <div class="container ada-layout">
+  <section class="section">
+    <div class="container" style="max-width:760px">
 
-      <div class="ada-shell" id="adaCard">
-        <header class="ada-toolbar">
-        <img class="ada-face" src="../img/ada.jpg" width="80" height="80" alt="">
-        <div class="ada-toolbar-text">
-            <strong>Ada</strong>
-            <span class="ada-status" id="adaStatus">Checking Ada…</span>
-          </div>
-        </header>
-
+      <div class="card" id="adaCard">
         <div id="adaLog" class="ada-log" aria-live="polite">
-          <div class="ada-row ada-row--bot">
-            <div class="ada-mini" aria-hidden="true">A</div>
-            <div class="ada-bubble ada-bubble--bot">
-              Hey AnshX — I'm Ada. Talk to me like a normal chat. Ask anything, paste code,
-              or describe a project on any topic and I'll write it. Follow-ups stay in this thread.
-            </div>
+          <div class="ada-bubble ada-bubble--bot">
+            Hey, I'm Ada. Ask me about a lesson, an error message, or anything
+            you're stuck on — I'll try to walk you through it.
           </div>
         </div>
 
-        <div class="ada-chips" id="adaChips" aria-label="Suggested questions"></div>
-
         <form id="adaForm" class="ada-form" novalidate>
-          <label for="adaInput" class="sr-only">Your message</label>
+          <label for="adaInput" style="display:none">Your message</label>
           <textarea id="adaInput" name="message" rows="2" required
-                    placeholder="Message Ada…"></textarea>
-          <div class="ada-form-actions">
-            <button class="btn btn--primary" type="submit" id="adaSend">Send</button>
-            <button class="btn btn--ghost" type="button" id="adaStop" hidden>Stop</button>
-            <button class="btn btn--ghost" type="button" id="adaRegen" disabled>Regenerate</button>
-            <button class="btn btn--ghost" type="button" id="adaClear">Clear chat</button>
-          </div>
+                    placeholder="What are you stuck on?"></textarea>
+          <button class="btn btn--primary" type="submit" id="adaSend">Send</button>
         </form>
       </div>
 
-      <aside class="ada-rail" aria-label="What Ada knows">
-        <h2>Like a real chat</h2>
-        <p>Ada keeps the thread, writes code for any lawful topic, and will talk about more than homework.</p>
-        <ul class="ada-know">
-          <li><strong>Any topic</strong> sites, games, school, data, stories, tools</li>
-          <li><strong>Follow-ups</strong> “now make it dark” edits the last answer</li>
-          <li><strong>Workshop</strong> files live in the <a href="generate.html">Code Generator</a></li>
-          <li><strong>Practice</strong> hints first if you are learning</li>
-        </ul>
-        <p class="ada-rail-note">You are AnshX. Ada will greet you by name.</p>
-      </aside>
+      <p class="field-hint" style="margin-top:.8rem">
+        Ada only answers while it's running on Anshuman's own computer (it uses
+        Ollama, a local AI model — no cloud, no API key). If it says it's offline,
+        that machine isn't running the Ada server right now.
+      </p>
     </div>
   </section>
 
@@ -141,7 +114,6 @@
         <h4>Site</h4>
         <ul>
           <li><a href="about.html">About</a></li>
-          <li><a href="concepts.html">Concepts</a></li>
           <li><a href="blog.html">Blog</a></li>
           <li><a href="contact.html">Contact</a></li>
           <li><a href="learn.html">All tracks</a></li>
@@ -184,8 +156,7 @@
 <script src="../js/data.js"></script>
 <script src="../components/ui.js"></script>
 <script src="../js/main.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" crossorigin="anonymous"></script>
-<script src="../js/ada-api.js?v=20260816i"></script>
-<script src="../js/ada.js?v=20260816i"></script>
+<script src="../js/ada.js"></script>
+<script src="../js/helper.js"></script>
 </body>
 </html>
