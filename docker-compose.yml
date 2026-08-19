@@ -1,7 +1,7 @@
 # Semicolon on the main server: site on port 80 + Ada (Ollama).
 #
 #   docker compose up -d --build
-#   docker compose exec ollama ollama pull llama3.2:3b   # first time only
+#   docker compose exec ollama ollama pull qwen2.5:7b   # first time only
 #
 # Then open http://SERVER/pages/ada.html
 
@@ -21,8 +21,11 @@ services:
       ADA_HOST: "127.0.0.1"
       ADA_PORT: "8420"
       OLLAMA_URL: "http://ollama:11434/api/generate"
-      OLLAMA_MODEL: "llama3.2:3b"
+      # Qwen2.5 7B is the default local brain: much stronger than the old 3B model
+      # for general knowledge, coding, maths, instruction following and longer chats.
+      OLLAMA_MODEL: "qwen2.5:7b"
       ADA_VISITOR_NAME: "AnshX"
+      # Optional cloud/OpenAI-compatible provider. When filled, Ada uses it first.
       AI_API_KEY: "${AI_API_KEY:-}"
       AI_API_URL: "${AI_API_URL:-}"
       AI_MODEL: "${AI_MODEL:-}"
