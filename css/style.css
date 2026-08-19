@@ -19,53 +19,53 @@
    only ever reference these variables, never raw hex values. Change a
    token, change the whole site.                                      */
 :root {
-  /* colour — light theme: indigo + rose + teal + gold */
-  --bg:            #f4f6ff;
-  --bg-alt:        #fff1f5;
+  /* colour — light: crisp paper, electric indigo, cyan accent */
+  --bg:            #f7f8fd;
+  --bg-alt:        #edf1fb;
   --surface:       #ffffff;
-  --surface-2:     #eef2ff;
-  --border:        #d9d6f5;
-  --border-strong: #c4b5fd;
-  --grid:          rgba(79, 70, 229, .08);
+  --surface-2:     #eef2fb;
+  --border:        #e3e7f5;
+  --border-strong: #ccd5f2;
+  --grid:          rgba(91, 79, 224, .07);
 
-  --text:          #1e1b4b;
-  --text-muted:    #4c4870;
-  --text-subtle:   #7c78a0;
+  --text:          #141a33;
+  --text-muted:    #47516e;
+  --text-subtle:   #848cae;
 
-  --primary:       #4f46e5;
-  --primary-hover: #4338ca;
-  --primary-soft:  #e0e7ff;
-  --primary-ring:  rgba(79, 70, 229, .32);
+  --primary:       #5b4fe0;
+  --primary-hover: #4a3ccf;
+  --primary-soft:  #ecebfd;
+  --primary-ring:  rgba(91, 79, 224, .30);
 
-  --accent:        #e11d48;
-  --accent-soft:   #ffe4e6;
+  --accent:        #0ea5e9;
+  --accent-soft:   #e0f4fd;
   --mint:          #0d9488;
-  --mint-soft:     #ccfbf1;
+  --mint-soft:     #cdf6ef;
   --sun:           #d97706;
-  --sun-soft:      #fef3c7;
-  --violet:        #7c3aed;
+  --sun-soft:      #fdf1d7;
+  --violet:        #8b5cf6;
   --lime:          #65a30d;
 
   --success:       #15803d;
-  --success-soft:  #dcfce7;
+  --success-soft:  #dff8e8;
   --danger:        #e11d48;
-  --danger-soft:   #ffe4e6;
+  --danger-soft:   #ffe3e8;
 
   /* type */
   --font: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-  --display: Georgia, "Iowan Old Style", "Palatino Linotype", Palatino, "Times New Roman", serif;
-  --mono: Consolas, "Cascadia Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  --display: "Avenir Next", "Segoe UI", system-ui, -apple-system, "Helvetica Neue", sans-serif;
+  --mono: "JetBrains Mono", Consolas, "Cascadia Mono", ui-monospace, "SF Mono", Menlo, monospace;
 
   /* space & shape */
-  --radius:    14px;
-  --radius-sm: 9px;
-  --radius-lg: 22px;
+  --radius:    18px;
+  --radius-sm: 11px;
+  --radius-lg: 28px;
   --maxw:      1160px;
   --gutter:    clamp(1.1rem, 4vw, 2rem);
 
-  --shadow-sm: 0 1px 2px rgba(15, 27, 45, .06), 0 1px 3px rgba(15, 27, 45, .05);
-  --shadow:    0 4px 12px rgba(15, 27, 45, .07), 0 12px 28px rgba(15, 27, 45, .06);
-  --shadow-lg: 0 12px 24px rgba(15, 27, 45, .10), 0 28px 56px rgba(15, 27, 45, .10);
+  --shadow-sm: 0 1px 2px rgba(20, 26, 51, .06), 0 1px 3px rgba(20, 26, 51, .05);
+  --shadow:    0 4px 14px rgba(20, 26, 51, .07), 0 14px 32px rgba(20, 26, 51, .06);
+  --shadow-lg: 0 14px 28px rgba(20, 26, 51, .11), 0 30px 60px rgba(20, 26, 51, .10);
 
   --ease: cubic-bezier(.22, 1, .36, 1);
   --header-h: 66px;
@@ -76,36 +76,36 @@
    - [data-theme] is set by our toggle button and must win over it   */
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --bg:            #0b1020;
-    --bg-alt:        #16112a;
-    --surface:       #1a1833;
-    --surface-2:     #221b3d;
-    --border:        #3b3470;
-    --border-strong: #6d5aed;
-    --grid:          rgba(165, 180, 252, .08);
+    --bg:            #0a0f1f;
+    --bg-alt:        #101733;
+    --surface:       #131a36;
+    --surface-2:     #1a2446;
+    --border:        #26335c;
+    --border-strong: #455097;
+    --grid:          rgba(139, 148, 224, .08);
 
-    --text:          #f5f3ff;
-    --text-muted:    #c4b5fd;
-    --text-subtle:   #a78bfa;
+    --text:          #f2f5ff;
+    --text-muted:    #b9c2e6;
+    --text-subtle:   #8d98c8;
 
-    --primary:       #a5b4fc;
-    --primary-hover: #c7d2fe;
-    --primary-soft:  #2e1d6e;
-    --primary-ring:  rgba(165, 180, 252, .35);
+    --primary:       #9d96ff;
+    --primary-hover: #b5afff;
+    --primary-soft:  #232552;
+    --primary-ring:  rgba(157, 150, 255, .35);
 
-    --accent:        #fb7185;
-    --accent-soft:   #4c0519;
+    --accent:        #38bdf8;
+    --accent-soft:   #0b2c40;
     --mint:          #2dd4bf;
-    --mint-soft:     #134e4a;
+    --mint-soft:     #123d3a;
     --sun:           #fbbf24;
-    --sun-soft:      #451a03;
-    --violet:        #c084fc;
+    --sun-soft:      #3d2b08;
+    --violet:        #b79dfc;
     --lime:          #a3e635;
 
     --success:       #5cc08a;
-    --success-soft:  #10281c;
-    --danger:        #f08c85;
-    --danger-soft:   #2e1614;
+    --success-soft:  #12291e;
+    --danger:        #f1667d;
+    --danger-soft:   #351b25;
 
     --shadow-sm: 0 1px 2px rgba(0, 0, 0, .4);
     --shadow:    0 4px 12px rgba(0, 0, 0, .45), 0 12px 28px rgba(0, 0, 0, .35);
@@ -114,36 +114,36 @@
 }
 
 :root[data-theme="dark"] {
-  --bg:            #0b1020;
-  --bg-alt:        #16112a;
-  --surface:       #1a1833;
-  --surface-2:     #221b3d;
-  --border:        #3b3470;
-  --border-strong: #6d5aed;
-  --grid:          rgba(165, 180, 252, .08);
+  --bg:            #0a0f1f;
+  --bg-alt:        #101733;
+  --surface:       #131a36;
+  --surface-2:     #1a2446;
+  --border:        #26335c;
+  --border-strong: #455097;
+  --grid:          rgba(139, 148, 224, .08);
 
-  --text:          #f5f3ff;
-  --text-muted:    #c4b5fd;
-  --text-subtle:   #a78bfa;
+  --text:          #f2f5ff;
+  --text-muted:    #b9c2e6;
+  --text-subtle:   #8d98c8;
 
-  --primary:       #a5b4fc;
-  --primary-hover: #c7d2fe;
-  --primary-soft:  #2e1d6e;
-  --primary-ring:  rgba(165, 180, 252, .35);
+  --primary:       #9d96ff;
+  --primary-hover: #b5afff;
+  --primary-soft:  #232552;
+  --primary-ring:  rgba(157, 150, 255, .35);
 
-  --accent:        #fb7185;
-  --accent-soft:   #4c0519;
+  --accent:        #38bdf8;
+  --accent-soft:   #0b2c40;
   --mint:          #2dd4bf;
-  --mint-soft:     #134e4a;
+  --mint-soft:     #123d3a;
   --sun:           #fbbf24;
-  --sun-soft:      #451a03;
-  --violet:        #c084fc;
+  --sun-soft:      #3d2b08;
+  --violet:        #b79dfc;
   --lime:          #a3e635;
 
   --success:       #5cc08a;
-  --success-soft:  #10281c;
-  --danger:        #f08c85;
-  --danger-soft:   #2e1614;
+  --success-soft:  #12291e;
+  --danger:        #f1667d;
+  --danger-soft:   #351b25;
 
   --shadow-sm: 0 1px 2px rgba(0, 0, 0, .4);
   --shadow:    0 4px 12px rgba(0, 0, 0, .45), 0 12px 28px rgba(0, 0, 0, .35);
@@ -1821,10 +1821,49 @@ select.control:focus { outline: none; border-color: var(--primary); box-shadow: 
 .ada-know li { font-size: .88rem; line-height: 1.4; padding-left: .2rem; }
 .ada-rail-note { margin-top: 1rem !important; font-size: .8rem !important; }
 
+/* project workspace: Ada's code fences become editable files + preview */
+.ada-work {
+  grid-column: 1 / -1;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  margin-top: 1.4rem;
+}
+.ada-work-head {
+  display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+  padding: .85rem 1.1rem;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-alt);
+}
+.ada-work-title {
+  font-family: var(--mono); font-size: .85rem; font-weight: 700; color: var(--text);
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.ada-work-actions { display: flex; align-items: center; gap: .45rem; flex: none; }
+.ada-work-head .linklike { font-size: .85rem; }
+.ada-work .file-tabs { padding: .6rem 1.1rem; border-bottom: 1px solid var(--border); }
+.ada-work-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+}
+.ada-work-code {
+  margin: 0; padding: 1.1rem;
+  max-height: 60vh; overflow: auto;
+  background: var(--bg);
+  font-family: var(--mono); font-size: .8rem; line-height: 1.55;
+  color: var(--text);
+}
+.ada-work-code code { background: none; padding: 0; font-size: inherit; }
+.ada-work-preview iframe { width: 100%; height: 100%; min-height: 40vh; border: 0; display: block; }
+
 @media (max-width: 860px) {
   .ada-layout { grid-template-columns: 1fr; }
   .ada-shell { min-height: 70vh; }
   .ada-log { max-height: none; min-height: 42vh; }
+  .ada-work-grid { grid-template-columns: 1fr; }
+  .ada-work-code { max-height: 40vh; }
 }
 
 /* ---------- HOW CODE RUNS + CONCEPTS GUIDE ------------------------- */
