@@ -47,6 +47,9 @@ jobs:
       - name: Check out the code
         uses: actions/checkout@v5
 
+      - name: Static site checks
+        run: python tools/check-site.py
+
       - name: Build the image
         run: docker build -t semicolon:ci .
 
