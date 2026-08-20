@@ -51,9 +51,9 @@ semicolon/
 │   └── contact.js             Form validation
 ├── components/
 │   └── ui.js                  Icons, escaping, toasts, shared card renderers
-├── pages/ada.html             Ada — coding tutor chat
-├── js/ada.js                  Ada chat widget
-├── ada_server.py              Serves the site + /api/ada (needs Ollama)
+├── pages/ada.html             Ada — assistant chat with project workspace
+├── js/ada-chat.js             Ada chat: threads, files, live preview
+├── ada_server.py              Serves the site + /api/ada (uses Ollama, or an API key)
 ├── tools/
 │   └── set-site-url.py         Points all 15 URL references at your domain
 ├── .env.example               Template for secrets (never commit the real .env)

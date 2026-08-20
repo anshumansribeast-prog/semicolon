@@ -4,9 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Ada — Semicolon</title>
-  <meta name="description" content="Ask Ada, Semicolon's coding tutor, when you're stuck. It explains and nudges you toward the answer instead of just handing it over.">
+  <meta name="description" content="Ada is Semicolon's assistant: chat, debugging, and whole projects written as editable files with live preview.">
   <link rel="stylesheet" href="../css/style.css?v=20260816i">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css" crossorigin="anonymous">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%231d4ed8'/><text x='16' y='23' font-size='22' font-family='monospace' fill='white' text-anchor='middle'>;</text></svg>">
 </head>
 <body>
@@ -32,7 +31,6 @@
       </li>
       <li><a class="nav-link" href="concepts.html">Concepts</a></li>
       <li><a class="nav-link" href="playground.html">Practice</a></li>
-      <li><a class="nav-link" href="generate.html">Generator</a></li>
       <li><a class="nav-link" href="projects.html">Projects</a></li>
       <li><a class="nav-link" href="ada.html" aria-current="page">Ada</a></li>
       <li><a class="nav-link" href="blog.html">Blog</a></li>
@@ -55,8 +53,9 @@
       <span class="eyebrow">Ada</span>
       <h1>Chat with Ada</h1>
       <p class="lede">
-        A real conversation — follow-ups, code, any topic. Ada is Semicolon's assistant:
-        she writes projects, debugs, and also answers ordinary questions the way ChatGPT or Claude would.
+        One assistant for everything on Semicolon: questions, follow-ups, debugging —
+        and whole projects. When Ada writes files, they open in the workspace beside
+        the chat, with copy, download and a live preview.
       </p>
     </div>
   </section>
@@ -66,8 +65,8 @@
 
       <div class="ada-shell" id="adaCard">
         <header class="ada-toolbar">
-        <img class="ada-face" src="../img/ada.jpg" width="80" height="80" alt="">
-        <div class="ada-toolbar-text">
+          <img class="ada-face" src="../img/ada.jpg" width="80" height="80" alt="">
+          <div class="ada-toolbar-text">
             <strong>Ada</strong>
             <span class="ada-status" id="adaStatus">Checking Ada…</span>
           </div>
@@ -77,13 +76,19 @@
           <div class="ada-row ada-row--bot">
             <div class="ada-mini" aria-hidden="true">A</div>
             <div class="ada-bubble ada-bubble--bot">
-              Hey AnshX — I'm Ada. Talk to me like a normal chat. Ask anything, paste code,
-              or describe a project on any topic and I'll write it. Follow-ups stay in this thread.
+              Hey — I'm Ada. Ask anything, paste code to debug, or describe something
+              you want built and I'll write the files here. Follow-ups stay in this thread.
             </div>
           </div>
         </div>
 
-        <div class="ada-chips" id="adaChips" aria-label="Suggested questions"></div>
+        <div class="ada-chips" aria-label="Suggested questions">
+          <button class="ada-chip" type="button" data-ada-prompt="Build a responsive portfolio site for a photographer">Portfolio site</button>
+          <button class="ada-chip" type="button" data-ada-prompt="Write a Python function that scores a cricket innings">Cricket in Python</button>
+          <button class="ada-chip" type="button" data-ada-prompt="Explain recursion like I'm 12, with a small example">Explain recursion</button>
+          <button class="ada-chip" type="button" data-ada-prompt="Debug this: print('hi'">Debug my code</button>
+          <button class="ada-chip" type="button" data-ada-prompt="Make a snake game in HTML, CSS and JavaScript">Snake game</button>
+        </div>
 
         <form id="adaForm" class="ada-form" novalidate>
           <label for="adaInput" class="sr-only">Your message</label>
@@ -99,16 +104,37 @@
       </div>
 
       <aside class="ada-rail" aria-label="What Ada knows">
-        <h2>Like a real chat</h2>
-        <p>Ada keeps the thread, writes code for any lawful topic, and will talk about more than homework.</p>
+        <h2>Tutor and workshop in one</h2>
+        <p>Ada keeps the thread, writes complete working code for any lawful topic,
+           and talks about more than homework.</p>
         <ul class="ada-know">
           <li><strong>Any topic</strong> sites, games, school, data, stories, tools</li>
           <li><strong>Follow-ups</strong> “now make it dark” edits the last answer</li>
-          <li><strong>Workshop</strong> files live in the <a href="generate.html">Code Generator</a></li>
-          <li><strong>Practice</strong> hints first if you are learning</li>
+          <li><strong>Workspace</strong> her files open beside the chat, with live preview</li>
+          <li><strong>Practice</strong> hints first when you are learning</li>
         </ul>
-        <p class="ada-rail-note">You are AnshX. Ada will greet you by name.</p>
+        <p class="ada-rail-note">Code blocks from Ada arrive as editable files you can copy or download.</p>
       </aside>
+
+      <div class="ada-work" id="adaWork" hidden>
+        <div class="ada-work-head">
+          <span class="ada-work-title" id="adaWorkTitle">project</span>
+          <div class="ada-work-actions">
+            <button class="btn btn--ghost btn--sm" type="button" id="adaWorkCopy">Copy</button>
+            <button class="btn btn--ghost btn--sm" type="button" id="adaWorkDownload">Download file</button>
+            <button class="btn btn--ghost btn--sm" type="button" id="adaWorkDownloadAll">Download all</button>
+            <button class="linklike" type="button" id="adaWorkClose">close</button>
+          </div>
+        </div>
+        <div class="file-tabs" id="adaWorkTabs" role="tablist" aria-label="Project files"></div>
+        <div class="ada-work-grid">
+          <pre class="ada-work-code"><code id="adaWorkCode"></code></pre>
+          <div class="ada-work-preview">
+            <iframe id="adaWorkPrev" sandbox="allow-scripts" title="Live project preview"></iframe>
+          </div>
+        </div>
+      </div>
+
     </div>
   </section>
 
@@ -184,8 +210,7 @@
 <script src="../js/data.js"></script>
 <script src="../components/ui.js"></script>
 <script src="../js/main.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" crossorigin="anonymous"></script>
 <script src="../js/ada-api.js?v=20260816i"></script>
-<script src="../js/ada.js?v=20260816i"></script>
+<script src="../js/ada-chat.js"></script>
 </body>
 </html>

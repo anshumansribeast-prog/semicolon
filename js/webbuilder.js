@@ -71,13 +71,11 @@ var WEB_TEMPLATES = [
   var tabWeb = document.getElementById("tabWeb");
   var tabPro = document.getElementById("tabPro");
   var tabPy  = document.getElementById("tabPy");
-  var tabGen = document.getElementById("tabGen");
   var panes  = {
     tabJs:  document.getElementById("modeJs"),
     tabWeb: document.getElementById("modeWeb"),
     tabPro: document.getElementById("modePro"),
     tabPy:  document.getElementById("modePy"),
-    tabGen: document.getElementById("modeGen")
   };
 
   /* -------------------------------------------------------------------
@@ -96,11 +94,11 @@ var WEB_TEMPLATES = [
      replaceState rather than pushState: switching tabs shouldn't stack
      up ten entries you have to press Back through.
      ------------------------------------------------------------------- */
-  var MODES = { js: "tabJs", web: "tabWeb", pro: "tabPro", py: "tabPy", gen: "tabGen" };
-  var TAB_TO_MODE = { tabJs: "js", tabWeb: "web", tabPro: "pro", tabPy: "py", tabGen: "gen" };
+  var MODES = { js: "tabJs", web: "tabWeb", pro: "tabPro", py: "tabPy" };
+  var TAB_TO_MODE = { tabJs: "js", tabWeb: "web", tabPro: "pro", tabPy: "py" };
 
   function show(which, updateUrl) {
-    [tabJs, tabWeb, tabPro, tabPy, tabGen].forEach(function (t) {
+    [tabJs, tabWeb, tabPro, tabPy].forEach(function (t) {
       if (!t || !panes[t.id]) return;
       var on = t.id === which;
       t.setAttribute("aria-selected", on ? "true" : "false");
@@ -118,7 +116,6 @@ var WEB_TEMPLATES = [
   tabWeb.addEventListener("click", function () { show("tabWeb"); buildRun(); });
   tabPro.addEventListener("click", function () { show("tabPro"); proRun(); });
   if (tabPy) tabPy.addEventListener("click", function () { show("tabPy"); });
-  if (tabGen) tabGen.addEventListener("click", function () { show("tabGen"); genRun(); });
 
   /* -------------------------------------------------------------------
      Assemble three files into one complete HTML document.
@@ -411,107 +408,7 @@ var WEB_TEMPLATES = [
 
   openSlot("1");
 
-  /* ================= RUN GENERATED ================= */
-  var genFiles = { html: "", css: "", js: "" };
-  var genCurrent = "html";
-  var runInput = document.getElementById("runInput");
-  var runPrev = document.getElementById("runPreview");
-  var runCons = document.getElementById("runConsole");
-  var runPrompt = document.getElementById("runPrompt");
-  var runMsg = document.getElementById("runGenMsg");
-  var runTitle = document.getElementById("runGenTitle");
-  consoles["gen"] = runCons;
-
-  function genApply(web) {
-    genFiles = { html: web.html || "", css: web.css || "", js: web.js || "" };
-    if (runInput) runInput.value = genFiles[genCurrent];
-  }
-
-  function genRun() {
-    if (!runInput || !runPrev) return;
-    genFiles[genCurrent] = runInput.value;
-    if (runCons) runCons.textContent = "";
-    runPrev.srcdoc = assemble(genFiles, "gen");
-  }
-
-  function genFromPayload(payload) {
-    if (!payload || !window.SemiGen) return;
-    var web = window.SemiGen.toWeb(payload.files || []);
-    genApply(web);
-    if (runPrompt && payload.prompt) runPrompt.value = payload.prompt;
-    if (runTitle) runTitle.textContent = payload.prompt ? String(payload.prompt).slice(0, 48) : "generated";
-    if (runMsg) {
-      runMsg.textContent = "Code loaded. Press Run to see it.";
-      runMsg.className = "form-msg is-shown";
-    }
-    genRun();
-  }
-
-  if (runInput) {
-    document.querySelectorAll(".file-tab[data-gfile]").forEach(function (btn) {
-      btn.addEventListener("click", function () {
-        genFiles[genCurrent] = runInput.value;
-        genCurrent = btn.getAttribute("data-gfile");
-        runInput.value = genFiles[genCurrent];
-        document.querySelectorAll(".file-tab[data-gfile]").forEach(function (b) {
-          b.classList.toggle("is-on", b === btn);
-          b.setAttribute("aria-selected", b === btn ? "true" : "false");
-        });
-      });
-    });
-    var makeBtn = document.getElementById("runGenMake");
-    if (makeBtn) {
-      makeBtn.addEventListener("click", function () {
-        var prompt = (runPrompt && runPrompt.value.trim()) || "";
-        if (!prompt) {
-          if (runMsg) {
-            runMsg.textContent = "Type what you want to build, then Generate.";
-            runMsg.className = "form-msg is-shown form-msg--error";
-          }
-          return;
-        }
-        var files = window.SemiGen.build(prompt, "HTML", "None", "Beginner", "project");
-        window.SemiGen.save({ prompt: prompt, language: "HTML", files: files });
-        genFromPayload({ prompt: prompt, files: files });
-        if (runMsg) {
-          runMsg.textContent = "Generated. Check the files, then press Run.";
-          runMsg.className = "form-msg is-shown";
-        }
-      });
-    }
-    var runBtn = document.getElementById("runGenRun");
-    if (runBtn) runBtn.addEventListener("click", genRun);
-    var jsBtn = document.getElementById("runJsOnly");
-    if (jsBtn) {
-      jsBtn.addEventListener("click", function () {
-        genFiles[genCurrent] = runInput.value;
-        if (runCons) runCons.textContent = "";
-        var lines = [];
-        var realLog = console.log, realErr = console.error;
-        console.log = function () {
-          lines.push(Array.prototype.join.call(arguments, " "));
-        };
-        console.error = console.log;
-        try {
-          new Function(genFiles.js || "")();
-          runCons.textContent = lines.join("\n") || "(ran, no console output)";
-        } catch (err) {
-          runCons.textContent = "⚠ " + err.name + ": " + err.message;
-        } finally {
-          console.log = realLog;
-          console.error = realErr;
-        }
-      });
-    }
-    var clr = document.getElementById("runConsClear");
-    if (clr) clr.addEventListener("click", function () {
-      if (runCons) runCons.textContent = "Press Run. console.log from your page appears here.";
-    });
-    var saved = window.SemiGen && window.SemiGen.load && window.SemiGen.load();
-    if (saved && saved.files && saved.files.length) genFromPayload(saved);
-  }
-
-  /* ---- honour ?mode= on arrival ----
+    /* ---- honour ?mode= on arrival ----
 
      Runs last, after both builders have loaded their starting content,
      so opening ?mode=web lands on a preview that is already rendered
@@ -521,6 +418,5 @@ var WEB_TEMPLATES = [
     show(MODES[wanted], false);
     if (wanted === "web") buildRun();
     if (wanted === "pro") proRun();
-    if (wanted === "gen") genRun();
   }
 })();
