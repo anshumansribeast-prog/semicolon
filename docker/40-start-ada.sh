@@ -4,4 +4,7 @@
 export ADA_HOST="${ADA_HOST:-127.0.0.1}"
 export ADA_PORT="${ADA_PORT:-8420}"
 export ADA_VISITOR_NAME="${ADA_VISITOR_NAME:-}"
-python3 /opt/ada/ada_server.py &
+export ADA_FALLBACK_API_URL="${ADA_FALLBACK_API_URL:-}"
+export ADA_FALLBACK_API_KEY="${ADA_FALLBACK_API_KEY:-}"
+export ADA_FALLBACK_MODEL="${ADA_FALLBACK_MODEL:-}"
+python3 /opt/ada/ada_runtime.py &
