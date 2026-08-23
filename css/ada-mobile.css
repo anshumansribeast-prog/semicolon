@@ -1,0 +1,140 @@
+/* Ada chat — responsive layout for phones, tablets and desktop.
+   Loaded only by pages/ada.html so the rest of Semicolon is unchanged. */
+
+.ada-shell,
+.ada-layout,
+.ada-form,
+.ada-form-actions,
+.ada-chips,
+.ada-log {
+  min-width: 0;
+}
+
+.ada-log {
+  overflow-x: hidden;
+  overflow-y: auto;
+  overflow-wrap: anywhere;
+  overscroll-behavior: contain;
+}
+
+.ada-bubble {
+  max-width: min(78ch, 88%);
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.ada-form textarea {
+  width: 100%;
+  max-width: 100%;
+  resize: vertical;
+  min-height: 52px;
+  max-height: 28dvh;
+}
+
+.ada-form-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .6rem;
+}
+
+.ada-form-actions .btn {
+  min-height: 44px;
+}
+
+@media (max-width: 860px) {
+  .ada-layout {
+    grid-template-columns: minmax(0, 1fr);
+    width: 100%;
+  }
+
+  .ada-shell {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .ada-log {
+    min-height: 240px;
+    max-height: 52dvh;
+  }
+}
+
+@media (max-width: 520px) {
+  .ada-page.section {
+    padding-top: 1.5rem;
+    padding-bottom: 1.5rem;
+  }
+
+  .ada-shell {
+    border-radius: 14px;
+  }
+
+  .ada-toolbar {
+    padding: .8rem .9rem;
+  }
+
+  .ada-face {
+    width: 48px;
+    height: 48px;
+  }
+
+  .ada-log {
+    min-height: 220px;
+    max-height: 48dvh;
+    padding: .8rem;
+  }
+
+  .ada-bubble {
+    max-width: 92%;
+    font-size: .94rem;
+  }
+
+  .ada-chips {
+    display: flex;
+    gap: .45rem;
+    padding: .7rem;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scrollbar-width: thin;
+  }
+
+  .ada-chip {
+    flex: 0 0 auto;
+    min-height: 40px;
+  }
+
+  .ada-form {
+    padding: .75rem;
+  }
+
+  .ada-form textarea {
+    min-height: 52px;
+    max-height: 24dvh;
+    font-size: 16px;
+  }
+
+  .ada-form-actions .btn {
+    flex: 1 1 calc(50% - .6rem);
+    min-width: 0;
+    min-height: 44px;
+  }
+
+  #adaSend {
+    flex-basis: 100%;
+  }
+}
+
+@media (max-width: 360px) {
+  .ada-form-actions .btn {
+    flex-basis: 100%;
+  }
+}
+
+@media (min-width: 861px) {
+  .ada-log {
+    max-height: min(58dvh, 620px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ada-log { scroll-behavior: auto; }
+}
