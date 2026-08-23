@@ -2151,3 +2151,36 @@ select.control:focus { outline: none; border-color: var(--primary); box-shadow: 
   .gen-opts, .gen-work, .gen-split { grid-template-columns: 1fr; }
   #genEditor, #genPreview { min-height: 16rem; }
 }
+
+/* ---------- 19. MOBILE HARDENING --------------------------------------
+   Fixes reported by phone visitors:
+   - no horizontal panning, ever
+   - iOS zooms into any input smaller than 16px — bump them on touch
+   - chat heights use dvh so the browser's own URL bar can't eat them
+   - tap targets stay comfortably big                            */
+html, body { overflow-x: clip; }
+img, svg, video, iframe { max-width: 100%; }
+
+.ada-log { min-height: 0; }
+.ada-shell { display: flex; flex-direction: column; }
+.ada-form textarea { font-size: 16px; }          /* was inheriting < 16px */
+.newsletter-form input { font-size: 16px; }
+.search-field input,
+.form-input, .form-select, .form textarea { font-size: 16px; }
+
+@media (max-width: 860px) {
+  .ada-layout { gap: 1rem; }
+  /* the keyboard + URL bar take real height on phones; keep the log
+     short enough that the input box stays visible without scrolling */
+  .ada-shell { min-height: auto; }
+  .ada-log { max-height: 46dvh; min-height: 240px; overflow-y: auto; }
+}
+
+@media (max-width: 520px) {
+  .container { padding-inline: 1rem; }
+  h1 { font-size: clamp(1.9rem, 8vw, 2.6rem); }
+  .btn { padding-block: .75rem; }                /* comfortable taps */
+  .ada-chip { padding: .65rem 1rem; }
+  .hero-stats { gap: 1rem; }
+  .hero-stats .n { font-size: 1.5rem; }
+}
