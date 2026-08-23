@@ -1,6 +1,6 @@
 # Site on nginx:80. Ada's Python bridge listens on 127.0.0.1:8420 and
-# nginx proxies /api/ada there. Pair with docker-compose.yml so Ollama
-# is on the same Docker network (OLLAMA_URL=http://ollama:11434/...).
+# nginx proxies /api/ada there. Ada talks to an OpenAI-compatible API
+# (Groq by default) — pass AI_API_KEY at deploy time.
 FROM nginx:alpine
 
 RUN apk add --no-cache python3

@@ -264,7 +264,7 @@
     fetch("/api/ada")
       .then(function (r) { return r.json(); })
       .then(function (info) {
-        if (info.model && (info.ollama || info.api)) {
+        if (info.model && info.api) {
           statusEl.textContent = "live model: " + info.model;
           statusEl.className = "ada-status";
         } else {

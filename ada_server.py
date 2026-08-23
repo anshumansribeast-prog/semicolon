@@ -1,14 +1,13 @@
 """Ada's brain — HTTP API for Semicolon chat, projects, and practice.
 
-Stdlib only. Talks to Ollama on the server, or an OpenAI-compatible API
-when AI_API_KEY is set. Keys never go to the browser.
+Stdlib only. Talks to an OpenAI-compatible API (Groq by default) when
+AI_API_KEY is set; otherwise answers from ada_knowledge, the written
+notes shipped with the site. Keys never go to the browser.
 """
 
 import json
 import os
 import re
-import socket
-import struct
 import threading
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from urllib import request as urlreq
@@ -20,11 +19,9 @@ import ada_knowledge
 HOST = os.environ.get("ADA_HOST", "0.0.0.0")
 PORT = int(os.environ.get("ADA_PORT", "8420"))
 ROOT = os.path.dirname(os.path.abspath(__file__))
-OLLAMA_URL = os.environ.get("OLLAMA_URL", "http://127.0.0.1:11434/api/generate")
-OLLAMA_MODEL = os.environ.get("OLLAMA_MODEL", "qwen2.5:7b")
-AI_API_URL = os.environ.get("AI_API_URL", "").strip()
+AI_API_URL = os.environ.get("AI_API_URL", "").strip() or "https://api.groq.com/openai/v1"
 AI_API_KEY = os.environ.get("AI_API_KEY", "").strip()
-AI_MODEL = os.environ.get("AI_MODEL", "").strip() or OLLAMA_MODEL
+AI_MODEL = os.environ.get("AI_MODEL", "").strip() or "llama-3.3-70b-versatile"
 VISITOR_NAME = os.environ.get("ADA_VISITOR_NAME", "AnshX")
 FAIL_MSG = "ADA couldn't complete that request. Please try again."
 HISTORY_TURNS = 30
@@ -97,70 +94,6 @@ def greeting_reply():
     )
 
 
-def docker_gateway_url():
-    try:
-        with open("/proc/net/route") as fh:
-            for line in fh:
-                parts = line.split()
-                if len(parts) > 2 and parts[1] == "00000000":
-                    packed = struct.pack("<L", int(parts[2], 16))
-                    ip = socket.inet_ntoa(packed)
-                    return "http://%s:11434/api/generate" % ip
-    except (OSError, ValueError, IndexError):
-        return None
-    return None
-
-
-def ollama_candidates():
-    urls = []
-    env = os.environ.get("OLLAMA_URL")
-    for item in (
-        env,
-        "http://127.0.0.1:11434/api/generate",
-        "http://localhost:11434/api/generate",
-        "http://ollama:11434/api/generate",
-        "http://host.docker.internal:11434/api/generate",
-        docker_gateway_url(),
-    ):
-        if item and item not in urls:
-            urls.append(item)
-    return urls
-
-
-def resolve_host(host, timeout=1.5):
-    box = []
-
-    def run():
-        try:
-            box.append(socket.getaddrinfo(host, None)[0][4][0])
-        except OSError:
-            box.append(None)
-
-    t = threading.Thread(target=run)
-    t.daemon = True
-    t.start()
-    t.join(timeout)
-    if t.is_alive() or not box:
-        return None
-    return box[0]
-
-
-def tcp_open(url, timeout=2.0):
-    parsed = urlparse(url)
-    host = parsed.hostname
-    port = parsed.port or (443 if parsed.scheme == "https" else 80)
-    if not host:
-        return False
-    ip = resolve_host(host, timeout=min(timeout, 1.5))
-    if not ip:
-        return False
-    try:
-        with socket.create_connection((ip, port), timeout=timeout):
-            return True
-    except OSError:
-        return False
-
-
 def clip_history(history):
     out = []
     for turn in (history or [])[-HISTORY_TURNS:]:
@@ -209,62 +142,14 @@ def ask_openai_compatible(messages):
         return (choices[0].get("message") or {}).get("content", "").strip() or None
 
 
-def ask_ollama_chat(messages):
-    last_error = None
-    for gen_url in ollama_candidates():
-        chat_url = gen_url.replace("/api/generate", "/api/chat")
-        if not tcp_open(chat_url, timeout=2.0) and not tcp_open(gen_url, timeout=2.0):
-            continue
-        try:
-            payload = json.dumps({
-                "model": OLLAMA_MODEL,
-                "messages": messages,
-                "stream": False,
-            }).encode()
-            req = urlreq.Request(chat_url, data=payload, headers={"Content-Type": "application/json"})
-            with urlreq.urlopen(req, timeout=90) as resp:
-                data = json.loads(resp.read())
-                msg = (data.get("message") or {}).get("content", "").strip()
-                if msg:
-                    return msg
-        except (URLError, TimeoutError, ValueError, OSError, HTTPError) as err:
-            last_error = err
-        try:
-            system = ""
-            prompt = ""
-            for m in messages:
-                if m["role"] == "system":
-                    system = m["content"]
-                else:
-                    prompt += "%s: %s\n" % ("Ada" if m["role"] == "assistant" else VISITOR_NAME, m["content"])
-            payload = json.dumps({
-                "model": OLLAMA_MODEL,
-                "prompt": prompt + "Ada:",
-                "system": system,
-                "stream": False,
-            }).encode()
-            req = urlreq.Request(gen_url, data=payload, headers={"Content-Type": "application/json"})
-            with urlreq.urlopen(req, timeout=90) as resp:
-                reply = json.loads(resp.read()).get("response", "").strip()
-                if reply:
-                    return reply
-        except (URLError, TimeoutError, ValueError, OSError, HTTPError) as err:
-            last_error = err
-            continue
-    raise last_error or URLError("no Ollama URL to try")
-
-
 def ask_model(system, prompt, history=None):
+    if not AI_API_KEY:
+        raise URLError("no AI_API_KEY configured — answering from the notes instead")
     messages = build_messages(system, prompt, history)
-    if AI_API_KEY:
-        try:
-            reply = ask_openai_compatible(messages)
-            if reply:
-                return reply, "api"
-        except (URLError, TimeoutError, ValueError, OSError, HTTPError, KeyError):
-            pass
-    reply = ask_ollama_chat(messages)
-    return reply, "ollama"
+    reply = ask_openai_compatible(messages)
+    if not reply:
+        raise URLError("empty reply from the API")
+    return reply, "api"
 
 
 def fallback_tutor(message, history):
@@ -326,13 +211,6 @@ def safe_title(message):
     return t or "My project"
 
 
-def ollama_up():
-    for url in ollama_candidates():
-        if tcp_open(url, timeout=1.8):
-            return True
-    return False
-
-
 class AdaHandler(SimpleHTTPRequestHandler):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, directory=ROOT, **kwargs)
@@ -351,8 +229,7 @@ class AdaHandler(SimpleHTTPRequestHandler):
         if urlparse(self.path).path == "/api/ada":
             self._reply(200, {
                 "ok": True,
-                "model": AI_MODEL if AI_API_KEY else OLLAMA_MODEL,
-                "ollama": ollama_up(),
+                "model": AI_MODEL if AI_API_KEY else None,
                 "api": bool(AI_API_KEY),
                 "visitor": VISITOR_NAME,
                 "notes": len(ada_knowledge.TOPICS),
@@ -492,6 +369,9 @@ class AdaHandler(SimpleHTTPRequestHandler):
 
 if __name__ == "__main__":
     server = ThreadingHTTPServer((HOST, PORT), AdaHandler)
-    print("Ada server listening on http://%s:%s (model: %s)" % (HOST, PORT, AI_MODEL if AI_API_KEY else OLLAMA_MODEL))
+    if AI_API_KEY:
+        print("Ada server listening on http://%s:%s (live model: %s via %s)" % (HOST, PORT, AI_MODEL, AI_API_URL))
+    else:
+        print("Ada server listening on http://%s:%s (no AI_API_KEY — answering from the written notes)" % (HOST, PORT))
     print("Open http://127.0.0.1:%s/pages/ada.html" % PORT)
     server.serve_forever()

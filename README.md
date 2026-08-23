@@ -17,8 +17,10 @@ Double-click index.html
 python -m http.server 8000
 # then visit http://localhost:8000
 
-# Option 3 — Ada (the coding tutor) needs this server, plus Ollama
-python ada_server.py
+# Option 3 — Ada (the coding tutor) needs this server.
+# Set AI_API_KEY first for live answers (see .env.example); otherwise
+# she answers from the built-in notes.
+AI_API_KEY=your_groq_key python ada_server.py
 # then visit http://localhost:8420/pages/ada.html
 ```
 
@@ -53,7 +55,7 @@ semicolon/
 │   └── ui.js                  Icons, escaping, toasts, shared card renderers
 ├── pages/ada.html             Ada — assistant chat with project workspace
 ├── js/ada-chat.js             Ada chat: threads, files, live preview
-├── ada_server.py              Serves the site + /api/ada (uses Ollama, or an API key)
+├── ada_server.py              Serves the site + /api/ada (Groq API, or built-in notes)
 ├── tools/
 │   └── set-site-url.py         Points all 15 URL references at your domain
 ├── .env.example               Template for secrets (never commit the real .env)
@@ -247,17 +249,17 @@ The live site is **https://semicolon.punah.pro**.
 On the server that should actually run Ada:
 
 ```bash
-docker compose up -d --build
-docker compose exec ollama ollama pull llama3.2:3b   # first time only
+AI_API_KEY=your_groq_key docker compose up -d --build
 ```
 
-nginx serves the pages on port 80 and proxies `/api/ada` to Ada. Ollama
-is the model. Open `http://YOUR-SERVER/pages/ada.html`.
+Get a free key at https://console.groq.com. nginx serves the pages on
+port 80 and proxies `/api/ada` to Ada, which talks to Groq's
+OpenAI-compatible API. Open `http://YOUR-SERVER/pages/ada.html`.
 
 ### Static hosts (no Ada)
 
 Any static host still works for the pages, but Ada will show as offline
-because those hosts cannot run Python or Ollama:
+because those hosts cannot run her Python server:
 
 - **Netlify** — drag the folder onto [app.netlify.com/drop](https://app.netlify.com/drop). Live in ten seconds.
 - **GitHub Pages** — push to GitHub, Settings → Pages → deploy from `main`.
@@ -292,8 +294,9 @@ the `css/` folder behind.
 `blog.html`, not by opening the file directly.
 
 **Ada says it's offline**
-Ada only answers while `python ada_server.py` is running and Ollama is up
-(`ollama serve`, with model `llama3.2:3b`). Open the page through that server
+Ada only answers while her server is running (`python ada_server.py`).
+Set `AI_API_KEY` for live model answers; without it she replies from the
+built-in notes. Open the page through that server
 (`http://localhost:8420/pages/ada.html`), not as a raw file.
 
 **"Copy link" says the clipboard isn't available**

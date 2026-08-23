@@ -1,7 +1,7 @@
 """Ada's written notes — scored keyword lookup, same idea as js/helper.js.
 
-Plain text (no HTML). Used when a question matches well, and as backup
-when Ollama is unreachable.
+Plain text (no HTML). Used when a question matches well, and as the
+answer bank when no live API key is configured.
 """
 
 VISITOR = None  # set by ada_server after env is loaded
@@ -203,9 +203,10 @@ TOPICS = [
     ),
     (
         ["who are you", "what are you", "are you ai", "chatgpt"],
-        "I am Ada, Semicolon's coding tutor. I use written notes for common beginner questions "
-        "and a local model (llama3.2) when it is running. I explain the idea and point at the "
-        "fix rather than dumping finished homework. Ask one stuck thing at a time.",
+        "I am Ada, Semicolon's coding tutor. When a live model is connected I chat freely "
+        "about anything; otherwise I answer from carefully written notes on every beginner "
+        "topic. Either way I explain the idea and point at the fix rather than dumping "
+        "finished homework. Ask one stuck thing at a time.",
     ),
     (
         ["dict", "dictionary", "object {}", "key value"],
@@ -288,10 +289,193 @@ TOPICS = [
     ),
     (
         ["what can you", "help me", "what do you know"],
-        "Ask about variables, loops, errors, Python install, HTML/CSS/JS, Git, files, "
-        "localStorage, functions, lists, if vs ==, input/int, indent, deploy, JSON, "
-        "types, algorithms, interpreters, the Caesar cipher, or any Semicolon lesson. "
-        "One stuck thing at a time.",
+        "Ask about anything in coding: variables, loops, functions, lists, dictionaries, "
+        "strings, errors and debugging, Python or JavaScript, HTML, CSS, flexbox, the DOM, "
+        "events, fetch and APIs, JSON, files, CSV, Git and branches, the terminal, pip and "
+        "virtual environments, testing, project ideas, deployment — or any Semicolon lesson.",
+    ),
+    (
+        ["range(", "for i in range", "counting loop"],
+        "range(5) gives 0,1,2,3,4 — five numbers starting at 0. range(1, 6) gives 1 to 5; "
+        "the end is never included. range(0, 10, 2) counts by twos. When you can, loop over "
+        "the list directly: for planet in planets: is cleaner than index juggling.",
+    ),
+    (
+        ["while loop", "condition stays true", "until true"],
+        "A while loop runs as long as its test is true. Three parts to get right: set the "
+        "variable before, test it on the while line, change it inside the loop. Miss the "
+        "third and you have an infinite loop — Ctrl+C stops it.",
+    ),
+    (
+        ["append", "add to list", "remove from list", "sort a list", "list methods"],
+        "Useful list moves in Python: planets.append(\"Mars\") adds to the end, "
+        "planets.remove(\"Venus\") deletes by value, planets.sort() sorts in place, "
+        "len(planets) counts, planets[0] reads, planets[-1] is the last item. "
+        "In JavaScript the same jobs are push, splice, sort and length.",
+    ),
+    (
+        ["split", "join", "upper", "lower", "string methods"],
+        "Strings carry their own tools: name.upper(), name.lower(), name.strip() trims "
+        "spaces, sentence.split() chops text into a list of words, \" \".join(words) glues "
+        "a list back into text, name.replace(\"a\", \"b\"), len(name) counts characters. "
+        "Chaining works: input().strip().lower().",
+    ),
+    (
+        ["recursion", "recursive", "calls itself"],
+        "Recursion is a function that calls itself on a smaller version of the problem, "
+        "with a base case that stops it. Factorial: n! = n * factorial(n - 1), stopping at "
+        "factorial(1) = 1. Every recursion can be rewritten as a loop; use it when the "
+        "problem is naturally nested, like folders or trees.",
+    ),
+    (
+        ["import", "module", "library", "pip install", "virtual environment", "venv"],
+        "import random then random.randint(1, 6) rolls a die; import math gives sqrt and pi. "
+        "Install other people's packages with pip install packagename — in the terminal, not "
+        "inside Python. Give each project its own virtual environment: python -m venv .venv, "
+        "activate it, and packages never clash between projects.",
+    ),
+    (
+        ["random", "dice", "guessing game", "randint", "random number"],
+        "import random; secret = random.randint(1, 100). Then loop: guess = int(input()), "
+        "compare with if/elif saying higher or lower, count tries, stop on a match. That "
+        "guessing game is about twelve lines and uses variables, loops, conditionals and "
+        "input together — a perfect first solo project.",
+    ),
+    (
+        ["floor division", "integer division", "power operator"],
+        "/ always gives a float: 7 / 2 is 3.5. // floors it: 7 // 2 is 3. % gives the "
+        "remainder: 7 % 2 is 1. Together they split things into groups: total // 12 dozen, "
+        "total % 12 left over. ** is power: 2 ** 10 is 1024.",
+    ),
+    (
+        ["valueerror", "indexerror", "keyerror", "zerodivisionerror", "attributeerror"],
+        "Common Python errors and causes: ValueError — wrong kind of value, usually "
+        "int(\"hello\"). IndexError — a list position that does not exist; counting starts "
+        "at 0. KeyError — dictionary key not present; use .get(key). ZeroDivisionError — "
+        "dividing by zero; check the denominator first. AttributeError — calling a method "
+        "the object does not have.",
+    ),
+    (
+        ["map(", "filter(", "foreach", "array methods", "reduce"],
+        "JavaScript array tools: arr.forEach(fn) does something per item, arr.map(fn) builds "
+        "a new array of results, arr.filter(fn) keeps items where fn returns true, "
+        "arr.find(fn) gets the first match, arr.reduce(fn, start) folds everything into one "
+        "value. They take a function: nums.map(n => n * 2).",
+    ),
+    (
+        ["arrow function", "arrow functions"],
+        "An arrow function is a short function: const double = n => n * 2 means the same as "
+        "function (n) { return n * 2; }. With no braces, the expression is returned "
+        "automatically. Great for map and filter callbacks.",
+    ),
+    (
+        ["queryselector", "select element", "classlist", "change style"],
+        "document.querySelector(\".card\") finds the first match of any CSS selector; "
+        "querySelectorAll finds all of them. Change things with el.textContent, "
+        "el.classList.add/remove/toggle(\"open\"), or el.style.color. Prefer classList over "
+        "inline styles — looks belong in CSS, behaviour in JS.",
+    ),
+    (
+        ["settimeout", "setinterval", "timer", "delay"],
+        "setTimeout(fn, 1000) runs fn once after a second; setInterval(fn, 1000) repeats "
+        "every second until you clearInterval(id). Both are asynchronous — the lines after "
+        "them run immediately. Keep the returned id whenever you might need to cancel.",
+    ),
+    (
+        ["event listener", "click event", "keydown", "form submit", "preventdefault"],
+        "el.addEventListener(\"click\", handler) runs handler on click. Common events: click, "
+        "input (every keystroke), change (selects and blur), keydown, submit on forms — call "
+        "e.preventDefault() inside submit handlers or the page reloads. The handler receives "
+        "an event object; e.target is the element it happened to.",
+    ),
+    (
+        ["media query", "responsive", "mobile layout", "breakpoint"],
+        "Media queries make one page fit every screen: @media (max-width: 780px) { ... } "
+        "applies CSS only below that width. Design mobile-first — write small-screen styles "
+        "first, then add min-width queries for larger screens. Flexible units (%, rem, "
+        "clamp()) plus flexbox and grid do most of the work.",
+    ),
+    (
+        ["css selector", "class vs id", "specificity"],
+        ".card selects class=\"card\" (any number of elements); #header selects id=\"header\" "
+        "(exactly one). When two rules fight, the more specific one wins: id beats class "
+        "beats tag name. Style with classes — ids make later overrides painful.",
+    ),
+    (
+        ["css variable", "custom property", "dark mode css"],
+        ":root { --accent: #4f46e5; } defines a variable; color: var(--accent) uses it. "
+        "Change it once, every use follows. That is exactly how Semicolon's dark mode works: "
+        "[data-theme=\"dark\"] re-declares the same variables with darker values.",
+    ),
+    (
+        ["form validation", "required field", "validate form"],
+        "HTML gives free checks: required, type=\"email\", minlength, maxlength, pattern. "
+        "JavaScript adds friendlier messages: listen for submit, preventDefault, check each "
+        "value, show an error beside the field. Real validation must also run on the server — "
+        "anyone can bypass front-end checks with dev tools.",
+    ),
+    (
+        ["http status", "404", "500", "status codes"],
+        "HTTP status codes: 200 OK; 201 created; 301 permanent redirect; 400 bad request; "
+        "401 not signed in; 403 signed in but forbidden; 404 nothing at that address; "
+        "429 too many requests; 500 the server broke; 503 down. In fetch, only network "
+        "failures throw an error — a 404 still needs a resp.ok check.",
+    ),
+    (
+        ["rest api", "api endpoint", "get post", "put delete"],
+        "An API is a program behind a URL that answers with data instead of pages. REST "
+        "conventions: GET reads, POST creates, PUT/PATCH updates, DELETE removes. Data comes "
+        "back as JSON. Public APIs like NASA's or Open-Meteo are friendly first targets — "
+        "fetch one and console.log the result.",
+    ),
+    (
+        ["sql", "database", "select from", "table query"],
+        "SQL asks questions of tables: SELECT name, age FROM users WHERE age > 18 ORDER BY "
+        "age DESC LIMIT 10. INSERT adds rows; UPDATE changes them — always with WHERE; "
+        "DELETE removes them — WHERE or you wipe the table. SQLite stores a whole database "
+        "in one file, which makes it perfect for learning.",
+    ),
+    (
+        ["branch", "merge", "git branch", "conflict", "pull request"],
+        "git checkout -b feature-name creates and switches to a parallel timeline. Commit "
+        "there freely, git merge main pulls in updates from mainline, and merging back "
+        "integrates your work. A conflict means both sides edited the same lines — Git marks "
+        "them with <<<<<<< markers and you choose what survives. On GitHub, the same idea is "
+        "a pull request.",
+    ),
+    (
+        ["csv", "csv file", "spreadsheet python"],
+        "CSV is plain-text spreadsheet format. In Python: import csv, then with open(\"data.csv\") "
+        "as f: rows = list(csv.DictReader(f)) — each row becomes a dictionary keyed by the "
+        "header row. csv.DictWriter writes it back. For anything with relationships, move up "
+        "to SQLite.",
+    ),
+    (
+        ["terminal", "command line", "cd ", "ls ", "dir "],
+        "The terminal runs commands directly. The essentials: ls (dir on Windows) lists "
+        "files, cd folder moves in, cd .. goes up, mkdir makes a folder, clear clears the "
+        "screen, and the up-arrow recalls the last command. python file.py runs your script "
+        "from here — no editor needed.",
+    ),
+    (
+        ["testing", "unit test", "pytest", "assert"],
+        "A test is code that checks code. Simplest form: assert add(2, 2) == 4. pytest is "
+        "the friendly Python runner: put tests in test_thing.py, run pytest in the terminal, "
+        "and it reports each pass and fail. Write tests for anything that has ever broken.",
+    ),
+    (
+        ["accessibility", "aria", "alt text", "screen reader"],
+        "Accessibility means everyone can use what you built. The basics go far: alt text on "
+        "every meaningful image, real buttons and links instead of clickable divs, labels on "
+        "form fields, enough colour contrast, and keyboard access — if you cannot tab to it, "
+        "it is broken for some visitors.",
+    ),
+    (
+        ["project ideas", "what should i build", "first project", "portfolio"],
+        "Good first projects, in order: a number-guessing game (loops + conditionals), a "
+        "to-do list saved in localStorage (the DOM + persistence), a quiz (arrays of objects), "
+        "a weather dashboard with fetch (APIs), a personal portfolio site (HTML/CSS craft). "
+        "Build the thing you personally want to exist — motivation beats novelty.",
     ),
 ]
 
