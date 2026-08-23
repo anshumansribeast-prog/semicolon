@@ -1,0 +1,41 @@
+name: Ada AI smoke tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  ada:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - name: Build image
+        run: docker build -t semicolon:ai-test .
+      - name: Start site
+        run: docker run -d --name semicolon-ai -p 8080:80 semicolon:ai-test
+      - name: Wait for site
+        run: |
+          for i in $(seq 1 20); do
+            curl -fsS http://localhost:8080/ >/dev/null && exit 0
+            sleep 1
+          done
+          docker logs semicolon-ai
+          exit 1
+      - name: Test Ada
+        env:
+          AI_API_KEY: ${{ secrets.AI_API_KEY }}
+          AI_API_URL: ${{ secrets.AI_API_URL }}
+          AI_MODEL: ${{ secrets.AI_MODEL }}
+        run: python3 tools/ai-smoke.py http://localhost:8080
+      - name: Logs on failure
+        if: failure()
+        run: docker logs semicolon-ai || true
+      - name: Stop site
+        if: always()
+        run: docker rm -f semicolon-ai || true
