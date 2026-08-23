@@ -1,9 +1,7 @@
-# Semicolon on the main server: site on port 80 + Ada (Groq API).
+# Semicolon on the main server: site on port 80 + Ada.
 #
-#   AI_API_KEY=your_groq_key docker compose up -d --build
-#
-# Get a free key at https://console.groq.com
-# Then open http://SERVER/pages/ada.html
+# Existing primary AI configuration remains unchanged. Optional fallback
+# variables are server-side only and are empty unless explicitly configured.
 
 services:
   web:
@@ -14,12 +12,12 @@ services:
     environment:
       ADA_HOST: "127.0.0.1"
       ADA_PORT: "8420"
-      # Groq (free tier) by default; any OpenAI-compatible endpoint works.
       AI_API_KEY: "${AI_API_KEY:?Set AI_API_KEY in the deployment environment}"
       AI_API_URL: "${AI_API_URL:-https://api.groq.com/openai/v1}"
       AI_MODEL: "${AI_MODEL:-openai/gpt-oss-120b}"
       ADA_VISITOR_NAME: "AnshX"
-      # Shared secret between this server and Cosmos's dashboard, which
-      # is allowed to read the summary at /api/stats/summary.
       SEMICOLON_ADMIN_TOKEN: "${SEMICOLON_ADMIN_TOKEN:-}"
+      ADA_FALLBACK_API_URL: "${ADA_FALLBACK_API_URL:-}"
+      ADA_FALLBACK_API_KEY: "${ADA_FALLBACK_API_KEY:-}"
+      ADA_FALLBACK_MODEL: "${ADA_FALLBACK_MODEL:-}"
     restart: unless-stopped
