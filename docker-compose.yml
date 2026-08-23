@@ -17,7 +17,7 @@ services:
       # Groq (free tier) by default; any OpenAI-compatible endpoint works.
       AI_API_KEY: "${AI_API_KEY:?Set AI_API_KEY in the deployment environment}"
       AI_API_URL: "${AI_API_URL:-https://api.groq.com/openai/v1}"
-      AI_MODEL: "${AI_MODEL:-llama-3.3-70b-versatile}"
+      AI_MODEL: "${AI_MODEL:-openai/gpt-oss-120b}"
       ADA_VISITOR_NAME: "AnshX"
       # Shared secret between this server and Cosmos's dashboard, which
       # is allowed to read the summary at /api/stats/summary.

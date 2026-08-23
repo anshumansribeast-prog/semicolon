@@ -23,7 +23,9 @@ PORT = int(os.environ.get("ADA_PORT", "8420"))
 ROOT = os.path.dirname(os.path.abspath(__file__))
 AI_API_URL = os.environ.get("AI_API_URL", "").strip() or "https://api.groq.com/openai/v1"
 AI_API_KEY = os.environ.get("AI_API_KEY", "").strip()
-AI_MODEL = os.environ.get("AI_MODEL", "").strip() or "llama-3.3-70b-versatile"
+# llama-3.3-70b-versatile was retired by Groq — this is a model the
+# free tier actually serves today. Env var AI_MODEL still wins.
+AI_MODEL = os.environ.get("AI_MODEL", "").strip() or "openai/gpt-oss-120b"
 VISITOR_NAME = os.environ.get("ADA_VISITOR_NAME", "AnshX")
 ADMIN_TOKEN = os.environ.get("SEMICOLON_ADMIN_TOKEN", "").strip()
 
@@ -454,7 +456,10 @@ class AdaHandler(SimpleHTTPRequestHandler):
         try:
             result = self._handle(mode, message, history, language, framework, difficulty, output, files)
             self._reply(200, result)
-        except (URLError, TimeoutError, ValueError, OSError, HTTPError):
+        except (URLError, TimeoutError, ValueError, OSError, HTTPError) as err:
+            # A silent catch here once hid a retired Groq model id behind
+            # "the notes are fine" — log it so the next one shows up.
+            print("[ada] live model unavailable (%s), answering from notes: %s" % (mode, err))
             if mode == "challenge":
                 self._reply(200, self._local_challenge(message, language, difficulty))
             else:
