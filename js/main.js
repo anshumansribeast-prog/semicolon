@@ -385,3 +385,41 @@
     gtag("config", CONFIG.integrations.analytics.id);
   }
 })();
+
+/* ===================================================================
+   SITE STATS — one anonymous ping per page load, plus client error
+   reports, handled by ada_server.py at /api/stats/*. Same privacy
+   posture as Cosmos v2: a counter bump per (day, page), no cookies,
+   no IPs stored. Every call fails silently when the server isn't
+   there (e.g. opening files directly).
+   =================================================================== */
+(function () {
+  "use strict";
+
+  const page = window.location.pathname.split("/").pop() || "index.html";
+
+  function report(path, payload) {
+    try {
+      fetch(path, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+        keepalive: true,
+      }).catch(function () {});
+    } catch (e) { /* no server — ignore */ }
+  }
+
+  report("/api/stats/visit", { page: page });
+
+  let reported = 0;
+  window.addEventListener("error", function (e) {
+    if (reported >= 5) return;               // don't flood the server
+    reported++;
+    report("/api/stats/error", {
+      page: page,
+      message: String(e.message || "Script error").slice(0, 300),
+      source: e.filename ? String(e.filename).split("/").pop() : "",
+      line: e.lineno || null,
+    });
+  });
+})();

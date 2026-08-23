@@ -19,4 +19,7 @@ services:
       AI_API_URL: "${AI_API_URL:-https://api.groq.com/openai/v1}"
       AI_MODEL: "${AI_MODEL:-llama-3.3-70b-versatile}"
       ADA_VISITOR_NAME: "AnshX"
+      # Shared secret between this server and Cosmos's dashboard, which
+      # is allowed to read the summary at /api/stats/summary.
+      SEMICOLON_ADMIN_TOKEN: "${SEMICOLON_ADMIN_TOKEN:-}"
     restart: unless-stopped

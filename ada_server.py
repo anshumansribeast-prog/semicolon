@@ -8,7 +8,9 @@ notes shipped with the site. Keys never go to the browser.
 import json
 import os
 import re
+import sqlite3
 import threading
+import time
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from urllib import request as urlreq
 from urllib.error import HTTPError, URLError
@@ -23,6 +25,65 @@ AI_API_URL = os.environ.get("AI_API_URL", "").strip() or "https://api.groq.com/o
 AI_API_KEY = os.environ.get("AI_API_KEY", "").strip()
 AI_MODEL = os.environ.get("AI_MODEL", "").strip() or "llama-3.3-70b-versatile"
 VISITOR_NAME = os.environ.get("ADA_VISITOR_NAME", "AnshX")
+ADMIN_TOKEN = os.environ.get("SEMICOLON_ADMIN_TOKEN", "").strip()
+
+# ---- site stats store -------------------------------------------------
+# One small SQLite database next to the server. Same privacy posture as
+# Cosmos v2: a visit is a counter bump per (day, page); an error keeps
+# only its message and location. No IPs, no cookies, nothing personal.
+STATS_DB = os.path.join(ROOT, "data", "stats.db")
+
+
+def _stats_conn():
+    os.makedirs(os.path.dirname(STATS_DB), exist_ok=True)
+    conn = sqlite3.connect(STATS_DB)
+    conn.executescript(
+        """
+        CREATE TABLE IF NOT EXISTS visit_days (
+          day   TEXT NOT NULL,
+          page  TEXT NOT NULL,
+          views INTEGER NOT NULL DEFAULT 0,
+          PRIMARY KEY (day, page)
+        );
+        CREATE TABLE IF NOT EXISTS client_errors (
+          id         INTEGER PRIMARY KEY,
+          day        TEXT NOT NULL,
+          page       TEXT,
+          message    TEXT NOT NULL,
+          source     TEXT,
+          line       INTEGER,
+          created_at TEXT NOT NULL DEFAULT (datetime('now'))
+        );
+        CREATE TABLE IF NOT EXISTS ada_messages (
+          id      INTEGER PRIMARY KEY,
+          day     TEXT NOT NULL,
+          mode    TEXT NOT NULL,
+          created_at TEXT NOT NULL DEFAULT (datetime('now'))
+        );
+        """
+    )
+    return conn
+
+
+_stats_lock = threading.Lock()
+
+# Tiny sliding-window limiter, enough for a small site.
+_rate = {}
+
+
+def _allowed(key, limit, window_seconds):
+    now = time.time()
+    with _stats_lock:
+        recent = [t for t in _rate.get(key, []) if t > now - window_seconds]
+        if len(recent) >= limit:
+            _rate[key] = recent
+            return False
+        recent.append(now)
+        _rate[key] = recent
+        if len(_rate) > 5000:
+            for k in [k for k, v in _rate.items() if not v]:
+                del _rate[k]
+        return True
 FAIL_MSG = "ADA couldn't complete that request. Please try again."
 HISTORY_TURNS = 30
 TURN_CHARS = 8000
@@ -226,7 +287,8 @@ class AdaHandler(SimpleHTTPRequestHandler):
         self.end_headers()
 
     def do_GET(self):
-        if urlparse(self.path).path == "/api/ada":
+        path = urlparse(self.path).path
+        if path == "/api/ada":
             self._reply(200, {
                 "ok": True,
                 "model": AI_MODEL if AI_API_KEY else None,
@@ -235,11 +297,113 @@ class AdaHandler(SimpleHTTPRequestHandler):
                 "notes": len(ada_knowledge.TOPICS),
             })
             return
+        if path == "/api/stats/summary":
+            self._stats_summary()
+            return
         super().do_GET()
+
+    def _client_key(self):
+        return self.client_address[0] if self.client_address else "unknown"
+
+    def _clean_page(self, raw):
+        name = str(raw or "").strip().split("?")[0].split("/").pop()[:64]
+        low = name.lower()
+        return low if re.match(r"^[a-z0-9_-]+\.html$", low) else "other"
+
+    def _today(self):
+        return time.strftime("%Y-%m-%d", time.gmtime())
+
+    def _stats_summary(self):
+        # The dashboard's data source. Gated by a shared token the two
+        # servers hold; without SEMICOLON_ADMIN_TOKEN set this answers
+        # 403 to everyone, including the dashboard.
+        auth = self.headers.get("Authorization", "")
+        token = auth[7:] if auth.startswith("Bearer ") else ""
+        if not ADMIN_TOKEN or token != ADMIN_TOKEN:
+            self._reply(403, {"error": "admin token required"})
+            return
+
+        today = self._today()
+        conn = _stats_conn()
+        try:
+            def one(sql, params=()):
+                row = conn.execute(sql, params).fetchone()
+                return row[0] if row and row[0] is not None else 0
+
+            summary = {
+                "site": "semicolon",
+                "visitors": {
+                    "today": one("SELECT COALESCE(SUM(views),0) FROM visit_days WHERE day=?", (today,)),
+                    "total": one("SELECT COALESCE(SUM(views),0) FROM visit_days"),
+                    "top_pages": [
+                        {"page": r[0], "views": r[1]}
+                        for r in conn.execute(
+                            "SELECT page, SUM(views) FROM visit_days GROUP BY page ORDER BY SUM(views) DESC LIMIT 8")
+                    ],
+                },
+                "ada": {
+                    "messages_today": one("SELECT COUNT(*) FROM ada_messages WHERE day=?", (today,)),
+                    "messages_total": one("SELECT COUNT(*) FROM ada_messages"),
+                },
+                "errors": {
+                    "today": one("SELECT COUNT(*) FROM client_errors WHERE day=?", (today,)),
+                    "recent": [
+                        {"day": r[0], "page": r[1], "message": r[2], "source": r[3], "line": r[4]}
+                        for r in conn.execute(
+                            "SELECT day,page,message,source,line FROM client_errors ORDER BY id DESC LIMIT 10")
+                    ],
+                },
+            }
+            self._reply(200, {"data": summary})
+        finally:
+            conn.close()
+
+    def _record_visit(self, body):
+        if not _allowed("visit:" + self._client_key(), 60, 60):
+            self._reply(429, {"error": "slow down"})
+            return
+        page = self._clean_page(body.get("page"))
+        with _stats_lock:
+            conn = _stats_conn()
+            try:
+                conn.execute(
+                    "INSERT INTO visit_days (day, page, views) VALUES (?, ?, 1) "
+                    "ON CONFLICT(day, page) DO UPDATE SET views = views + 1",
+                    (self._today(), page))
+                conn.commit()
+            finally:
+                conn.close()
+        self._reply(200, {"ok": True})
+
+    def _record_error(self, body):
+        if not _allowed("error:" + self._client_key(), 20, 60):
+            self._reply(429, {"error": "slow down"})
+            return
+        try:
+            line_no = int(body.get("line"))
+        except (TypeError, ValueError):
+            line_no = None
+        message = str(body.get("message") or "Unknown error")[:300]
+        source = (str(body.get("source") or "")[:200]) or None
+        page = self._clean_page(body.get("page"))
+        with _stats_lock:
+            conn = _stats_conn()
+            try:
+                conn.execute(
+                    "INSERT INTO client_errors (day, page, message, source, line) VALUES (?, ?, ?, ?, ?)",
+                    (self._today(), page, message, source, line_no))
+                # Keep the newest errors only.
+                conn.execute(
+                    "DELETE FROM client_errors WHERE id NOT IN "
+                    "(SELECT id FROM client_errors ORDER BY id DESC LIMIT 500)")
+                conn.commit()
+            finally:
+                conn.close()
+        self._reply(200, {"ok": True})
 
     def do_POST(self):
         path = urlparse(self.path).path
-        if path not in ("/api/ada",):
+        if path not in ("/api/ada", "/api/stats/visit", "/api/stats/error"):
             self.send_response(404)
             self._cors()
             self.end_headers()
@@ -254,6 +418,13 @@ class AdaHandler(SimpleHTTPRequestHandler):
         except ValueError:
             body = {}
 
+        if path == "/api/stats/visit":
+            self._record_visit(body)
+            return
+        if path == "/api/stats/error":
+            self._record_error(body)
+            return
+
         mode = (body.get("mode") or "chat").strip().lower()
         message = (body.get("message") or body.get("prompt") or "").strip()
         history = body.get("history") or []
@@ -266,6 +437,19 @@ class AdaHandler(SimpleHTTPRequestHandler):
         if not message:
             self._reply(400, {"error": "empty message", "reply": FAIL_MSG})
             return
+
+        # Count chat activity for the dashboard (no message content
+        # stored — just that a request happened, and which kind).
+        with _stats_lock:
+            try:
+                conn = _stats_conn()
+                conn.execute(
+                    "INSERT INTO ada_messages (day, mode) VALUES (?, ?)",
+                    (self._today(), mode))
+                conn.commit()
+                conn.close()
+            except Exception:
+                pass
 
         try:
             result = self._handle(mode, message, history, language, framework, difficulty, output, files)
