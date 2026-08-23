@@ -9,9 +9,7 @@
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%231d4ed8'/><text x='16' y='23' font-size='22' font-family='monospace' fill='white' text-anchor='middle'>;</text></svg>">
 </head>
 <body>
-
 <a class="skip-link" href="#main">Skip to main content</a>
-
 <header class="site-header">
   <nav class="container nav" aria-label="Main navigation">
     <a class="brand" href="../index.html"><span class="brand-mark" aria-hidden="true">;</span> Semicolon</a>
@@ -19,7 +17,7 @@
       <li><a class="nav-link" href="../index.html">Home</a></li>
       <li class="has-dropdown">
         <a class="nav-link" href="learn.html">Learn
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6-6 6"/></svg>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
         </a>
         <ul class="dropdown">
           <li><a href="learn.html?cat=Python">Python <small>Automate things, work with data</small></a></li>
@@ -44,7 +42,6 @@
     </div>
   </nav>
 </header>
-
 <main id="main">
   <section class="page-header">
     <div class="container">
@@ -58,44 +55,30 @@
       </p>
     </div>
   </section>
-
   <section class="section">
     <div class="container">
-
-      <!-- ============ MODE SWITCH ============ -->
       <div class="mode-switch" role="tablist" aria-label="Practice mode">
-        <button class="mode-tab" id="tabJs" role="tab" aria-selected="true"
-                aria-controls="modeJs" type="button">
+        <button class="mode-tab" id="tabJs" role="tab" aria-selected="true" aria-controls="modeJs" type="button">
           <strong>Challenges</strong><span>11 graded JavaScript tasks</span>
         </button>
-        <button class="mode-tab" id="tabPy" role="tab" aria-selected="false"
-                aria-controls="modePy" type="button">
+        <button class="mode-tab" id="tabPy" role="tab" aria-selected="false" aria-controls="modePy" type="button">
           <strong>Python</strong><span>Write it, then ask Ada</span>
         </button>
-        <button class="mode-tab" id="tabWeb" role="tab" aria-selected="false"
-                aria-controls="modeWeb" type="button">
+        <button class="mode-tab" id="tabWeb" role="tab" aria-selected="false" aria-controls="modeWeb" type="button">
           <strong>Web Builder</strong><span>HTML + CSS + JS, live preview</span>
         </button>
-        <button class="mode-tab" id="tabPro" role="tab" aria-selected="false"
-                aria-controls="modePro" type="button">
+        <button class="mode-tab" id="tabPro" role="tab" aria-selected="false" aria-controls="modePro" type="button">
           <strong>Free Build</strong><span>Blank canvas, save your work</span>
         </button>
       </div>
-
-      <!-- ============ MODE 1 · JS CHALLENGES ============ -->
       <div id="modeJs" role="tabpanel" aria-labelledby="tabJs">
         <div class="challenge-bar" id="challengeBar"></div>
-
         <div class="play-grid">
           <div class="play-pane">
-            <div class="pane-head">
-              <span class="pane-title" id="challengeTitle">Free play</span>
-              <span class="pane-lang">JavaScript</span>
-            </div>
+            <div class="pane-head"><span class="pane-title" id="challengeTitle">Free play</span><span class="pane-lang">JavaScript</span></div>
             <p class="challenge-task" id="challengeTask"></p>
             <label class="sr-only" for="codeInput">Your code</label>
-            <textarea id="codeInput" spellcheck="false" autocomplete="off"
-                      aria-describedby="challengeTask"></textarea>
+            <textarea id="codeInput" spellcheck="false" autocomplete="off" aria-describedby="challengeTask"></textarea>
             <div class="play-actions">
               <button class="btn btn--primary" id="runBtn" type="button">▶ Run</button>
               <button class="btn btn--ghost btn--sm" id="submitBtn" type="button">Submit</button>
@@ -115,31 +98,18 @@
               <div class="ada-bubble ada-bubble--bot ada-tutor-reply" id="adaTutorReply" hidden></div>
             </div>
           </div>
-
           <div class="play-pane">
-            <div class="pane-head">
-              <span class="pane-title">Output</span>
-              <button class="linklike" id="clearBtn" type="button">clear</button>
-            </div>
-            <pre class="play-output" id="output" aria-live="polite"
-                 role="status">Press Run and your output appears here.</pre>
+            <div class="pane-head"><span class="pane-title">Output</span><button class="linklike" id="clearBtn" type="button">clear</button></div>
+            <pre class="play-output" id="output" aria-live="polite" role="status">Press Run and your output appears here.</pre>
             <div class="check-result" id="checkResult"></div>
           </div>
         </div>
       </div>
-
-      <!-- ============ MODE · PYTHON (reviewed by Ada, not run on the server) ============ -->
       <div id="modePy" role="tabpanel" aria-labelledby="tabPy" hidden>
-        <p class="py-note">
-          Python is not executed on Semicolon's server. Write a solution here, then Ask Ada
-          for a hint, a review, or (only if you want it) the solution. Run it later in Lesson 1's interpreter.
-        </p>
+        <p class="py-note">Python is not executed on Semicolon's server. Write a solution here, then Ask Ada for a hint, a review, or (only if you want it) the solution. Run it later in Lesson 1's interpreter.</p>
         <div class="play-grid">
           <div class="play-pane">
-            <div class="pane-head">
-              <span class="pane-title" id="pyTitle">Python practice</span>
-              <span class="pane-lang">Python</span>
-            </div>
+            <div class="pane-head"><span class="pane-title" id="pyTitle">Python practice</span><span class="pane-lang">Python</span></div>
             <p class="challenge-task" id="pyTask"></p>
             <label class="sr-only" for="pyInput">Your Python</label>
             <textarea id="pyInput" spellcheck="false" autocomplete="off"></textarea>
@@ -153,203 +123,60 @@
             </div>
             <div class="ada-bubble ada-bubble--bot ada-tutor-reply" id="pyAdaReply" hidden></div>
           </div>
-          <div class="play-pane">
-            <div class="pane-head"><span class="pane-title">Challenge list</span></div>
-            <div class="challenge-bar" id="pyBar"></div>
-          </div>
+          <div class="play-pane"><div class="pane-head"><span class="pane-title">Challenge list</span></div><div class="challenge-bar" id="pyBar"></div></div>
         </div>
       </div>
-
-
-      <!-- ============ MODE 2 · WEB BUILDER ============ -->
       <div id="modeWeb" role="tabpanel" aria-labelledby="tabWeb" hidden>
-        <div class="template-bar" id="templateBar">
-          <span class="tb-label">Start from:</span>
-        </div>
-
-        <!-- Stacked, not side by side: the preview gets the full width of
-             the page, which is the shape a web page actually is. -->
+        <div class="template-bar" id="templateBar"><span class="tb-label">Start from:</span></div>
         <div class="play-stack">
-
           <div class="play-pane preview-pane" id="webPreviewPane">
-            <div class="pane-head">
-              <span class="pane-title">Live preview</span>
-              <div class="preview-tools">
-                <div class="size-switch" role="group" aria-label="Preview size">
-                  <button class="size-btn" data-size="phone" data-for="web" type="button">Phone</button>
-                  <button class="size-btn" data-size="tablet" data-for="web" type="button">Tablet</button>
-                  <button class="size-btn is-on" data-size="full" data-for="web" type="button" aria-pressed="true">Full width</button>
-                </div>
-                <button class="btn btn--ghost btn--sm" id="webExpand" type="button">⛶ Fullscreen</button>
-              </div>
-            </div>
-            <div class="preview-frame" id="webFrameWrap">
-              <iframe id="preview" title="Live preview of your page"
-                      sandbox="allow-scripts"></iframe>
-            </div>
+            <div class="pane-head"><span class="pane-title">Live preview</span><div class="preview-tools"><div class="size-switch" role="group" aria-label="Preview size"><button class="size-btn" data-size="phone" data-for="web" type="button">Phone</button><button class="size-btn" data-size="tablet" data-for="web" type="button">Tablet</button><button class="size-btn is-on" data-size="full" data-for="web" type="button" aria-pressed="true">Full width</button></div><button class="btn btn--ghost btn--sm" id="webExpand" type="button">⛶ Fullscreen</button></div></div>
+            <div class="preview-frame" id="webFrameWrap"><iframe id="preview" title="Live preview of your page" sandbox="allow-scripts"></iframe></div>
           </div>
-
           <div class="play-grid">
             <div class="play-pane">
-              <div class="pane-head">
-                <div class="file-tabs" role="tablist" aria-label="Files">
-                  <button class="file-tab is-on" data-file="html" type="button" role="tab" aria-selected="true">index.html</button>
-                  <button class="file-tab" data-file="css" type="button" role="tab" aria-selected="false">style.css</button>
-                  <button class="file-tab" data-file="js" type="button" role="tab" aria-selected="false">script.js</button>
-                </div>
-              </div>
-              <label class="sr-only" for="webInput">Your web code</label>
-              <textarea id="webInput" spellcheck="false" autocomplete="off"></textarea>
-              <div class="play-actions">
-                <button class="btn btn--primary" id="webRun" type="button">▶ Run page</button>
-                <label class="auto-run">
-                  <input type="checkbox" id="webAuto" checked> run as I type
-                </label>
-                <button class="btn btn--ghost btn--sm" id="webDownload" type="button">⤓ Download .html</button>
-              </div>
+              <div class="pane-head"><div class="file-tabs" role="tablist" aria-label="Files"><button class="file-tab is-on" data-file="html" type="button" role="tab" aria-selected="true">index.html</button><button class="file-tab" data-file="css" type="button" role="tab" aria-selected="false">style.css</button><button class="file-tab" data-file="js" type="button" role="tab" aria-selected="false">script.js</button></div></div>
+              <label class="sr-only" for="webInput">Your web code</label><textarea id="webInput" spellcheck="false" autocomplete="off"></textarea>
+              <div class="play-actions"><button class="btn btn--primary" id="webRun" type="button">▶ Run page</button><label class="auto-run"><input type="checkbox" id="webAuto" checked> run as I type</label><button class="btn btn--ghost btn--sm" id="webDownload" type="button">⤓ Download .html</button></div>
             </div>
-
-            <div class="play-pane">
-              <div class="pane-head">
-                <span class="pane-title">Console</span>
-                <span class="pane-lang">from your page</span>
-              </div>
-              <pre class="play-output" id="webConsole"
-                   aria-live="polite">console output from your page appears here</pre>
-            </div>
+            <div class="play-pane"><div class="pane-head"><span class="pane-title">Console</span><span class="pane-lang">from your page</span></div><pre class="play-output" id="webConsole" aria-live="polite">console output from your page appears here</pre></div>
           </div>
-
         </div>
       </div>
-
-      <!-- ============ MODE 3 · FREE BUILD ============ -->
       <div id="modePro" role="tabpanel" aria-labelledby="tabPro" hidden>
-        <div class="pro-bar">
-          <span class="tb-label">Slot:</span>
-          <button class="chip" data-slot="1" type="button" aria-pressed="true">1</button>
-          <button class="chip" data-slot="2" type="button" aria-pressed="false">2</button>
-          <button class="chip" data-slot="3" type="button" aria-pressed="false">3</button>
-          <span class="save-state" id="saveState">not saved yet</span>
-        </div>
-
+        <div class="pro-bar"><span class="tb-label">Slot:</span><button class="chip" data-slot="1" type="button" aria-pressed="true">1</button><button class="chip" data-slot="2" type="button" aria-pressed="false">2</button><button class="chip" data-slot="3" type="button" aria-pressed="false">3</button><span class="save-state" id="saveState">not saved yet</span></div>
         <div class="play-stack">
-
           <div class="play-pane preview-pane" id="proPreviewPane">
-            <div class="pane-head">
-              <span class="pane-title">Live preview</span>
-              <div class="preview-tools">
-                <div class="size-switch" role="group" aria-label="Preview size">
-                  <button class="size-btn" data-size="phone" data-for="pro" type="button">Phone</button>
-                  <button class="size-btn" data-size="tablet" data-for="pro" type="button">Tablet</button>
-                  <button class="size-btn is-on" data-size="full" data-for="pro" type="button" aria-pressed="true">Full width</button>
-                </div>
-                <button class="btn btn--ghost btn--sm" id="proExpand" type="button">⛶ Fullscreen</button>
-              </div>
-            </div>
-            <div class="preview-frame" id="proFrameWrap">
-              <iframe id="proPreview" title="Live preview of your project"
-                      sandbox="allow-scripts"></iframe>
-            </div>
+            <div class="pane-head"><span class="pane-title">Live preview</span><div class="preview-tools"><div class="size-switch" role="group" aria-label="Preview size"><button class="size-btn" data-size="phone" data-for="pro" type="button">Phone</button><button class="size-btn" data-size="tablet" data-for="pro" type="button">Tablet</button><button class="size-btn is-on" data-size="full" data-for="pro" type="button" aria-pressed="true">Full width</button></div><button class="btn btn--ghost btn--sm" id="proExpand" type="button">⛶ Fullscreen</button></div></div>
+            <div class="preview-frame" id="proFrameWrap"><iframe id="proPreview" title="Live preview of your project" sandbox="allow-scripts"></iframe></div>
           </div>
-
           <div class="play-grid">
             <div class="play-pane">
-              <div class="pane-head">
-                <div class="file-tabs" role="tablist" aria-label="Files">
-                  <button class="file-tab is-on" data-pfile="html" type="button" role="tab" aria-selected="true">index.html</button>
-                  <button class="file-tab" data-pfile="css" type="button" role="tab" aria-selected="false">style.css</button>
-                  <button class="file-tab" data-pfile="js" type="button" role="tab" aria-selected="false">script.js</button>
-                </div>
-                <button class="linklike" id="proClear" type="button">empty this slot</button>
-              </div>
-              <label class="sr-only" for="proInput">Your project code</label>
-              <textarea id="proInput" spellcheck="false" autocomplete="off"></textarea>
-              <div class="play-actions">
-                <button class="btn btn--primary" id="proRun" type="button">▶ Run</button>
-                <button class="btn btn--ghost btn--sm" id="proSave" type="button">💾 Save</button>
-                <button class="btn btn--ghost btn--sm" id="proDownload" type="button">⤓ Download .html</button>
-              </div>
+              <div class="pane-head"><div class="file-tabs" role="tablist" aria-label="Files"><button class="file-tab is-on" data-pfile="html" type="button" role="tab" aria-selected="true">index.html</button><button class="file-tab" data-pfile="css" type="button" role="tab" aria-selected="false">style.css</button><button class="file-tab" data-pfile="js" type="button" role="tab" aria-selected="false">script.js</button></div><button class="linklike" id="proClear" type="button">empty this slot</button></div>
+              <label class="sr-only" for="proInput">Your project code</label><textarea id="proInput" spellcheck="false" autocomplete="off"></textarea>
+              <div class="play-actions"><button class="btn btn--primary" id="proRun" type="button">▶ Run</button><button class="btn btn--ghost btn--sm" id="proSave" type="button">💾 Save</button><button class="btn btn--ghost btn--sm" id="proDownload" type="button">⤓ Download .html</button></div>
             </div>
-
-            <div class="play-pane">
-              <div class="pane-head">
-                <span class="pane-title">Console</span>
-                <span class="pane-lang">from your project</span>
-              </div>
-              <pre class="play-output" id="proConsole"
-                   aria-live="polite">console output appears here</pre>
-            </div>
+            <div class="play-pane"><div class="pane-head"><span class="pane-title">Console</span><span class="pane-lang">from your project</span></div><pre class="play-output" id="proConsole" aria-live="polite">console output appears here</pre></div>
           </div>
-
         </div>
-
-        <p class="pro-note">
-          Three save slots, kept in this browser only. Nothing is uploaded, so nothing
-          can be lost by us — but clearing your browser data clears these too. Press
-          <strong>Download .html</strong> to take a real file away with you: one file,
-          everything inside it, opens anywhere.
-        </p>
+        <p class="pro-note">Three save slots, kept in this browser only. Nothing is uploaded, so nothing can be lost by us — but clearing your browser data clears these too. Press <strong>Download .html</strong> to take a real file away with you: one file, everything inside it, opens anywhere.</p>
       </div>
-
-      <!-- ============ THE HONEST BIT ============ -->
       <div class="play-note">
         <h2>How this works, and what it can't do</h2>
-        <p>
-          Everything here runs <strong>inside your own browser</strong>, on your own
-          machine. Nothing is uploaded and no server is involved. That is why it is
-          instant and free.
-        </p>
-        <p>
-          The live preview is a real web page rendered in an
-          <code>&lt;iframe&gt;</code> — the same technology every code-preview site
-          uses. It is sandboxed, so code you write there cannot reach out and change
-          this page around it.
-        </p>
-        <p>
-          <strong>Why JavaScript and not Python?</strong> Every browser already
-          contains a JavaScript engine. None contains Python. Running Python needs
-          Python installed on your computer, which is exactly what
-          <a href="lesson.html?track=first-program&amp;n=1">Lesson 1</a> walks you
-          through. The good news: loops, variables and conditions work the same way in
-          both, so what you practise here transfers.
-        </p>
-        <p>
-          <strong>And a real hosted site?</strong> That is a different step, and a free
-          one — <a href="lesson.html?track=ship-a-project&amp;n=3">Getting it online</a>
-          covers it. Download your page here, drag the file onto a free host, and it has
-          a real address anyone can open.
-        </p>
+        <p>Everything here runs <strong>inside your own browser</strong>, on your own machine. Nothing is uploaded and no server is involved. That is why it is instant and free.</p>
+        <p>The live preview is a real web page rendered in an <code>&lt;iframe&gt;</code> — the same technology every code-preview site uses. It is sandboxed, so code you write there cannot reach out and change this page around it.</p>
+        <p><strong>Why JavaScript and not Python?</strong> Every browser already contains a JavaScript engine. None contains Python. Running Python needs Python installed on your computer, which is exactly what <a href="lesson.html?track=first-program&amp;n=1">Lesson 1</a> walks you through. The good news: loops, variables and conditions work the same way in both, so what you practise here transfers.</p>
+        <p><strong>And a real hosted site?</strong> That is a different step, and a free one — <a href="lesson.html?track=ship-a-project&amp;n=3">Getting it online</a> covers it. Download your page here, drag the file onto a free host, and it has a real address anyone can open.</p>
       </div>
-
     </div>
   </section>
 </main>
-
 <footer class="site-footer">
   <div class="container">
-    <div class="footer-bottom">
-      <span>&copy; <span class="js-year"></span> Semicolon. All rights reserved.</span>
-    </div>
-    <div class="creator-signature">
-      <div class="creator-divider" aria-hidden="true">
-        <span class="creator-rule"></span>
-        <span class="creator-diamond"></span>
-        <span class="creator-rule"></span>
-      </div>
-      <p class="creator-line">
-        <span class="creator-label">Made with passion by</span>
-        <span class="creator-name">Anshuman Srivastava</span>
-      </p>
-    </div>
+    <div class="footer-bottom"><span>&copy; <span class="js-year"></span> Semicolon. All rights reserved.</span></div>
+    <div class="creator-signature"><div class="creator-divider" aria-hidden="true"><span class="creator-rule"></span><span class="creator-diamond"></span><span class="creator-rule"></span></div><p class="creator-line"><span class="creator-label">Made with passion by</span><span class="creator-name">Anshuman Srivastava</span></p></div>
   </div>
 </footer>
-
-<script src="../js/config.js"></script>
-<script src="../components/ui.js"></script>
-<script src="../js/main.js"></script>
-<script src="../js/ada-api.js?v=20260816k"></script>
-<script src="../js/playground.js?v=20260816k"></script>
-<script src="../js/webbuilder.js?v=20260816k"></script>
-<script src="../js/helper.js"></script>
+<script src="../js/config.js"></script><script src="../components/ui.js"></script><script src="../js/main.js"></script><script src="../js/ada-api.js?v=20260816k"></script><script src="../js/playground.js?v=20260816k"></script><script src="../js/webbuilder.js?v=20260816k"></script><script src="../js/helper.js"></script>
 </body>
 </html>
