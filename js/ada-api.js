@@ -1,4 +1,4 @@
-/* Shared Ada API — chat, generator, and practice all use /api/ada. */
+/* Shared Ada API — chat and practice both use /api/ada. */
 (function (w) {
   "use strict";
 

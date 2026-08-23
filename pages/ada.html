@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Ada — Semicolon</title>
-  <meta name="description" content="Ada is Semicolon's assistant: chat, debugging, and whole projects written as editable files with live preview.">
+  <meta name="description" content="Ada is Semicolon's assistant: ask questions, paste code for debugging, and learn with follow-up chat.">
   <link rel="stylesheet" href="../css/style.css?v=20260816i">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%231d4ed8'/><text x='16' y='23' font-size='22' font-family='monospace' fill='white' text-anchor='middle'>;</text></svg>">
 </head>
@@ -53,9 +53,9 @@
       <span class="eyebrow">Ada</span>
       <h1>Chat with Ada</h1>
       <p class="lede">
-        One assistant for everything on Semicolon: questions, follow-ups, debugging —
-        and whole projects. When Ada writes files, they open in the workspace beside
-        the chat, with copy, download and a live preview.
+        One assistant for everything on Semicolon: questions, follow-ups,
+        debugging and clear explanations — in one conversation that remembers
+        what you asked before.
       </p>
     </div>
   </section>
@@ -76,18 +76,18 @@
           <div class="ada-row ada-row--bot">
             <div class="ada-mini" aria-hidden="true">A</div>
             <div class="ada-bubble ada-bubble--bot">
-              Hey — I'm Ada. Ask anything, paste code to debug, or describe something
-              you want built and I'll write the files here. Follow-ups stay in this thread.
+              Hey — I'm Ada. Ask anything about code, paste something that's
+              breaking, or just keep the conversation going. Follow-ups stay in this thread.
             </div>
           </div>
         </div>
 
         <div class="ada-chips" aria-label="Suggested questions">
-          <button class="ada-chip" type="button" data-ada-prompt="Build a responsive portfolio site for a photographer">Portfolio site</button>
-          <button class="ada-chip" type="button" data-ada-prompt="Write a Python function that scores a cricket innings">Cricket in Python</button>
           <button class="ada-chip" type="button" data-ada-prompt="Explain recursion like I'm 12, with a small example">Explain recursion</button>
+          <button class="ada-chip" type="button" data-ada-prompt="Write a Python function that scores a cricket innings">Cricket in Python</button>
+          <button class="ada-chip" type="button" data-ada-prompt="What is the difference between a list and a dictionary?">List vs dict</button>
           <button class="ada-chip" type="button" data-ada-prompt="Debug this: print('hi'">Debug my code</button>
-          <button class="ada-chip" type="button" data-ada-prompt="Make a snake game in HTML, CSS and JavaScript">Snake game</button>
+          <button class="ada-chip" type="button" data-ada-prompt="How do I read an error message in Python?">Read errors</button>
         </div>
 
         <form id="adaForm" class="ada-form" novalidate>
@@ -97,43 +97,24 @@
           <div class="ada-form-actions">
             <button class="btn btn--primary" type="submit" id="adaSend">Send</button>
             <button class="btn btn--ghost" type="button" id="adaStop" hidden>Stop</button>
-            <button class="btn btn--ghost" type="button" id="adaRegen" disabled>Regenerate</button>
             <button class="btn btn--ghost" type="button" id="adaClear">Clear chat</button>
           </div>
         </form>
       </div>
 
       <aside class="ada-rail" aria-label="What Ada knows">
-        <h2>Tutor and workshop in one</h2>
-        <p>Ada keeps the thread, writes complete working code for any lawful topic,
-           and talks about more than homework.</p>
+        <h2>A tutor, not a vending machine</h2>
+        <p>Ada keeps the thread, explains ideas in plain English, and
+           helps you debug your own code.</p>
         <ul class="ada-know">
-          <li><strong>Any topic</strong> sites, games, school, data, stories, tools</li>
-          <li><strong>Follow-ups</strong> “now make it dark” edits the last answer</li>
-          <li><strong>Workspace</strong> her files open beside the chat, with live preview</li>
+          <li><strong>Any topic</strong> Python, web, tools, school, career</li>
+          <li><strong>Follow-ups</strong> “explain that again, slower” works</li>
+          <li><strong>Debugging</strong> paste broken code and she'll walk through it</li>
           <li><strong>Practice</strong> hints first when you are learning</li>
         </ul>
-        <p class="ada-rail-note">Code blocks from Ada arrive as editable files you can copy or download.</p>
+        <p class="ada-rail-note">Ada explains and teaches — for hands-on building,
+           head to the <a href="playground.html">Practice area</a>.</p>
       </aside>
-
-      <div class="ada-work" id="adaWork" hidden>
-        <div class="ada-work-head">
-          <span class="ada-work-title" id="adaWorkTitle">project</span>
-          <div class="ada-work-actions">
-            <button class="btn btn--ghost btn--sm" type="button" id="adaWorkCopy">Copy</button>
-            <button class="btn btn--ghost btn--sm" type="button" id="adaWorkDownload">Download file</button>
-            <button class="btn btn--ghost btn--sm" type="button" id="adaWorkDownloadAll">Download all</button>
-            <button class="linklike" type="button" id="adaWorkClose">close</button>
-          </div>
-        </div>
-        <div class="file-tabs" id="adaWorkTabs" role="tablist" aria-label="Project files"></div>
-        <div class="ada-work-grid">
-          <pre class="ada-work-code"><code id="adaWorkCode"></code></pre>
-          <div class="ada-work-preview">
-            <iframe id="adaWorkPrev" sandbox="allow-scripts" title="Live project preview"></iframe>
-          </div>
-        </div>
-      </div>
 
     </div>
   </section>
