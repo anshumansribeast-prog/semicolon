@@ -1,0 +1,24 @@
+name: Agent CI
+
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Validate Python syntax
+        run: python -m py_compile ada_server.py ada_knowledge.py admin_backend.py
+      - name: Validate HTML files exist
+        run: |
+          test -f index.html
+          test -f pages/ada.html
+          test -f admin.html
+      - name: Check admin backend syntax
+        run: python -m py_compile admin_backend.py
