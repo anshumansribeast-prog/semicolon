@@ -8,9 +8,12 @@ import personal_os
 class PersonalHandler(ada_server.AdaHandler):
  def do_GET(self):
   path=urlparse(self.path).path
-  if path=="/api/personal/overview": return self._personal(200,personal_os.overview())
-  if path=="/api/personal/graph": return self._personal(200,personal_os.graph())
-  if path=="/api/personal/health": return self._personal(200,{"ok":True,"service":"personal-os"})
+  if path.startswith("/api/personal/"):
+   if path=="/api/personal/health": return self._personal(200,{"ok":True,"service":"personal-os"})
+   if not personal_os.auth(self.headers): return self._personal(401,{"error":"admin authorization required"})
+   if path=="/api/personal/overview": return self._personal(200,personal_os.overview())
+   if path=="/api/personal/graph": return self._personal(200,personal_os.graph())
+   return self._personal(404,{"error":"unknown personal-os endpoint"})
   return super().do_GET()
  def do_POST(self):
   path=urlparse(self.path).path
@@ -27,7 +30,7 @@ class PersonalHandler(ada_server.AdaHandler):
     else:return self._personal(404,{"error":"unknown personal-os endpoint"})
     return self._personal(200,out)
    except (ValueError,TypeError) as e:return self._personal(400,{"error":str(e)})
-   except Exception as e:return self._personal(500,{"error":"internal personal-os error"})
+   except Exception:return self._personal(500,{"error":"internal personal-os error"})
   return super().do_POST()
  def _personal(self,status,payload):self._reply(status,payload)
 
