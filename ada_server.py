@@ -1,46 +1,49 @@
-"""Ada's brain — a tiny local HTTP server bridging Semicolon's Ada
-chat widget (js/ada.js) to Ollama, the same local AI model Jarvis
-uses. A static site's browser JS can't reach Ollama directly (it only
-listens on localhost with no CORS headers), so this fills that gap.
+"""Ada's brain — local HTTP server bridging Semicolon's Ada tutor
+and Screen Demonstration Studio (js/ada.js, js/screen-studio.js) to Ollama.
+Powered by the custom trained `ada-tutor` model.
 
-Run:  python ada_server.py     (needs `ollama serve` already running)
-
-This only serves localhost. Ada only answers while THIS machine is
-running this script — it does not make Ada work for a real visitor
-on the deployed site unless this computer is itself the public server.
-Zero extra dependencies: stdlib only, same spirit as Cosmos v2's server.
+Run: py ada_server.py
 """
 
 import json
+import re
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from urllib import request as urlreq
 from urllib.error import URLError
 
 PORT = 8420
 OLLAMA_URL = "http://localhost:11434/api/generate"
-OLLAMA_MODEL = "llama3.2:3b"
-SYSTEM_PROMPT = (
-    "You are Ada, a friendly coding tutor on Semicolon, a free learn-to-code "
-    "site for a complete beginner (a class 8 student). When they're stuck, "
-    "explain the concept simply and point them toward the fix rather than just "
-    "handing over a finished solution, unless they clearly ask for the actual "
-    "code. Keep replies short (3-5 sentences), plain text, no markdown."
-)
+OLLAMA_MODEL = "ada-tutor:latest"
+
+SCREEN_DEMO_RE = re.compile(r"<<<SCREEN_DEMO\s*(\{.*?\})\s*>>>", re.DOTALL)
 
 
 class AdaHandler(BaseHTTPRequestHandler):
     def _cors(self):
         self.send_header("Access-Control-Allow-Origin", "*")
-        self.send_header("Access-Control-Allow-Methods", "POST, OPTIONS")
-        self.send_header("Access-Control-Allow-Headers", "Content-Type")
+        self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+        self.send_header("Access-Control-Allow-Headers", "Content-Type, Accept")
 
     def do_OPTIONS(self):
         self.send_response(204)
         self._cors()
         self.end_headers()
 
+    def do_GET(self):
+        if self.path in ("/api/health", "/api/ada/health", "/health"):
+            self._reply(200, {
+                "status": "online",
+                "model": OLLAMA_MODEL,
+                "server": "Ada Coding Tutor & Screen Studio Server",
+                "capabilities": ["screen_demonstrations", "code_walkthrough", "tutoring"]
+            })
+            return
+        self.send_response(404)
+        self._cors()
+        self.end_headers()
+
     def do_POST(self):
-        if self.path != "/api/ada":
+        if self.path not in ("/api/ada", "/api/chat"):
             self.send_response(404)
             self._cors()
             self.end_headers()
@@ -70,24 +73,41 @@ class AdaHandler(BaseHTTPRequestHandler):
                 data=json.dumps({
                     "model": OLLAMA_MODEL,
                     "prompt": prompt,
-                    "system": SYSTEM_PROMPT,
                     "stream": False,
                 }).encode(),
                 headers={"Content-Type": "application/json"},
             )
             with urlreq.urlopen(req, timeout=120) as resp:
-                reply = json.loads(resp.read()).get("response", "").strip()
-        except (URLError, TimeoutError, ValueError):
-            self._reply(502, {"error": "Ollama isn't reachable - is `ollama serve` running?"})
+                raw_reply = json.loads(resp.read()).get("response", "").strip()
+        except (URLError, TimeoutError, ValueError) as err:
+            self._reply(502, {
+                "error": f"Ollama isn't reachable ({err}) - is `ollama serve` running with model '{OLLAMA_MODEL}'?"
+            })
             return
 
-        self._reply(200, {"reply": reply or "Hmm, I've got nothing - try rephrasing that?"})
+        # Parse screen demonstration if emitted by the model
+        screen_demo = None
+        match = SCREEN_DEMO_RE.search(raw_reply)
+        cleaned_text = raw_reply
+        if match:
+            try:
+                screen_demo = json.loads(match.group(1))
+                cleaned_text = SCREEN_DEMO_RE.sub("", raw_reply).strip()
+            except Exception as e:
+                print(f"[ada] Error parsing SCREEN_DEMO JSON: {e}")
+
+        self._reply(200, {
+            "reply": cleaned_text or raw_reply or "I'm here! Could you rephrase what you'd like to explore?",
+            "screen_demo": screen_demo,
+            "raw": raw_reply,
+            "model": OLLAMA_MODEL
+        })
 
     def _reply(self, status, payload):
-        data = json.dumps(payload).encode()
+        data = json.dumps(payload, ensure_ascii=False).encode("utf-8")
         self.send_response(status)
         self._cors()
-        self.send_header("Content-Type", "application/json")
+        self.send_header("Content-Type", "application/json; charset=utf-8")
         self.send_header("Content-Length", str(len(data)))
         self.end_headers()
         self.wfile.write(data)

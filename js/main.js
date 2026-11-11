@@ -384,4 +384,42 @@
     gtag("js", new Date());
     gtag("config", CONFIG.integrations.analytics.id);
   }
+  /* ---- 12. CODE SNIPPET COPY BUTTONS ---------------------------------- */
+  function setupCodeCopy() {
+    document.querySelectorAll("pre > code").forEach(function (code) {
+      var pre = code.parentElement;
+      if (!pre || pre.closest(".screen-studio") || pre.parentElement.classList.contains("code-wrap")) return;
+
+      var wrap = document.createElement("div");
+      wrap.className = "code-wrap";
+      pre.parentNode.insertBefore(wrap, pre);
+      wrap.appendChild(pre);
+
+      var btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "code-copy-btn";
+      btn.innerHTML = '<span>Copy</span>';
+      btn.setAttribute("aria-label", "Copy code snippet");
+
+      btn.addEventListener("click", function () {
+        var text = code.innerText || code.textContent;
+        navigator.clipboard.writeText(text).then(function () {
+          btn.innerHTML = '<span>✓ Copied!</span>';
+          btn.classList.add("is-copied");
+          setTimeout(function () {
+            btn.innerHTML = '<span>Copy</span>';
+            btn.classList.remove("is-copied");
+          }, 2000);
+        }).catch(function () {});
+      });
+
+      wrap.appendChild(btn);
+    });
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", setupCodeCopy);
+  } else {
+    setupCodeCopy();
+  }
 })();

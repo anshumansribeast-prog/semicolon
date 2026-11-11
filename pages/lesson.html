@@ -6,6 +6,7 @@
   <title>Lesson — Semicolon</title>
   <meta name="description" content="Read a lesson from any Semicolon track — plain-English explanations with real code you can run.">
   <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/screen-studio.css">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%231d4ed8'/><text x='16' y='23' font-size='22' font-family='monospace' fill='white' text-anchor='middle'>;</text></svg>">
 </head>
 <body>
@@ -59,8 +60,28 @@
   <section class="section">
     <div class="container lesson-layout">
 
-      <!-- the lesson itself -->
-      <article class="lesson-body" id="lessonBody"></article>
+      <div class="lesson-main-col">
+        <!-- Ada Live Screen Demonstration Section -->
+        <div class="ada-screen-section" id="adaScreenSection">
+          <div class="ada-screen-header">
+            <div class="ada-screen-title-wrap">
+              <span class="ada-avatar-badge">👩‍💻 Ada</span>
+              <div>
+                <h3 id="screenDemoHeading">Ada Live Screen Walkthrough</h3>
+                <p>Watch Ada demonstrate this lesson on a virtual screen with step-by-step code execution.</p>
+              </div>
+            </div>
+            <div style="display:flex; gap:0.5rem; align-items:center;">
+              <a class="btn btn--sm btn--ghost" href="ada.html" id="askAdaAboutLessonBtn">💬 Ask Ada</a>
+              <button class="btn btn--sm btn--primary" id="toggleScreenBtn">▶ Start Screen Demo</button>
+            </div>
+          </div>
+          <div id="adaScreenMount"></div>
+        </div>
+
+        <!-- the lesson itself -->
+        <article class="lesson-body" id="lessonBody"></article>
+      </div>
 
       <!-- every lesson in this track -->
       <aside class="lesson-side">
@@ -93,6 +114,8 @@
 <script src="../js/data.js"></script>
 <script src="../js/lessons.js"></script>
 <script src="../components/ui.js"></script>
+<script src="../js/screen-studio.js"></script>
+<script src="../js/lesson-demos.js"></script>
 <script src="../js/main.js"></script>
 <script src="../js/lesson.js"></script>
 <script src="../js/helper.js"></script>
