@@ -1,8 +1,13 @@
-import sys
+import importlib.util
 from pathlib import Path
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from sitecustomize import MARKER, should_fallback
+_path = Path(__file__).resolve().parent.parent / "sitecustomize.py"
+_spec = importlib.util.spec_from_file_location("local_sitecustomize", str(_path))
+_mod = importlib.util.module_from_spec(_spec)
+_spec.loader.exec_module(_mod)
+
+MARKER = _mod.MARKER
+should_fallback = _mod.should_fallback
 
 
 def test_marker_triggers_fallback():
