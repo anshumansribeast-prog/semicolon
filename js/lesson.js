@@ -2,23 +2,14 @@
    lesson.js — renders one lesson from one track.
 
    The whole page is driven by the address bar:
-
      lesson.html?track=first-program&n=2
-
-   That matters more than it looks. Because the state lives in the URL
-   rather than in a variable, every lesson has its own link that can be
-   bookmarked, shared, or opened in a new tab. If we had stored "which
-   lesson" in a JavaScript variable instead, every lesson would share
-   one address and none of that would work.
-
-   The same trick runs post.html, with ?slug=.
    =================================================================== */
 
 (function () {
   "use strict";
 
   var bodyEl = document.getElementById("lessonBody");
-  if (!bodyEl) return;                    // not the lesson page
+  if (!bodyEl) return; // not the lesson page
 
   var params = new URLSearchParams(window.location.search);
   var slug = params.get("track");
@@ -38,6 +29,8 @@
       'lesson one.</p>';
     document.getElementById("prevLesson").style.display = "none";
     document.getElementById("nextLesson").style.display = "none";
+    var sec = document.getElementById("adaScreenSection");
+    if (sec) sec.style.display = "none";
     return;
   }
 
@@ -55,12 +48,7 @@
   document.getElementById("lessonMeta").textContent =
     lesson.minutes + " min read · " + track.level + " · " + track.category;
 
-  /* ---- the lesson ----
-
-     This is trusted content that we wrote ourselves in lessons.js, so
-     innerHTML is correct here. It would NOT be safe for anything a
-     visitor typed — that has to be escaped first, or a comment box
-     becomes a way to run scripts on everyone else's browser.          */
+  /* ---- the lesson body ---- */
   bodyEl.innerHTML = lesson.body;
 
   /* ---- the list of lessons in this track ---- */
@@ -98,12 +86,35 @@
     next.textContent = "Track finished — go practise →";
   }
 
-  /* ---- remember where they got to ----
+  /* ---- mount Ada Live Screen Demonstration ---- */
+  var screenMount = document.getElementById("adaScreenMount");
+  var toggleBtn = document.getElementById("toggleScreenBtn");
+  var askAdaBtn = document.getElementById("askAdaAboutLessonBtn");
+  var heading = document.getElementById("screenDemoHeading");
 
-     Purely a convenience: the Learn page can show "resume". Wrapped in
-     try/catch because private browsing blocks localStorage, and a
-     lesson that refuses to display because it could not save a
-     bookmark would be a ridiculous failure.                            */
+  if (screenMount && typeof AdaScreenStudio !== "undefined") {
+    var demoData = typeof getDemoForLesson === "function" ? getDemoForLesson(slug, n) : null;
+    if (demoData) {
+      if (heading) heading.textContent = demoData.title || "Ada Live Screen Walkthrough";
+      var studio = new AdaScreenStudio(screenMount, { demo: demoData });
+
+      if (toggleBtn) {
+        toggleBtn.addEventListener("click", function () {
+          studio.togglePlay();
+          toggleBtn.textContent = studio.isPlaying ? "⏸ Pause Demo" : "▶ Play Screen Demo";
+        });
+      }
+
+      if (askAdaBtn) {
+        askAdaBtn.href = "ada.html?topic=" + encodeURIComponent(lesson.title) + "&track=" + encodeURIComponent(slug);
+      }
+    } else {
+      var section = document.getElementById("adaScreenSection");
+      if (section) section.style.display = "none";
+    }
+  }
+
+  /* ---- remember progress ---- */
   try {
     var seen = JSON.parse(localStorage.getItem("semicolon_progress") || "{}");
     if (!seen[slug] || seen[slug] < n) seen[slug] = n;

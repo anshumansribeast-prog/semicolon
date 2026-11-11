@@ -384,42 +384,42 @@
     gtag("js", new Date());
     gtag("config", CONFIG.integrations.analytics.id);
   }
-})();
+  /* ---- 12. CODE SNIPPET COPY BUTTONS ---------------------------------- */
+  function setupCodeCopy() {
+    document.querySelectorAll("pre > code").forEach(function (code) {
+      var pre = code.parentElement;
+      if (!pre || pre.closest(".screen-studio") || pre.parentElement.classList.contains("code-wrap")) return;
 
-/* ===================================================================
-   SITE STATS — one anonymous ping per page load, plus client error
-   reports, handled by ada_server.py at /api/stats/*. Same privacy
-   posture as Cosmos v2: a counter bump per (day, page), no cookies,
-   no IPs stored. Every call fails silently when the server isn't
-   there (e.g. opening files directly).
-   =================================================================== */
-(function () {
-  "use strict";
+      var wrap = document.createElement("div");
+      wrap.className = "code-wrap";
+      pre.parentNode.insertBefore(wrap, pre);
+      wrap.appendChild(pre);
 
-  const page = window.location.pathname.split("/").pop() || "index.html";
+      var btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "code-copy-btn";
+      btn.innerHTML = '<span>Copy</span>';
+      btn.setAttribute("aria-label", "Copy code snippet");
 
-  function report(path, payload) {
-    try {
-      fetch(path, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-        keepalive: true,
-      }).catch(function () {});
-    } catch (e) { /* no server — ignore */ }
+      btn.addEventListener("click", function () {
+        var text = code.innerText || code.textContent;
+        navigator.clipboard.writeText(text).then(function () {
+          btn.innerHTML = '<span>✓ Copied!</span>';
+          btn.classList.add("is-copied");
+          setTimeout(function () {
+            btn.innerHTML = '<span>Copy</span>';
+            btn.classList.remove("is-copied");
+          }, 2000);
+        }).catch(function () {});
+      });
+
+      wrap.appendChild(btn);
+    });
   }
 
-  report("/api/stats/visit", { page: page });
-
-  let reported = 0;
-  window.addEventListener("error", function (e) {
-    if (reported >= 5) return;               // don't flood the server
-    reported++;
-    report("/api/stats/error", {
-      page: page,
-      message: String(e.message || "Script error").slice(0, 300),
-      source: e.filename ? String(e.filename).split("/").pop() : "",
-      line: e.lineno || null,
-    });
-  });
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", setupCodeCopy);
+  } else {
+    setupCodeCopy();
+  }
 })();
