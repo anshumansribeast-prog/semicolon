@@ -30,6 +30,7 @@ def _connect() -> sqlite3.Connection:
     DB_PATH.parent.mkdir(parents=True, exist_ok=True)
     conn = sqlite3.connect(str(DB_PATH), timeout=10)
     conn.row_factory = sqlite3.Row
+    conn.execute("PRAGMA foreign_keys=ON")
     conn.execute("PRAGMA journal_mode=WAL")
     conn.execute("""
         CREATE TABLE IF NOT EXISTS learning_sessions (
@@ -217,3 +218,33 @@ def context_for_token(token: str) -> str:
     if completed:
         lines.append("- Recently completed lesson IDs: " + ", ".join(completed[-8:]))
     return "\n\n[Private learning context]\n" + "\n".join(lines)
+
+def analytics_summary() -> dict[str, int]:
+    """Return aggregate learning metrics only; never expose individual profiles."""
+    now = int(time.time())
+    with _LOCK:
+        conn = _connect()
+        try:
+            sessions = conn.execute(
+                "SELECT COUNT(*) AS total, SUM(CASE WHEN last_seen >= ? THEN 1 ELSE 0 END) AS active "
+                "FROM learning_sessions",
+                (now - 7 * 24 * 60 * 60,),
+            ).fetchone()
+            rows = conn.execute("SELECT payload FROM learning_progress").fetchall()
+            completed = 0
+            goals = 0
+            for row in rows:
+                try:
+                    payload = json.loads(row["payload"])
+                except (TypeError, ValueError):
+                    continue
+                completed += len(payload.get("completed_lessons", []))
+                goals += len(payload.get("goals", []))
+            return {
+                "browser_profiles_total": int(sessions["total"] or 0),
+                "active_browser_profiles_7d": int(sessions["active"] or 0),
+                "lessons_completed_total": completed,
+                "learning_goals_total": goals,
+            }
+        finally:
+            conn.close()
