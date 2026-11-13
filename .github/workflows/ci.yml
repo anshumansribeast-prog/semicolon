@@ -32,6 +32,9 @@ jobs:
       - name: Test Ada runtime gate
         run: python test_ada_runtime.py
 
+      - name: Test learning progress storage
+        run: python -m unittest discover -s tests -p 'test_learning_store.py'
+
       - name: Build the image
         run: docker build -t semicolon:ci .
 
