@@ -6,8 +6,8 @@
 (function () {
   "use strict";
 
-  var ADA_URL = "http://localhost:8420/api/ada";
-  var HISTORY_LIMIT = 6;
+  var ADA_URL = "/api/ada";
+  var HISTORY_LIMIT = 30;
 
   var log = document.getElementById("adaLog");
   var form = document.getElementById("adaForm");
@@ -17,6 +17,7 @@
   if (!form || !log) return;
 
   var history = [];
+  if (window.SemicolonLearning) window.SemicolonLearning.ensureSession().catch(function () {});
 
   function addBubble(text, kind) {
     var bubble = document.createElement("div");
