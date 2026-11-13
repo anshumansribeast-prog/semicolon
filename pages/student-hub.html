@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#0b1020">
+<title>My Learning Hub | Semicolon</title>
+<link rel="stylesheet" href="../css/style.css?v=20261113a">
+<style>
+:root{--hub-bg:#0b1020;--hub-panel:#121a2d;--hub-line:#24314b;--hub-muted:#9aa8c1;--hub-text:#edf3ff;--hub-accent:#8b9cff;--hub-green:#55d6a2}
+body{background:var(--hub-bg);color:var(--hub-text);min-height:100vh}
+.hub{max-width:1180px;margin:auto;padding:34px 22px 70px}
+.hub-top{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:34px}
+.hub-brand{font-size:1.15rem;font-weight:800;letter-spacing:-.04em;color:var(--hub-text);text-decoration:none}.hub-brand span{color:var(--hub-accent);font-size:1.5rem;margin-right:8px}
+.hub-back{color:var(--hub-muted);text-decoration:none;font-size:.9rem}.hub-back:hover{color:white}
+.eyebrow{color:var(--hub-accent);font-size:.75rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase}
+.hero{display:flex;justify-content:space-between;align-items:end;gap:24px;margin-bottom:28px}.hero h1{font-size:clamp(2rem,5vw,3.25rem);letter-spacing:-.055em;margin:9px 0}.hero p{color:var(--hub-muted);max-width:590px;margin:0;line-height:1.65}
+.date-chip{border:1px solid var(--hub-line);border-radius:999px;padding:10px 14px;color:var(--hub-muted);white-space:nowrap;font-size:.85rem}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:26px 0}.stat,.panel,.course{background:var(--hub-panel);border:1px solid var(--hub-line);border-radius:18px}.stat{padding:18px}.stat small{color:var(--hub-muted);display:block;font-size:.8rem}.stat strong{font-size:1.8rem;display:block;margin-top:8px;letter-spacing:-.04em}.stat em{font-style:normal;color:var(--hub-green);font-size:.78rem}
+.layout{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(270px,.85fr);gap:18px}.panel{padding:22px}.panel-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px}.panel h2{font-size:1.08rem;margin:0;letter-spacing:-.025em}.muted{color:var(--hub-muted);font-size:.85rem}
+.courses{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.course{padding:17px;transition:transform .18s,border-color .18s}.course:hover{transform:translateY(-3px);border-color:#6476c7}.course-icon{width:38px;height:38px;border-radius:12px;background:#202c4a;display:grid;place-items:center;font-size:1.2rem;margin-bottom:14px}.course h3{font-size:1rem;margin:0 0 6px}.course p{font-size:.82rem;color:var(--hub-muted);line-height:1.5;min-height:38px;margin:0 0 15px}.course-foot{display:flex;align-items:center;justify-content:space-between;gap:8px}.course a{color:#c6ceff;text-decoration:none;font-size:.82rem;font-weight:700}.tag{font-size:.7rem;color:var(--hub-green);background:#16382f;padding:5px 8px;border-radius:999px}
+.goal-form{display:flex;gap:8px;margin:14px 0 18px}.goal-form input{min-width:0;flex:1;background:#0c1426;border:1px solid var(--hub-line);border-radius:10px;padding:11px 12px;color:white;font:inherit}.goal-form button,.primary{border:0;border-radius:10px;padding:10px 13px;background:var(--hub-accent);color:#10172b;font-weight:800;cursor:pointer}
+.goals{display:grid;gap:9px}.goal{display:flex;align-items:center;gap:10px;padding:11px;background:#0e1729;border:1px solid var(--hub-line);border-radius:11px}.goal input{accent-color:var(--hub-green);width:17px;height:17px}.goal span{flex:1;font-size:.86rem}.goal.done span{text-decoration:line-through;color:#8290a8}.goal button{border:0;background:transparent;color:#8795ad;cursor:pointer;font-size:1rem}
+.progress-track{height:8px;background:#25314a;border-radius:99px;overflow:hidden;margin:12px 0 6px}.progress-track span{display:block;height:100%;width:0;background:linear-gradient(90deg,#7b8fff,#55d6a2);border-radius:99px;transition:width .25s}
+.empty{color:var(--hub-muted);font-size:.85rem;padding:12px 0}.tip{margin-top:16px;padding:15px;border-radius:13px;background:#182341;border:1px solid #2c3c64;color:#cbd5f0;font-size:.84rem;line-height:1.55}
+.search{width:100%;background:#0c1426;border:1px solid var(--hub-line);border-radius:11px;padding:11px 13px;color:white;font:inherit;margin-bottom:14px}
+footer{color:#7786a0;text-align:center;font-size:.78rem;margin-top:32px}
+@media(max-width:820px){.layout{grid-template-columns:1fr}.stats{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:540px){.hub{padding:22px 15px 50px}.hero{display:block}.date-chip{display:inline-block;margin-top:16px}.courses{grid-template-columns:1fr}.panel{padding:17px}.stat{padding:14px}.stat strong{font-size:1.5rem}}
+</style>
+</head>
+<body>
+<div class="hub">
+<header class="hub-top"><a class="hub-brand" href="../index.html"><span>;</span>Semicolon</a><a class="hub-back" href="../index.html">← Back to website</a></header>
+<section class="hero">
+ <div><div class="eyebrow">Your personal workspace</div><h1>Keep your learning in motion.</h1><p>A focused home for your courses, goals and next steps. Your checklist is saved in this browser, so you can pick up where you left off on this device.</p></div>
+ <div class="date-chip" id="today">Your learning hub</div>
+</section>
+<section class="stats" aria-label="Learning overview">
+ <article class="stat"><small>Learning tracks</small><strong>10</strong><em>Explore your next topic</em></article>
+ <article class="stat"><small>Lessons available</small><strong>31+</strong><em>Learn at your own pace</em></article>
+ <article class="stat"><small>Your goals done</small><strong id="doneCount">0</strong><em>Completed checklist items</em></article>
+ <article class="stat"><small>Goals in progress</small><strong id="goalCount">0</strong><em>Saved on this device</em></article>
+</section>
+<div class="layout">
+ <main class="panel">
+  <div class="panel-head"><div><div class="eyebrow">Explore</div><h2>Learning tracks</h2></div><span class="muted">Choose a starting point</span></div>
+  <input class="search" id="courseSearch" type="search" placeholder="Search tracks…" aria-label="Search learning tracks">
+  <div class="courses" id="courses">
+   <article class="course" data-search="python programming automation"><div class="course-icon">🐍</div><h3>Python</h3><p>Start with variables, conditions, loops and useful scripts.</p><div class="course-foot"><a href="learn.html?cat=Python">Explore Python →</a><span class="tag">Beginner</span></div></article>
+   <article class="course" data-search="web html css javascript"><div class="course-icon">🌐</div><h3>Web development</h3><p>Learn how websites are structured, styled and made interactive.</p><div class="course-foot"><a href="learn.html?cat=Web">Explore Web →</a><span class="tag">Beginner</span></div></article>
+   <article class="course" data-search="git github tools terminal"><div class="course-icon">🌿</div><h3>Developer tools</h3><p>Understand Git, the terminal and the tools developers use.</p><div class="course-foot"><a href="learn.html?cat=Tools">Explore tools →</a><span class="tag">Core skill</span></div></article>
+   <article class="course" data-search="debugging problem solving core skills"><div class="course-icon">🧩</div><h3>Problem solving</h3><p>Practise breaking problems down and finding bugs logically.</p><div class="course-foot"><a href="learn.html?cat=Core%20Skills">Build skills →</a><span class="tag">Core skill</span></div></article>
+   <article class="course" data-search="projects build portfolio"><div class="course-icon">🛠️</div><h3>Build projects</h3><p>Turn concepts into small, practical things you can show.</p><div class="course-foot"><a href="projects.html">View projects →</a><span class="tag">Practical</span></div></article>
+   <article class="course" data-search="practice quiz challenge coding"><div class="course-icon">⚡</div><h3>Practice lab</h3><p>Test your understanding with browser-based challenges.</p><div class="course-foot"><a href="playground.html">Open practice →</a><span class="tag">Hands-on</span></div></article>
+  </div>
+ </main>
+ <aside class="panel">
+  <div class="panel-head"><div><div class="eyebrow">Make progress</div><h2>Your learning goals</h2></div></div>
+  <div class="muted">Add a small goal for this week.</div>
+  <form class="goal-form" id="goalForm"><input id="goalInput" maxlength="90" placeholder="e.g. Finish Python lesson 2" aria-label="New learning goal" required><button type="submit" aria-label="Add goal">+</button></form>
+  <div class="muted" id="goalSummary">0 of 0 completed</div><div class="progress-track"><span id="progressBar"></span></div>
+  <div class="goals" id="goals"></div>
+  <div class="tip"><strong>💡 Ada's learning tip</strong><br>Choose one small topic, practise it, then build something tiny with it. Consistency beats trying to learn everything at once.</div>
+ </aside>
+</div>
+<footer>Semicolon · Learn. Code. Build. <br>Goal data is stored locally in this browser for this prototype.</footer>
+</div>
+<script>
+(function(){
+ const KEY='semicolon.learningHub.goals.v1';
+ const $=id=>document.getElementById(id);
+ const date=new Date();
+ $('today').textContent=date.toLocaleDateString(undefined,{weekday:'long',month:'long',day:'numeric'});
+ let goals=[];
+ try{goals=JSON.parse(localStorage.getItem(KEY)||'[]');if(!Array.isArray(goals))goals=[];}catch(_){goals=[];}
+ function save(){localStorage.setItem(KEY,JSON.stringify(goals));render();}
+ function render(){
+  const done=goals.filter(g=>g.done).length;
+  $('doneCount').textContent=done;$('goalCount').textContent=goals.length;
+  $('goalSummary').textContent=done+' of '+goals.length+' completed';
+  $('progressBar').style.width=(goals.length?(done/goals.length)*100:0)+'%';
+  const list=$('goals');list.replaceChildren();
+  if(!goals.length){const p=document.createElement('p');p.className='empty';p.textContent='No goals yet. Add one above to get started.';list.append(p);return;}
+  goals.forEach((g,i)=>{
+   const row=document.createElement('label');row.className='goal'+(g.done?' done':'');
+   const check=document.createElement('input');check.type='checkbox';check.checked=!!g.done;check.setAttribute('aria-label','Mark '+g.text+' complete');
+   check.addEventListener('change',()=>{goals[i].done=check.checked;save();});
+   const title=document.createElement('span');title.textContent=g.text;
+   const del=document.createElement('button');del.type='button';del.textContent='×';del.setAttribute('aria-label','Delete goal');del.addEventListener('click',()=>{goals.splice(i,1);save();});
+   row.append(check,title,del);list.append(row);
+  });
+ }
+ $('goalForm').addEventListener('submit',e=>{e.preventDefault();const text=$('goalInput').value.trim();if(!text)return;goals.push({text,done:false,createdAt:Date.now()});$('goalInput').value='';save();});
+ $('courseSearch').addEventListener('input',e=>{const q=e.target.value.toLowerCase().trim();document.querySelectorAll('.course').forEach(card=>{card.hidden=!((card.dataset.search+' '+card.textContent).toLowerCase().includes(q));});});
+ render();
+})();
+</script>
+</body>
+</html>
