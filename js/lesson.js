@@ -114,7 +114,29 @@
     }
   }
 
-  /* ---- remember progress ---- */
+  /* ---- mark lesson complete in the private learning profile ---- */
+  var completeButton = document.getElementById("markLessonComplete");
+  if (completeButton && window.SemicolonLearning) {
+    var lessonId = slug + "#" + n;
+    window.SemicolonLearning.getProgress().then(function (progress) {
+      if ((progress.completed_lessons || []).indexOf(lessonId) !== -1) {
+        completeButton.textContent = "✓ Lesson completed";
+        completeButton.disabled = true;
+      }
+    }).catch(function () {});
+    completeButton.addEventListener("click", function () {
+      completeButton.disabled = true;
+      completeButton.textContent = "Saving…";
+      window.SemicolonLearning.markLesson(slug, n).then(function () {
+        completeButton.textContent = "✓ Lesson completed";
+      }).catch(function () {
+        completeButton.disabled = false;
+        completeButton.textContent = "Mark lesson complete";
+      });
+    });
+  }
+
+  /* ---- backward-compatible local progress marker ---- */
   try {
     var seen = JSON.parse(localStorage.getItem("semicolon_progress") || "{}");
     if (!seen[slug] || seen[slug] < n) seen[slug] = n;
