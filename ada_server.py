@@ -569,6 +569,49 @@ class AdaHandler(SimpleHTTPRequestHandler):
         except Exception:
             self._reply(500, {"error": "could not save learning progress"})
 
+    def _model_response(self, reply, source):
+        """Remove Ada's screen-demo marker and return a validated demo payload."""
+        result = {"ok": True, "reply": reply or "", "source": source}
+        match = SCREEN_DEMO_RE.search(reply or "")
+        if not match:
+            return result
+        demo = extract_json(match.group(1))
+        if not isinstance(demo, dict):
+            return result
+        title = str(demo.get("title") or "Ada code walkthrough")[:120]
+        filename = str(demo.get("filename") or "example.txt")[:100]
+        language = str(demo.get("lang") or "text").lower()[:20]
+        code = str(demo.get("code") or "")[:8000]
+        steps = demo.get("steps")
+        if not code or not isinstance(steps, list) or not steps or len(steps) > 40:
+            return result
+        clean_steps = []
+        for item in steps:
+            if not isinstance(item, dict):
+                continue
+            try:
+                line = max(1, min(500, int(item.get("line", 1))))
+            except (TypeError, ValueError):
+                line = 1
+            clean_steps.append({
+                "line": line,
+                "narration": str(item.get("narration") or "")[:500],
+                "output": str(item.get("output") or "")[:1000],
+                "vars": item.get("vars") if isinstance(item.get("vars"), dict) else {},
+            })
+        if not clean_steps:
+            return result
+        result["reply"] = SCREEN_DEMO_RE.sub("", reply).strip()
+        result["screen_demo"] = {
+            "title": title,
+            "filename": filename,
+            "lang": language,
+            "code": code,
+            "output": str(demo.get("output") or "")[:3000],
+            "steps": clean_steps,
+        }
+        return result
+
     def _handle(self, mode, message, history, language, framework, difficulty, output, files, learning_context=""):
         extra = ""
         if files:
@@ -608,7 +651,7 @@ class AdaHandler(SimpleHTTPRequestHandler):
                 reply, source = ask_model(CHAT_PROMPT, prompt, history)
             except (URLError, TimeoutError, ValueError, OSError, HTTPError):
                 return {"ok": True, "reply": fallback_tutor(message, history), "source": "fallback"}
-            return {"ok": True, "reply": reply, "source": source}
+            return self._model_response(reply, source)
 
         prompt = message + extra + learning_context
         try:
