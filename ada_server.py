@@ -7,6 +7,7 @@ notes shipped with the site. Keys never go to the browser.
 
 import json
 import os
+from http.cookies import SimpleCookie
 import re
 import sqlite3
 import threading
@@ -17,6 +18,7 @@ from urllib.error import HTTPError, URLError
 from urllib.parse import urlparse
 
 import ada_knowledge
+import learning_store
 
 HOST = os.environ.get("ADA_HOST", "0.0.0.0")
 PORT = int(os.environ.get("ADA_PORT", "8420"))
@@ -117,10 +119,22 @@ What you do:
 - Any beginner-friendly topic is fine: Python, web, Git, career, school.
 
 Rules:
-- Short, complete examples in fenced markdown blocks are welcome; whole
-  multi-file projects are not — this chat does not generate projects.
-- Beginners get plain English and small steps.
-- Mention real limits only. Never invent bugs or missing features.
+Teaching standards:
+- Adapt explanations to the learner's demonstrated level. Start in plain English,
+  define new technical words, and use short, runnable examples.
+- For debugging, identify the first concrete cause, show the smallest safe fix,
+  and explain how to verify it. Never invent bugs or claim code was run when it
+  was not.
+- For learning questions, teach the concept before offering a short practice task.
+  Use hints first when the learner asks for a hint; give a full worked example
+  when they explicitly ask for one.
+- Prefer step-by-step explanations for calculations or multi-stage coding work.
+- Connect suggestions to Semicolon's real tracks, lessons, Practice area and
+  Project Lab only when relevant. Do not invent courses or completion records.
+- When private learning context is provided, use it only to make relevant
+  suggestions. It describes this browser profile, not a verified account identity.
+- Be encouraging without exaggerating progress or promising results.
+- Mention real limits only. Never invent bugs, test results or missing features.
 - Lawful requests only; no malware, exploits, or credential theft.
 
 You are talking to {VISITOR_NAME}. Use their name naturally, not every sentence.
@@ -285,16 +299,32 @@ class AdaHandler(SimpleHTTPRequestHandler):
 
     def _cors(self):
         self.send_header("Access-Control-Allow-Origin", "*")
-        self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
-        self.send_header("Access-Control-Allow-Headers", "Content-Type")
+        self.send_header("Access-Control-Allow-Methods", "GET, POST, PUT, OPTIONS")
+        self.send_header("Access-Control-Allow-Headers", "Content-Type, Authorization")
 
     def do_OPTIONS(self):
         self.send_response(204)
         self._cors()
         self.end_headers()
 
+    def _learning_token(self):
+        cookie = SimpleCookie()
+        try:
+            cookie.load(self.headers.get("Cookie", ""))
+        except Exception:
+            return ""
+        item = cookie.get("semicolon_learning")
+        return item.value if item else ""
+
     def do_GET(self):
         path = urlparse(self.path).path
+        if path == "/api/learning/progress":
+            progress = learning_store.read_progress(self._learning_token())
+            if progress is None:
+                self._reply(401, {"error": "learning session required"})
+            else:
+                self._reply(200, progress)
+            return
         if path == "/api/ada":
             self._reply(200, {
                 "ok": True,
@@ -410,7 +440,7 @@ class AdaHandler(SimpleHTTPRequestHandler):
 
     def do_POST(self):
         path = urlparse(self.path).path
-        if path not in ("/api/ada", "/api/stats/visit", "/api/stats/error"):
+        if path not in ("/api/ada", "/api/stats/visit", "/api/stats/error", "/api/learning/session"):
             self.send_response(404)
             self._cors()
             self.end_headers()
@@ -424,6 +454,17 @@ class AdaHandler(SimpleHTTPRequestHandler):
             body = json.loads(self.rfile.read(length) or b"{}")
         except ValueError:
             body = {}
+
+        if path == "/api/learning/session":
+            if not _allowed("learning-session:" + self._client_key(), 12, 3600):
+                self._reply(429, {"error": "too many learning sessions; try again later"})
+                return
+            session = learning_store.create_session()
+            cookie = "semicolon_learning=%s; HttpOnly; SameSite=Lax; Path=/; Max-Age=15552000" % session["token"]
+            if self.headers.get("X-Forwarded-Proto", "").lower() == "https":
+                cookie += "; Secure"
+            self._reply(201, {"ok": True, "scope": "this-browser-profile"}, {"Set-Cookie": cookie})
+            return
 
         if path == "/api/stats/visit":
             self._record_visit(body)
@@ -459,7 +500,10 @@ class AdaHandler(SimpleHTTPRequestHandler):
                 pass
 
         try:
-            result = self._handle(mode, message, history, language, framework, difficulty, output, files)
+            # Learning history is read only from the server-issued HttpOnly cookie.
+            # Client-supplied prompt text cannot impersonate this context.
+            learning_context = learning_store.context_for_token(self._learning_token())
+            result = self._handle(mode, message, history, language, framework, difficulty, output, files, learning_context)
             self._reply(200, result)
         except (URLError, TimeoutError, ValueError, OSError, HTTPError) as err:
             # A silent catch here once hid a retired Groq model id behind
@@ -501,7 +545,31 @@ class AdaHandler(SimpleHTTPRequestHandler):
             "source": "local",
         }
 
-    def _handle(self, mode, message, history, language, framework, difficulty, output, files):
+    def do_PUT(self):
+        path = urlparse(self.path).path
+        if path != "/api/learning/progress":
+            self._reply(404, {"error": "not found"})
+            return
+        if not self._learning_token():
+            self._reply(401, {"error": "learning session required"})
+            return
+        length = int(self.headers.get("Content-Length", 0))
+        if length > 50000:
+            self._reply(413, {"error": "progress payload too large"})
+            return
+        try:
+            body = json.loads(self.rfile.read(length) or b"{}")
+            progress = learning_store.write_progress(self._learning_token(), body)
+            if progress is None:
+                self._reply(401, {"error": "learning session expired"})
+            else:
+                self._reply(200, progress)
+        except (ValueError, TypeError):
+            self._reply(400, {"error": "invalid learning progress"})
+        except Exception:
+            self._reply(500, {"error": "could not save learning progress"})
+
+    def _handle(self, mode, message, history, language, framework, difficulty, output, files, learning_context=""):
         extra = ""
         if files:
             extra = "\n\nProject files currently open:\n"
@@ -513,6 +581,7 @@ class AdaHandler(SimpleHTTPRequestHandler):
         if mode == "challenge":
             spec = "Language: %s\nDifficulty: %s\nTopic (any subject is fine): %s" % (language, difficulty, message)
             try:
+                spec += learning_context
                 reply, source = ask_model(CHALLENGE_PROMPT, spec, history)
             except (URLError, TimeoutError, ValueError, OSError, HTTPError):
                 return self._local_challenge(message, language, difficulty)
@@ -534,26 +603,28 @@ class AdaHandler(SimpleHTTPRequestHandler):
                 "debug": "Find real bugs. Explain the cause, then show corrected code. Do not invent errors.",
                 "hint": "Give a small hint only. Do not reveal the full solution.",
             }
-            prompt = jobs[mode] + "\n\nUser:\n" + message + extra
+            prompt = jobs[mode] + "\n\nUser:\n" + message + extra + learning_context
             try:
                 reply, source = ask_model(CHAT_PROMPT, prompt, history)
             except (URLError, TimeoutError, ValueError, OSError, HTTPError):
                 return {"ok": True, "reply": fallback_tutor(message, history), "source": "fallback"}
             return {"ok": True, "reply": reply, "source": source}
 
-        prompt = message + extra
+        prompt = message + extra + learning_context
         try:
             reply, source = ask_model(CHAT_PROMPT, prompt, history)
             return {"ok": True, "reply": reply, "source": source}
         except (URLError, TimeoutError, ValueError, OSError, HTTPError):
             return {"ok": True, "reply": fallback_tutor(message, history), "source": "fallback"}
 
-    def _reply(self, status, payload):
+    def _reply(self, status, payload, extra_headers=None):
         data = json.dumps(payload).encode()
         self.send_response(status)
         self._cors()
         self.send_header("Content-Type", "application/json")
         self.send_header("Content-Length", str(len(data)))
+        for name, value in (extra_headers or {}).items():
+            self.send_header(name, value)
         self.end_headers()
         self.wfile.write(data)
 
